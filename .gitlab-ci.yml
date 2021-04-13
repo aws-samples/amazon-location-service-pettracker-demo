@@ -1,14 +1,21 @@
 default:
-  image: slushysnowman/aws-cdk-typescript:1.93.0
+  image: node:latest
 
 cache:
   paths:
     - cdk/node_modules/
 
 stages:
+  - setup
   - precheck
   - test
   - deploy
+
+download_cdk_dependencies:
+  stage: setup
+  script:
+    - cd cdk
+    - npm install
 
 has_lock_files:
   stage: precheck
@@ -26,7 +33,6 @@ eslint:
   stage: precheck
   script:
     - cd cdk
-    - npm i -D
     - npm run lint
     - npm run buildtest
 
@@ -35,7 +41,6 @@ tests:
   stage: test
   script:
     - cd cdk
-    - npm i -D
     - npm run test
 
 
