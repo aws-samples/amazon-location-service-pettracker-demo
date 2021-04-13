@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@aws-cdk/aws-cloudformation": "1.94.1",
+    "@aws-cdk/aws-iam": "1.94.1",
     "@aws-cdk/aws-iot": "1.94.1",
     "@aws-cdk/aws-iotanalytics": "1.94.1",
     "@aws-cdk/aws-lambda": "1.94.1",

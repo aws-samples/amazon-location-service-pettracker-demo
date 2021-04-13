@@ -33,7 +33,7 @@ export class PetTrackerPipelineStack extends Stack {
         cloudAssemblyArtifact,
 
         subdirectory: 'cdk',
-        buildCommand: 'npm run build',
+        buildCommand: 'npm install && npm run build',
       }),
     });
   }
