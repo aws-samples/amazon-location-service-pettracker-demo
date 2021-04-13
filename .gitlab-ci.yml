@@ -1,0 +1,66 @@
+image: docker:latest
+
+cache:
+  paths:
+    - cdk/node_modules/
+
+stages:
+  - build
+  - precheck
+  - test
+  - deploy
+
+build-docker-image:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - docker build --pull -t "$CI_REGISTRY_IMAGE" -f Dockerfile.pipeline .
+    - docker push "$CI_REGISTRY_IMAGE"
+  only:
+    changes:
+      - Dockerfile.pipeline
+
+has_lock_files:
+  stage: precheck
+  script:
+    - cd cdk
+    - "if [[ -e 'package.json' &&  ! -e 'package-lock.json' ]]; then echo 'No lock file found. Please add a package-lock.json'; false; fi"
+
+security_checker:
+  stage: precheck
+  image: $CI_REGISTRY_IMAGE:latest
+  script:
+    - cd cdk
+    - npm audit --audit-level=moderate
+
+eslint:
+  stage: precheck
+  image: $CI_REGISTRY_IMAGE:latest
+  script:
+    - cd cdk
+    - npm i -D
+    - npm run lint
+    - npm run buildtest
+
+
+tests:
+  stage: test
+  image: $CI_REGISTRY_IMAGE:latest
+  script:
+    - cd cdk
+    - npm i -D
+    - npm run test
+
+
+staging_deploy:
+  stage: deploy
+  image: $CI_REGISTRY_IMAGE:latest
+  only:
+    - develop
+  script:
+    - cd cdk
+    - npm ci
+
