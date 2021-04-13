@@ -1,5 +1,5 @@
 default:
-  image: slushysnowman/aws-cdk-typescript
+  image: slushysnowman/aws-cdk-typescript:1.93.0
 
 cache:
   paths:
