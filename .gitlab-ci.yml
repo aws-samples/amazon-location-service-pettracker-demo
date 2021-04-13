@@ -1,6 +1,10 @@
 default:
   image: node:latest
 
+cache:
+  paths:
+    - cdk/node_modules/
+
 stages:
   - setup
   - precheck
