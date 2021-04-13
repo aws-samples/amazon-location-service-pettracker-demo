@@ -1,27 +1,14 @@
-image: docker:latest
+default:
+  image: slushysnowman/aws-cdk-typescript
 
 cache:
   paths:
     - cdk/node_modules/
 
 stages:
-  - build
   - precheck
   - test
   - deploy
-
-build-docker-image:
-  stage: build
-  image: docker:latest
-  services:
-    - docker:dind
-  script:
-    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-    - docker build --pull -t "$CI_REGISTRY_IMAGE" -f Dockerfile.pipeline .
-    - docker push "$CI_REGISTRY_IMAGE"
-  only:
-    changes:
-      - Dockerfile.pipeline
 
 has_lock_files:
   stage: precheck
