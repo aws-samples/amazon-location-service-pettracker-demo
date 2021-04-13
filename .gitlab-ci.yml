@@ -48,5 +48,6 @@ staging_deploy:
   script:
     - cd cdk
     - npm install
-    - npm ci
+    - npm install -g aws-cdk
+    - cdk deploy PetTrackerStack
 
