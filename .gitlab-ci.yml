@@ -18,14 +18,12 @@ has_lock_files:
 
 security_checker:
   stage: precheck
-  image: $CI_REGISTRY_IMAGE:latest
   script:
     - cd cdk
     - npm audit --audit-level=moderate
 
 eslint:
   stage: precheck
-  image: $CI_REGISTRY_IMAGE:latest
   script:
     - cd cdk
     - npm i -D
@@ -35,7 +33,6 @@ eslint:
 
 tests:
   stage: test
-  image: $CI_REGISTRY_IMAGE:latest
   script:
     - cd cdk
     - npm i -D
@@ -44,7 +41,6 @@ tests:
 
 staging_deploy:
   stage: deploy
-  image: $CI_REGISTRY_IMAGE:latest
   only:
     - develop
   script:
