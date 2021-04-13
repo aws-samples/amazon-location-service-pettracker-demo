@@ -31,7 +31,6 @@ eslint:
     - cd cdk
     - npm install
     - npm run lint
-    - npm run buildtest
 
 
 tests:
