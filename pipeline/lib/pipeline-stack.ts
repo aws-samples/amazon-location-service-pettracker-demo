@@ -24,6 +24,7 @@ export class PetTrackerPipelineStack extends Stack {
       sourceAction: new codepipeline_actions.CodeCommitSourceAction({
         actionName: 'CodeCommit',
         repository: repo,
+        branch: 'develop',
         output: sourceArtifact,
       }),
 
