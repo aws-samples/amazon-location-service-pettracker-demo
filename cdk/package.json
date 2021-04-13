@@ -25,6 +25,7 @@
     "typescript": "~3.9.7"
   },
   "dependencies": {
+    "@aws-cdk/assets": "^1.94.1",
     "@aws-cdk/aws-cloudformation": "1.94.1",
     "@aws-cdk/aws-iam": "1.94.1",
     "@aws-cdk/aws-iot": "1.94.1",
