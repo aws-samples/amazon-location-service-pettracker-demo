@@ -33,6 +33,8 @@
     "@aws-cdk/aws-s3": "1.94.1",
     "@aws-cdk/aws-sns-subscriptions": "1.94.1",
     "@aws-cdk/core": "1.94.1",
+    "@aws-cdk/yaml-cfn": "^1.98.0",
+    "aws-sdk": "^2.885.0",
     "source-map-support": "^0.5.16"
   }
 }
