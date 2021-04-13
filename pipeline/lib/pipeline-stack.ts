@@ -12,9 +12,10 @@ export class PetTrackerPipelineStack extends Stack {
     const sourceArtifact = new codepipeline.Artifact();
     const cloudAssemblyArtifact = new codepipeline.Artifact();
 
-    const repo = new codecommit.Repository(this, 'PetTrackerRepository', {
-      repositoryName: 'iot-workshop-for-pet-tracking-and-geofencing',
-    });
+    const repo = codecommit.Repository.fromRepositoryName(
+      this, 
+      'ImportedRepo',
+      'iot-workshop-for-pet-tracking-and-geofencing');
 
     const pipeline = new CdkPipeline(this, 'Pipeline', {
       pipelineName: 'PetTrackerPipeline',
@@ -30,8 +31,7 @@ export class PetTrackerPipelineStack extends Stack {
         sourceArtifact,
         cloudAssemblyArtifact,
 
-        // Use this if you need a build step (if you're not using ts-node
-        // or if you have TypeScript Lambdas that need to be compiled).
+        subdirectory: 'cdk',
         buildCommand: 'npm run build',
       }),
     });

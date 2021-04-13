@@ -10,3 +10,5 @@ new PetTrackerPipelineStack(app, 'PetTrackerPipelineStack', {
       region: 'eu-central-1',
     }
   });
+
+  app.synth();
