@@ -6,8 +6,8 @@ import { PetTrackerPipelineStack } from '../lib/pipeline-stack';
 const app = new cdk.App();
 new PetTrackerPipelineStack(app, 'PetTrackerStack', {
     env: {
-      account: '201880502539',
-      region: 'eu-central-1',
+      account: '603611156406',
+      region: 'us-east-1',
     }
   });
 
