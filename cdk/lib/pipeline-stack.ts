@@ -47,5 +47,12 @@ export class PetTrackerPipelineStack extends Stack {
         buildCommand: 'npm install && npm run build',
       }),
     });
+
+    pipeline.addApplicationStage(new PetTrackerApplication(this, 'Stg', {
+      env: {
+        account: '603611156406',
+        region: 'us-east-1'
+      }
+    }));
   }
 }
