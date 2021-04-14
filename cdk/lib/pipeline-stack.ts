@@ -1,9 +1,19 @@
-import { Stack, StackProps, Construct, SecretValue } from '@aws-cdk/core';
+import { Stack, StackProps, Construct, SecretValue, Stage, StageProps } from '@aws-cdk/core';
 import { CdkPipeline, SimpleSynthAction } from '@aws-cdk/pipelines';
 
 import * as codepipeline from '@aws-cdk/aws-codepipeline';
 import * as codepipeline_actions from '@aws-cdk/aws-codepipeline-actions';
 import * as codecommit from '@aws-cdk/aws-codecommit';
+
+import { PetTrackerDataIngestionStack } from "./data-ingestion-stack";
+
+export class PetTrackerApplication extends Stage {
+  constructor(scope: Construct, id: string, props?: StageProps) {
+    super(scope, id, props);
+
+    new PetTrackerDataIngestionStack(this, 'Database');
+  }
+}
 
 export class PetTrackerPipelineStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
