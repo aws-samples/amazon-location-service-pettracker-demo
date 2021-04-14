@@ -2,7 +2,7 @@ import * as cdk from '@aws-cdk/core';
 import * as iot from '@aws-cdk/aws-iot';
 import { CustomCertificateResource } from "./custom-certificate-resource";
 
-export class CdkStack extends cdk.Stack {
+export class PetTrackerDataIngestionStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
