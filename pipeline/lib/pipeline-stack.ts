@@ -18,6 +18,7 @@ export class PetTrackerPipelineStack extends Stack {
       'iot-workshop-for-pet-tracking-and-geofencing');
 
     const pipeline = new CdkPipeline(this, 'Pipeline', {
+      crossAccountKeys: false,
       pipelineName: 'PetTrackerPipeline',
       cloudAssemblyArtifact,
 

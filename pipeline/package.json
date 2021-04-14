@@ -8,13 +8,17 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "lint": "eslint . --ext .ts"
   },
   "devDependencies": {
     "@aws-cdk/assert": "1.98.0",
     "@types/jest": "^26.0.10",
     "@types/node": "10.17.27",
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@typescript-eslint/parser": "^4.22.0",
     "aws-cdk": "1.98.0",
+    "eslint": "^7.24.0",
     "jest": "^26.4.2",
     "ts-jest": "^26.2.0",
     "ts-node": "^9.0.0",
@@ -26,6 +30,8 @@
     "@aws-cdk/aws-codepipeline-actions": "^1.98.0",
     "@aws-cdk/core": "1.98.0",
     "@aws-cdk/pipelines": "^1.98.0",
+    "@aws-cdk/aws-iot": "^1.98.0",
+    "@aws-cdk/aws-cloudformation": "1.98.0",
     "source-map-support": "^0.5.16"
   }
 }

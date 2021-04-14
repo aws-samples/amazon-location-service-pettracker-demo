@@ -1,5 +1,0 @@
-FROM node:12
-
-WORKDIR /app
-
-RUN npm i -g ---unsafe-perm aws-cdk
