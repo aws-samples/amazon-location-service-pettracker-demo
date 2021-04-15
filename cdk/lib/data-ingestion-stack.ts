@@ -20,7 +20,7 @@ export class PetTrackerDataIngestionStack extends cdk.Stack {
       {
         account: this.account,
         stackName: this.stackName,
-        thingName: trackerThing.thingName!
+        thingName: trackerThing.ref
       }
     );
 
@@ -29,7 +29,7 @@ export class PetTrackerDataIngestionStack extends cdk.Stack {
       "PetTrackerThingCredentialAttachment",
       {
         principal: trackerCredentials.certificateArn,
-        thingName: trackerThing.thingName!
+        thingName: trackerThing.ref
       }
     );
 
@@ -46,5 +46,7 @@ export class PetTrackerDataIngestionStack extends cdk.Stack {
         ]
       }
     });
+
+
   }
 }
