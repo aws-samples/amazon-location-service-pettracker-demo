@@ -24,6 +24,15 @@ export class PetTrackerDataIngestionStack extends cdk.Stack {
       }
     );
 
+    new iot.CfnThingPrincipalAttachment(
+      this,
+      "PetTrackerThingCredentialAttachment",
+      {
+        principal: trackerCredentials.certificateArn,
+        thingName: trackerThing.thingName!
+      }
+    );
+
     const trackerPolicy = new iot.CfnPolicy(this, "PetTrackerPolicy", {
       policyName: `${trackerThing.thingName}_Policy`,
       policyDocument: {
