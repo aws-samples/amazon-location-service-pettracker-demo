@@ -118,10 +118,8 @@ export class PetTrackerDataIngestionStack extends cdk.Stack {
       }
     );
 
-    new lambda.CfnPermission(this, "PetTrackerPositionLambdaPermission", {
-      action: "lambda:InvokeFunction",
-      principal: "iot.amazonaws.com",
-      functionName: trackerLambdaAlias.functionArn,
+    trackerLambda.addPermission("PetTrackerPositionLambdaPermission", {
+      principal: new iam.ServicePrincipal("iot.amazonaws.com"),
       sourceAccount: props?.env?.account,
       sourceArn: `arn:aws:iot:${props?.env?.region}:${props?.env?.account}:rule/${trackerTopicRule.ruleName}`
     });
