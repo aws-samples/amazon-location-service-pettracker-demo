@@ -98,16 +98,7 @@ export class PetTrackerDataIngestionStack extends cdk.Stack {
       ]
     }));
 
-    trackerLambda.addToRolePolicy(new iam.PolicyStatement({
-      actions: ["lambda:InvokeFunction"],
-      principals: [new iam.ServicePrincipal("iot.amazonaws.com")],
-      conditions: {
-        "StringEquals": {"AWS:SourceAccount": props?.env?.account},
-        "ArnLike": {"AWS:SourceArn": `arn:aws:iot:${props?.env?.region}:${props?.env?.account}:rule/PetTrackerNotifyPosition`}
-      }
-    }));
-
-    new iot.CfnTopicRule(
+    const trackerTopicRule = new iot.CfnTopicRule(
       this,
       "PetTrackerTopicRule",
       {
@@ -126,5 +117,13 @@ export class PetTrackerDataIngestionStack extends cdk.Stack {
         
       }
     );
+
+    new lambda.CfnPermission(this, "PetTrackerPositionLambdaPermission", {
+      action: "lambda:InvokeFunction",
+      principal: "iot.amazonaws.com",
+      functionName: trackerLambdaAlias.functionArn,
+      sourceAccount: props?.env?.account,
+      sourceArn: `arn:aws:iot:${props?.env?.region}:${props?.env?.account}:rule/${trackerTopicRule.ruleName}`
+    });
   }
 }
