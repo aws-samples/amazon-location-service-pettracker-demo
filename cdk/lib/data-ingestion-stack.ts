@@ -77,6 +77,27 @@ export class PetTrackerDataIngestionStack extends cdk.Stack {
       }
     );
 
+    trackerLambdaRole.addToPolicy(new iam.PolicyStatement({
+      resources: [`arn:aws:logs:${props?.env?.region}:${props?.env?.account}:log-group:/aws/lambda/${trackerLambdaAlias.functionName}:log-stream:*`],
+      actions: [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ]
+    }));
+
+    trackerLambdaRole.addToPolicy(new iam.PolicyStatement({
+      resources: ['*'],
+      actions: [
+        "appsync:Create*",
+        "appsync:GraphQL",
+        "appsync:Get*",
+        "appsync:List*",
+        "appsync:Update*",
+        "appsync:Delete*"
+      ]
+    }));
+
     new iot.CfnTopicRule(
       this,
       "PetTrackerTopicRule",

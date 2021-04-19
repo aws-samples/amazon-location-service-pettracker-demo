@@ -11,7 +11,12 @@ export class PetTrackerApplication extends Stage {
   constructor(scope: Construct, id: string, props?: StageProps) {
     super(scope, id, props);
 
-    new PetTrackerDataIngestionStack(this, 'PetTrackerDataIngestion');
+    new PetTrackerDataIngestionStack(this, 'PetTrackerDataIngestion', {
+      env: {
+        region: props?.env?.region,
+        account: props?.env?.account
+      }
+    });
   }
 }
 
