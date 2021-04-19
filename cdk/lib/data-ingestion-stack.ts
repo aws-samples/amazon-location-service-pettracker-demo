@@ -60,12 +60,12 @@ export class PetTrackerDataIngestionStack extends cdk.Stack {
     );
 
     const trackerLambda = new lambda.Function(this, "PetTrackerPositionLambda", {
-      runtime: lambda.Runtime.PYTHON_3_7,
+      runtime: lambda.Runtime.NODEJS_12_X,
       code: lambda.Code.fromAsset(path.join(__dirname, "position-lambda")),
-      handler: "position-lambda.handler",
-      memorySize: 1024,
+      handler: "index.handler",
+      memorySize: 128,
       role: trackerLambdaRole,
-      timeout: cdk.Duration.seconds(60)
+      timeout: cdk.Duration.seconds(15)
     });
 
     const trackerLambdaAlias = new lambda.Alias(
