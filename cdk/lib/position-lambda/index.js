@@ -24,8 +24,8 @@ exports.handler = async (event) => {
     const item = {
         input: {
             id: event.data.id,
-            lat: event.lat,
-            long: event.long
+            lat: event.data.lat,
+            long: event.data.long
         }
     };
 
