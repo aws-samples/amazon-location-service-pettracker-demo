@@ -98,7 +98,7 @@ export class PetTrackerDataIngestionStack extends cdk.Stack {
       ]
     }));
 
-    trackerLambdaRole.addToPolicy(new iam.PolicyStatement({
+    trackerLambda.addToRolePolicy(new iam.PolicyStatement({
       actions: ["lambda:InvokeFunction"],
       principals: [new iam.ServicePrincipal("iot.amazonaws.com")],
       conditions: {
