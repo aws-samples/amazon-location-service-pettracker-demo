@@ -50,8 +50,8 @@ export class PetTrackerPipelineStack extends Stack {
 
     pipeline.addApplicationStage(new PetTrackerApplication(this, 'Stg', {
       env: {
-        account: '603611156406',
-        region: 'us-east-1'
+        account: props?.env?.account,
+        region: props?.env?.region
       }
     }));
   }
