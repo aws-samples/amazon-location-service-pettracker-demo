@@ -68,6 +68,8 @@ export class PetTrackerDataIngestionStack extends cdk.Stack {
       timeout: cdk.Duration.seconds(15)
     });
 
+    trackerLambda.addEnvironment("API_GRAPHQLAPIENDPOINT", "https://path-to-graphql.com");
+
     const trackerLambdaAlias = new lambda.Alias(
       this,
       "PetTrackerPositionLambdaAlias",
