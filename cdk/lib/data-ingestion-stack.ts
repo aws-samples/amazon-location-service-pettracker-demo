@@ -78,7 +78,7 @@ export class PetTrackerDataIngestionStack extends cdk.Stack {
     );
 
     trackerLambdaRole.addToPolicy(new iam.PolicyStatement({
-      resources: [`arn:aws:logs:${props?.env?.region}:${props?.env?.account}:log-group:/aws/lambda/${trackerLambdaAlias.functionName}:log-stream:*`],
+      resources: [`arn:aws:logs:${props?.env?.region}:${props?.env?.account}:*`],
       actions: [
         "logs:CreateLogGroup",
         "logs:CreateLogStream",
