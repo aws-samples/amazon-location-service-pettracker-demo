@@ -26,7 +26,7 @@ amplify push
 
 ### Add a Map
 
-Create a new map in the Amazon Location service.
+Create a new map (name it PetTrackerMap) in the Amazon Location service.
 
 Give permission to access the map by selecting Identity Pool, check the name of the auth role and add this inline policy to the role. Replace the information with your account information.
 
@@ -37,10 +37,10 @@ Give permission to access the map by selecting Identity Pool, check the name of 
     "Version": "2012-10-17",
     "Statement": [
         {
-            "Sid": "VisualEditor0",
+            "Sid": "map",
             "Effect": "Allow",
             "Action": "geo:GetMap*",
-            "Resource": "arn:aws:geo:<REGION>:<ACCOUNTNUMBER>:map/<NAMEOFMAP>"
+            "Resource": "arn:aws:geo:<REGION>:<ACCOUNTNUMBER>:map/PetTrackerMap"
         }
     ]
 }
@@ -48,16 +48,34 @@ Give permission to access the map by selecting Identity Pool, check the name of 
 
 ### Add a Tracker
 
-Create a new tracker in the Amazon Location Service.
+Create a new tracker (name it PetTracker) in the Amazon Location Service.
 
 Modify the auth role for the Amplify application by adding this permission.
 
 ```
  {
-    "Sid": "VisualEditor3",
+    "Sid": "tracker",
     "Effect": "Allow",
     "Action": "geo:GetDevicePositionHistory",
-    "Resource": "arn:aws:geo:<REGION>:<ACCOUNTNUMBER>:tracker/<TRACKERNAME>"
+    "Resource": "arn:aws:geo:<REGION>:<ACCOUNTNUMBER>:tracker/PetTracker"
+}
+```
+
+### Add a Geofence collection
+
+Create a new geofence collection (name it PetTrackerGeofenceCollection) in the Amazon Location Service.
+
+Modify the auth role for the Amplify application by adding this permission.
+
+```
+ {
+    "Sid": "geofences",
+    "Effect": "Allow",
+    "Action": [
+                "geo:ListGeofences",
+                "geo:BatchPutGeofence"
+    ],
+    "Resource": "arn:aws:geo:<REGION>:<ACCOUNTNUMBER>:geofence-collection/PetTrackerGeofenceCollection"
 }
 ```
 
@@ -69,6 +87,7 @@ npm install @aws-amplify/core
 
 npm install mapbox-gl@1.0.0
 npm install react-map-gl@5.2.11
+npm install react-map-gl-draw@0.22.2
 ```
 
 ## Copy the application modules
