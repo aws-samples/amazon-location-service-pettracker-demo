@@ -1,6 +1,6 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Cloud9 For Observability Workshop
+Description: Cloud9 For Amazon Location Service Workshop
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -158,7 +158,7 @@ Resources:
   Cloud9Env:
     Type: AWS::Cloud9::EnvironmentEC2
     Properties:
-      Name: observabilityworkshop
+      Name: amazonlocationserviceworkshop
       Description: 'IDE Workshop'
       AutomaticStopTimeMinutes: !Ref C9StopTime
       InstanceType: !Ref C9InstanceType
@@ -166,7 +166,7 @@ Resources:
   Cloud9Role:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: 'observabilityworkshop-admin'
+      RoleName: 'amazonlocationserviceworkshop-admin'
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -180,7 +180,7 @@ Resources:
   Cloud9InstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
-      InstanceProfileName: 'observabilityworkshop-profile'
+      InstanceProfileName: 'amazonlocationserviceworkshop-profile'
       Roles: [!Ref Cloud9Role]
   CopyZipsRole:
     Type: AWS::IAM::Role
