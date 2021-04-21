@@ -57,5 +57,6 @@ git clone https://github.com/fbdo/iot-workshop-for-pet-tracking-and-geofencing
 
 # Install lab resources
 cd iot-workshop-for-pet-tracking-and-geofencing/cdk
+npm install
 cdk bootstrap
 cdk deploy PetTrackerStack
