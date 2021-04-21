@@ -50,6 +50,7 @@ export class PetTrackerPipelineStack extends Stack {
 
         subdirectory: 'cdk',
         buildCommand: 'npm install && npm run build',
+        synthCommand: 'npx cdk synth PetTrackerPipelineStack'
       }),
     });
 
