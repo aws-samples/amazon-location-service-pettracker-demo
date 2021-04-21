@@ -20,7 +20,13 @@ aws cloudformation wait stack-create-complete --stack-name C9-ALS-Workshop && ec
 ```
 3. When the last command returns with the success message, navigate to [Cloud9](https://console.aws.amazon.com/cloud9) and click on the "Open IDE" link on the newly created environment.
 
-4. 
+4. Execute the following command in the terminal:
+
+```shell
+curl -sSL https://raw.githubusercontent.com/fbdo/iot-workshop-for-pet-tracking-and-geofencing/develop/envsetup.sh | bash -s stable
+```
+
+5. Wait for the setup, go take a coffee!
 
 
 ## Technology Stack
