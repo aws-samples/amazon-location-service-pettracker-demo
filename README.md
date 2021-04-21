@@ -12,7 +12,7 @@ The **PetTracker Demo** is a cloud native application built using an serverless 
 2. Copy and past the following commands into the terminal:
 
 ```shell
-curl -O https://raw.githubusercontent.com/fbdo/iot-workshop-for-pet-tracking-and-geofencing-/develop/cloud9-cfn.yaml
+curl -O https://raw.githubusercontent.com/fbdo/iot-workshop-for-pet-tracking-and-geofencing/develop/cloud9-cfn.yaml
 
 aws cloudformation create-stack --stack-name C9-ALS-Workshop --template-body file://cloud9-cfn.yaml --capabilities CAPABILITY_NAMED_IAM
 
