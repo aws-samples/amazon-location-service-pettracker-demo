@@ -59,4 +59,4 @@ git clone https://github.com/fbdo/iot-workshop-for-pet-tracking-and-geofencing
 cd iot-workshop-for-pet-tracking-and-geofencing/cdk
 npm install
 cdk bootstrap
-cdk deploy PetTrackerStack
+cdk deploy PetTrackerStack --require-approval never
