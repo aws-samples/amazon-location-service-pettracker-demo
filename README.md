@@ -26,7 +26,16 @@ aws cloudformation wait stack-create-complete --stack-name C9-ALS-Workshop && ec
 curl -sSL https://raw.githubusercontent.com/fbdo/iot-workshop-for-pet-tracking-and-geofencing/develop/envsetup.sh | bash -s stable
 ```
 
-5. Wait for the setup, go take a coffee!
+5. Wait for the setup, go take a coffee! And happy coding!
+
+## How to clean up
+
+1. In the AWS Management Console on the Services menu, navigate to [CloudShell](https://console.aws.amazon.com/cloudshell/home).
+2. Copy and past the following commands into the terminal:
+
+```shell
+curl -sSL https://raw.githubusercontent.com/fbdo/iot-workshop-for-pet-tracking-and-geofencing/develop/envcleanup.sh | bash -s stable
+```
 
 
 ## Technology Stack
