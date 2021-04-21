@@ -8,7 +8,7 @@ The **PetTracker Demo** is a cloud native application built using an serverless 
 
 ## How to install
 
-1. In the AWS Management Console on the Services menu, navigate to CloudShell.
+1. In the AWS Management Console on the Services menu, navigate to [CloudShell](https://console.aws.amazon.com/cloudshell/home).
 2. Copy and past the following commands into the terminal:
 
 ```shell
@@ -16,11 +16,11 @@ curl -O https://raw.githubusercontent.com/fbdo/iot-workshop-for-pet-tracking-and
 
 aws cloudformation create-stack --stack-name C9-ALS-Workshop --template-body file://cloud9-cfn.yaml --capabilities CAPABILITY_NAMED_IAM
 
-aws cloudformation wait stack-create-complete --stack-name C9-ALS-Workshop
-
-echo -e "Cloud9 Instance is Ready!!\n\n"
-
+aws cloudformation wait stack-create-complete --stack-name C9-ALS-Workshop && echo 'Cloud9 IDE created sucessfully!'
 ```
+3. When the last command returns with the success message, navigate to [Cloud9](https://console.aws.amazon.com/cloud9) and click on the "Open IDE" link on the newly created environment.
+
+4. 
 
 
 ## Technology Stack
