@@ -24,11 +24,6 @@
 #usage           curl -sSL https://raw.githubusercontent.com/fbdo/iot-workshop-for-pet-tracking-and-geofencing/develop/envsetup.sh | bash -s stable
 #==============================================================================
 
-# Create a directory
-foldername=workshopfiles
-mkdir $foldername
-cd $foldername
-
 # Install awscli v2
 curl -O "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" 
 unzip -o awscli-exe-linux-x86_64.zip
@@ -41,8 +36,7 @@ npm install npm
 # Upgrade CDK version
 npm i aws-cdk --force
 
-
-# Download lab repository
+# Clone lab repository
 git clone https://github.com/fbdo/iot-workshop-for-pet-tracking-and-geofencing
 
 # Install lab resources
