@@ -1,0 +1,10 @@
+{
+  "auth": {
+    "pettracking426fb16c": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
+    }
+  }
+}
