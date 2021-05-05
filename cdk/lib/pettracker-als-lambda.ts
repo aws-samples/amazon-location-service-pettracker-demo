@@ -24,7 +24,7 @@ export class PetTrackerALSLambda extends cdk.Construct {
         );
 
         const trackerLambda = new lambda.Function(this, "PetTrackerPositionLambda", {
-            runtime: lambda.Runtime.NODEJS_12_X,
+            runtime: lambda.Runtime.PYTHON_3_8,
             code: lambda.Code.fromAsset(path.join(__dirname, "tracker-lambda")),
             handler: "lambda_function.lambda_handler",
             memorySize: 128,
