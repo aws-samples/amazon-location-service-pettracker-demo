@@ -10,7 +10,7 @@ export class PetTrackerDataIngestionStack extends cdk.Stack {
     super(scope, id, props);
 
     const region = props?.env?.region || 'us-east-1'
-    const account = props?.env?.region || ''
+    const account = props?.env?.account || ''
 
     /**
      * Create Device.
@@ -57,6 +57,6 @@ export class PetTrackerDataIngestionStack extends cdk.Stack {
       region: region,
       account: account
     });
-    
+
   }
 }
