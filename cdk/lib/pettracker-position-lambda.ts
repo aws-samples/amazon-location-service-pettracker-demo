@@ -78,7 +78,7 @@ export class PetTrackerPositionLambda extends cdk.Construct {
                         }
                     ],
                     ruleDisabled: false,
-                    sql: "SELECT lat, long FROM 'device/+/pos'"
+                    sql: "SELECT * FROM 'pettracker'"
                 }
             }
         );
