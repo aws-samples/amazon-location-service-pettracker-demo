@@ -4,6 +4,7 @@ import * as iot from '@aws-cdk/aws-iot';
 import { CustomCertificateResource } from './custom-certificate-resource';
 import path = require("path");
 import { PetTrackerPositionLambda } from './pettracker-position-lambda'
+import { PetTrackerALSLambda } from './pettracker-als-lambda'
 
 export class PetTrackerDataIngestionStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -54,6 +55,11 @@ export class PetTrackerDataIngestionStack extends cdk.Stack {
     });
 
     new PetTrackerPositionLambda(this, 'pettracker-position-lambda', {
+      region: region,
+      account: account
+    });
+
+    new PetTrackerALSLambda(this, 'pettracker-als-lambda', {
       region: region,
       account: account
     });
