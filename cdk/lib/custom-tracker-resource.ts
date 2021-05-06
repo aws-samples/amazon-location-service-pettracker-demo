@@ -83,10 +83,10 @@ export class CustomTrackerResource extends cdk.Construct {
         );
 
         this.trackerArn = customCertificateResource
-            .getAtt("trackerArn")
+            .getAtt("TrackerArn")
             .toString();
         this.trackerName = customCertificateResource
-            .getAtt("trackerName")
+            .getAtt("TrackerName")
             .toString();
 
     }
