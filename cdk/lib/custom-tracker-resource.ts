@@ -14,7 +14,6 @@ export interface CustomTrackerResourceProps {
 export class CustomTrackerResource extends cdk.Construct {
     public readonly trackerArn: string;
     public readonly trackerName: string;
-    public readonly createTime: string;
 
     constructor(
         scope: cdk.Construct,
@@ -88,9 +87,6 @@ export class CustomTrackerResource extends cdk.Construct {
             .toString();
         this.trackerName = customCertificateResource
             .getAtt("trackerName")
-            .toString();
-        this.createTime = customCertificateResource
-            .getAtt("createTime")
             .toString();
 
     }

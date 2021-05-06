@@ -23,7 +23,6 @@ def handler(event, context):
                 PricingPlan='RequestBasedUsage'
             )
 
-            responseData['CreateTime'] = response['CreateTime']
             responseData['TrackerArn'] = response['TrackerArn']
             responseData['TrackerName'] = response['TrackerName']
             result = cfnresponse.SUCCESS
