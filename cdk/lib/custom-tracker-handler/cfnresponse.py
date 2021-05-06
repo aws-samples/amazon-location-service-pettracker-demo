@@ -42,7 +42,7 @@ def send(event, context, responseStatus, responseData, physicalResourceId=None, 
     responseBody['NoEcho'] = noEcho
     responseBody['Data'] = responseData
 
-    json_responseBody = json.dumps(responseBody)
+    json_responseBody = json.dumps(responseBody, default=str)
 
     print("Response body:\n" + json_responseBody)
 
