@@ -7,7 +7,7 @@ import path = require("path");
 
 export interface CustomTrackerResourceProps {
     account: string;
-    stackName: string;
+    region: string;
     trackerName: string;
 }
 
@@ -40,7 +40,7 @@ export class CustomTrackerResource extends cdk.Construct {
 
         customResourceLambdaRole.addToPolicy(
             new iam.PolicyStatement({
-                resources: ["arn:aws:logs:*:*:*"],
+                resources: [`arn:aws:logs:${props.region}:${props.account}:*`],
                 actions: [
                     "logs:CreateLogGroup",
                     "logs:CreateLogStream",

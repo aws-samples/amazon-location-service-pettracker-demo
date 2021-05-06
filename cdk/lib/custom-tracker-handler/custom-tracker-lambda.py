@@ -39,3 +39,11 @@ def handler(event, context):
             )
 
             result = cfnresponse.SUCCESS
+    except ClientError as e:
+        log.error('Error: {}'.format(e))
+        result = cfnresponse.FAILED
+
+    log.info('Returning response of: {}, with result of: {}'.format(
+        result, responseData))
+    sys.stdout.flush()
+    cfnresponse.send(event, context, result, responseData)
