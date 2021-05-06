@@ -5,6 +5,7 @@ import { CustomCertificateResource } from './custom-certificate-resource';
 import path = require("path");
 import { PetTrackerPositionLambda } from './pettracker-position-lambda'
 import { PetTrackerALSLambda } from './pettracker-als-lambda'
+import { CustomTrackerResource } from './custom-tracker-resource'
 
 export class PetTrackerDataIngestionStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -54,6 +55,12 @@ export class PetTrackerDataIngestionStack extends cdk.Stack {
       }
     });
 
+    const locationTracker = new CustomTrackerResource(this, 'pettracker-location-tracker', {
+      trackerName: "pettracker",
+      region: region,
+      account: account
+    });
+
     new PetTrackerPositionLambda(this, 'pettracker-position-lambda', {
       region: region,
       account: account
@@ -61,7 +68,8 @@ export class PetTrackerDataIngestionStack extends cdk.Stack {
 
     new PetTrackerALSLambda(this, 'pettracker-als-lambda', {
       region: region,
-      account: account
+      account: account,
+      trackerName: locationTracker.trackerName
     });
 
   }

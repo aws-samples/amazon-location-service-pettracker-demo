@@ -8,6 +8,7 @@ import path = require("path");
 export interface PetTrackerALSProps {
     account: string
     region: string
+    trackerName: string
 }
 
 export class PetTrackerALSLambda extends cdk.Construct {
@@ -32,7 +33,7 @@ export class PetTrackerALSLambda extends cdk.Construct {
             timeout: cdk.Duration.seconds(15)
         });
 
-        trackerLambda.addEnvironment("TRACKER_NAME", "myTracker");
+        trackerLambda.addEnvironment("TRACKER_NAME", props.trackerName);
 
         const trackerLambdaAlias = new lambda.Alias(
             this,
