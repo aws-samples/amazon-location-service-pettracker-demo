@@ -28,12 +28,27 @@ def handler(event, context):
             result = cfnresponse.SUCCESS
 
         elif event['RequestType'] == 'Update':
-            log.info('Updating tracker: %s' % trackerName)
+            oldTrackerName = event['OldResourceProperties']['TrackerName']
+
+            log.info('Renaming tracker: %s to %s' % (oldTrackerName, trackerName))
+
+            client.delete_tracker(
+                TrackerName=oldTrackerName
+            )
+
+            response = client.create_tracker(
+                TrackerName=trackerName,
+                PricingPlan='RequestBasedUsage'
+            )
+
+            responseData['TrackerArn'] = response['TrackerArn']
+            responseData['TrackerName'] = response['TrackerName']
             result = cfnresponse.SUCCESS
+            
         elif event['RequestType'] == 'Delete':
             log.info('Deleting tracker: %s' % trackerName)
 
-            response = client.delete_tracker(
+            client.delete_tracker(
                 TrackerName=trackerName
             )
 
