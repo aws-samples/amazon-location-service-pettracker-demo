@@ -15,7 +15,7 @@ exports.handler = async (event) => {
 
     //define the graphql mutation to create the sensor values
     const mutationName = 'UpdateItem';
-    const mutation = require('./mutations').updateItem;
+    const mutation = require('./graphql/mutations').updateLocation;
 
     const updateAtDate = new Date(event.data.updatedAt)
     let [month, date, year] = updateAtDate.toLocaleDateString("en-US").split("/")

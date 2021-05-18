@@ -1,0 +1,168 @@
+﻿schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}
+
+type Location {
+  createdAt: AWSDateTime!
+  deviceid: String
+  id: ID
+  lat: Float
+  long: Float
+  result: String
+  updatedAt: AWSDateTime!
+}
+
+type ModelLocationConnection {
+  items: [Location]
+  nextToken: String
+}
+
+type Mutation {
+  createLocation(condition: ModelLocationConditionInput, input: CreateLocationInput!): Location
+  deleteLocation(condition: ModelLocationConditionInput, input: DeleteLocationInput!): Location
+  updateLocation(condition: ModelLocationConditionInput, input: UpdateLocationInput!): Location
+}
+
+type Query {
+  getLocation(id: ID!): Location
+  listLocations(filter: ModelLocationFilterInput, limit: Int, nextToken: String): ModelLocationConnection
+  testPublishLocation(deviceid: String, lat: Float, long: Float): Location
+}
+
+type Subscription {
+  onCreateLocation: Location @aws_subscribe(mutations : ["createLocation"])
+  onDeleteLocation: Location @aws_subscribe(mutations : ["deleteLocation"])
+  onUpdateLocation: Location @aws_subscribe(mutations : ["updateLocation"])
+}
+
+enum ModelAttributeTypes {
+  _null
+  binary
+  binarySet
+  bool
+  list
+  map
+  number
+  numberSet
+  string
+  stringSet
+}
+
+enum ModelSortDirection {
+  ASC
+  DESC
+}
+
+input CreateLocationInput {
+  deviceid: String
+  id: ID
+  lat: Float
+  long: Float
+  result: String
+}
+
+input DeleteLocationInput {
+  id: ID
+}
+
+input ModelBooleanInput {
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  eq: Boolean
+  ne: Boolean
+}
+
+input ModelFloatInput {
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  between: [Float]
+  eq: Float
+  ge: Float
+  gt: Float
+  le: Float
+  lt: Float
+  ne: Float
+}
+
+input ModelIDInput {
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  beginsWith: ID
+  between: [ID]
+  contains: ID
+  eq: ID
+  ge: ID
+  gt: ID
+  le: ID
+  lt: ID
+  ne: ID
+  notContains: ID
+  size: ModelSizeInput
+}
+
+input ModelIntInput {
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  between: [Int]
+  eq: Int
+  ge: Int
+  gt: Int
+  le: Int
+  lt: Int
+  ne: Int
+}
+
+input ModelLocationConditionInput {
+  and: [ModelLocationConditionInput]
+  deviceid: ModelStringInput
+  lat: ModelFloatInput
+  long: ModelFloatInput
+  not: ModelLocationConditionInput
+  or: [ModelLocationConditionInput]
+  result: ModelStringInput
+}
+
+input ModelLocationFilterInput {
+  and: [ModelLocationFilterInput]
+  deviceid: ModelStringInput
+  lat: ModelIntInput
+  long: ModelIntInput
+  not: ModelLocationFilterInput
+  or: [ModelLocationFilterInput]
+  result: ModelStringInput
+}
+
+input ModelSizeInput {
+  between: [Int]
+  eq: Int
+  ge: Int
+  gt: Int
+  le: Int
+  lt: Int
+  ne: Int
+}
+
+input ModelStringInput {
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  beginsWith: String
+  between: [String]
+  contains: String
+  eq: String
+  ge: String
+  gt: String
+  le: String
+  lt: String
+  ne: String
+  notContains: String
+  size: ModelSizeInput
+}
+
+input UpdateLocationInput {
+  deviceid: String
+  lat: Float
+  long: Float
+  result: String
+}
