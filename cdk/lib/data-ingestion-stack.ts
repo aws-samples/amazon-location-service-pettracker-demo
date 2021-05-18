@@ -56,7 +56,7 @@ export class PetTrackerDataIngestionStack extends cdk.Stack {
     });
 
     const locationTracker = new CustomTrackerResource(this, 'pettracker-location-tracker', {
-      trackerName: "pettracker",
+      trackerName: "PetTracker",
       region: region,
       account: account
     });
