@@ -8,6 +8,7 @@
     "@testing-library/jest-dom": "^5.11.10",
     "@testing-library/react": "^11.2.6",
     "@testing-library/user-event": "^12.8.3",
+    "aws-amplify": "^3.3.27",
     "aws-sdk": "^2.882.0",
     "bootstrap": "^4.6.0",
     "mapbox-gl": "^1.0.0",
