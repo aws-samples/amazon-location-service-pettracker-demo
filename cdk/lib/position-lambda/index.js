@@ -7,6 +7,18 @@ const region = process.env.REGION
 const appsyncUrl = process.env.API_GRAPHQLAPIENDPOINT
 const endpoint = new urlParse(appsyncUrl).hostname.toString();
 
+/**
+ * 
+ * @param {*} event event body, format:
+ * { "deviceid": "thing123", 
+ *  "timestamp": 1604940328,
+ *  "location": {
+ *   "lat": 49.2819, 
+ *   "long": -123.1187
+ *  }
+ * }
+ * @returns 
+ */
 exports.handler = async (event) => {
 
     console.log('event received:' + JSON.stringify(event));
@@ -23,9 +35,10 @@ exports.handler = async (event) => {
     //create the mutation input from the sensor event data
     const item = {
         input: {
-            id: event.data.id,
-            lat: event.data.lat,
-            long: event.data.long
+            deviceid: event.deviceid,
+            lat: event.location.lat,
+            long: event.location.long,
+            updatedAt: event.timestamp
         }
     };
 
