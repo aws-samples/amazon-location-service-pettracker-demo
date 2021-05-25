@@ -1,11 +1,39 @@
-const https = require('https');
+"use strict"
+global.WebSocket = require("ws");
+require('es6-promise').polyfill();
+require('isomorphic-fetch');
+
+// Require AppSync module
+const AUTH_TYPE = require('aws-appsync/lib/link/auth-link').AUTH_TYPE;
+const AWSAppSyncClient = require('aws-appsync').default;
+const type = AUTH_TYPE.AWS_IAM;
+
 const AWS = require('aws-sdk');
-const urlParse = require("url").URL;
+
+const credentials = AWS.config.credentials;
 
 //environment variables
 const region = process.env.REGION
+AWS.config.update({
+    region
+});
 const appsyncUrl = process.env.API_GRAPHQLAPIENDPOINT
 const endpoint = new urlParse(appsyncUrl).hostname.toString();
+
+const gql = require('graphql-tag');
+const queryGQL = gql(require('./graphql/queries').getLocation);
+const createGQL = gql(require('./graphql/mutations').createLocation);
+const updateGQL = gql(require('./graphql/mutations').updateLocation);
+
+const client = new AWSAppSyncClient({
+    url: endpoint,
+    region: region,
+    auth: {
+        type: type,
+        credentials: credentials
+    },
+    disableOffline: true
+});
 
 /**
  * 
@@ -23,58 +51,45 @@ exports.handler = async (event) => {
 
     console.log('event received:' + JSON.stringify(event));
 
-    const appsync = new AWS.HttpRequest(appsyncUrl, region);
+    client.hydrated().then(function (cl) {
+        cl.query({
+            query: queryGQL,
+            fetchPolicy: 'network-only',
+            variables: {
+                deviceid: event.deviceid
+            }
+        }).then(function createOrUpdate(data) {
+            console.log('Result of the query for device id: ' + event.deviceid + ', : ' + JSON.stringify(data));
 
-    //define the graphql mutation to create the sensor values
-    const mutationName = 'UpdateItem';
-    const mutation = require('./graphql/mutations').updateLocation;
-
-    //create the mutation input from the sensor event data
-    const item = {
-        input: {
-            deviceid: event.deviceid,
-            lat: event.location.lat,
-            long: event.location.long,
-            updatedAt: event.timestamp
-        }
-    };
-
-    //execute the mutation
-    try {
-
-        appsync.method = "POST";
-        appsync.headers.host = endpoint;
-        appsync.headers["Content-Type"] = "application/json";
-        appsync.body = JSON.stringify({
-            query: mutation,
-            operationName: mutationName,
-            variables: item
-        });
-
-        const signer = new AWS.Signers.V4(appsync, "appsync", true);
-        signer.addAuthorization(AWS.config.credentials, AWS.util.date.getDate());
-
-        const data = await new Promise((resolve, reject) => {
-            const httpRequest = https.request({ ...appsync, host: endpoint }, (result) => {
-                result.on('data', (data) => {
-                    resolve(JSON.parse(data.toString()));
+            if (data) {
+                cl.mutate({
+                    mutation: updateGQL,
+                    variables: {
+                        id: event.deviceid,
+                        deviceid: event.deviceid,
+                        lat: event.location.lat,
+                        long: event.location.long,
+                        updatedAt: event.timestamp
+                    }
                 });
-            });
+            } else {
+                cl.mutate({
+                    mutation: createGQL,
+                    variables: {
+                        deviceid: event.deviceid,
+                        lat: event.location.lat,
+                        long: event.location.long,
+                        createdAt: event.timestamp
+                    }
+                });
+            }
+        }).catch(console.error);
+    });
 
-            httpRequest.write(appsync.body);
-            httpRequest.end();
+    console.log("Successful update");
 
-        });
-
-        console.log("Successful mutation");
-
-    } catch (error) {
-        console.log(error);
-        return;
-    }
 
     return {
-        statusCode: 200,
-        body: data
+        statusCode: 200
     };
 }
