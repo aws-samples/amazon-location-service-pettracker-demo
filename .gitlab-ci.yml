@@ -27,7 +27,7 @@ security_checker:
   stage: precheck
   script:
     - cd cdk
-    - npm audit --audit-level=moderate
+    - npm audit --audit-level=high
 
 eslint:
   stage: precheck
