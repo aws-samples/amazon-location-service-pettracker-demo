@@ -1,0 +1,6 @@
+type Location @model {
+  long: Float
+  lat: Float
+  deviceid: String
+  result: String
+}
