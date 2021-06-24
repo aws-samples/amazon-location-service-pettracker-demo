@@ -66,6 +66,7 @@ AWSCLOUDFORMATIONCONFIG="{\
 
 AMPLIFY="{\
 \"projectName\":\"pettracker\",\
+\"appId\":\"pettracker\",\
 \"envName\":\"dev\",\
 \"defaultEditor\":\"code\"\
 }"
@@ -82,7 +83,10 @@ PROVIDERS="{\
 
 ln -s ~/.aws/credentials ~/.aws/config
 cd ~/environment/iot-workshop-for-pet-tracking-and-geofencing/web
+
 npm install -g @aws-amplify/cli
+
+npm install
 
 amplify init \
 --amplify $AMPLIFY \
