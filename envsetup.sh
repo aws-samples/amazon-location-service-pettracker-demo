@@ -66,7 +66,6 @@ AWSCLOUDFORMATIONCONFIG="{\
 
 AMPLIFY="{\
 \"projectName\":\"pettracker\",\
-\"appId\":\"pettracker\",\
 \"envName\":\"dev\",\
 \"defaultEditor\":\"code\"\
 }"
