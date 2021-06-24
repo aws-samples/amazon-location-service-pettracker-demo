@@ -36,7 +36,7 @@ sudo ./aws/install
 rm awscli-exe-linux-x86_64.zip
 
 # Upgrade npm
-npm install npm
+npm install -g npm@latest
 
 # Upgrade CDK version
 npm i aws-cdk --force
@@ -90,4 +90,4 @@ amplify init \
 --providers $PROVIDERS \
 --yes
 
-amplify push --yes
+amplify publish --yes
