@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #
 # Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
@@ -24,6 +26,9 @@
 #usage           curl -sSL https://raw.githubusercontent.com/fbdo/iot-workshop-for-pet-tracking-and-geofencing/develop/envsetup.sh | bash -s stable
 #==============================================================================
 
+set -e
+IFS='|'
+
 # Install awscli v2
 curl -O "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" 
 unzip -o awscli-exe-linux-x86_64.zip
@@ -44,3 +49,45 @@ cd iot-workshop-for-pet-tracking-and-geofencing/cdk
 npm install
 cdk bootstrap
 cdk deploy PetTrackerStack --require-approval never
+
+# Install webapp resources using Amplify
+REACTCONFIG="{\
+\"SourceDir\":\"src\",\
+\"DistributionDir\":\"build\",\
+\"BuildCommand\":\"npm run-script build\",\
+\"StartCommand\":\"npm run-script start\"\
+}"
+
+AWSCLOUDFORMATIONCONFIG="{\
+\"configLevel\":\"project\",\
+\"useProfile\":true,\
+\"profileName\":\"default\"\
+}"
+
+AMPLIFY="{\
+\"projectName\":\"pettracker\",\
+\"envName\":\"dev\",\
+\"defaultEditor\":\"code\"\
+}"
+
+FRONTEND="{\
+\"frontend\":\"javascript\",\
+\"framework\":\"react\",\
+\"config\":$REACTCONFIG\
+}"
+
+PROVIDERS="{\
+\"awscloudformation\":$AWSCLOUDFORMATIONCONFIG\
+}"
+
+ln -s ~/.aws/credentials ~/.aws/config
+cd ~/environment/iot-workshop-for-pet-tracking-and-geofencing/web
+npm install -g @aws-amplify/cli
+
+amplify init \
+--amplify $AMPLIFY \
+--frontend $FRONTEND \
+--providers $PROVIDERS \
+--yes
+
+amplify push --yes
