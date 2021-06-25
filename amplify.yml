@@ -1,0 +1,20 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - cd web
+        - npm ci
+    build:
+      commands:
+        - npm install
+        - npm build
+backend:
+  phases:
+    preBuild:
+      commands:
+        - cd web
+        - npm ci
+    build:
+      commands:
+        - amplifyPush --simple
