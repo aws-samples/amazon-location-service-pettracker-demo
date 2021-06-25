@@ -7,8 +7,14 @@ frontend:
         - npm ci
     build:
       commands:
-        - npm install
-        - npm build
+        - npm run build
+  artifacts:
+    baseDirectory: build
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
 backend:
   phases:
     preBuild:
@@ -18,3 +24,6 @@ backend:
     build:
       commands:
         - amplifyPush --simple
+  cache:
+    paths:
+      - node_modules/**/*
