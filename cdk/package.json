@@ -25,10 +25,10 @@
     "typescript": "~3.9.7"
   },
   "dependencies": {
-    "@aws-cdk/aws-amplify": "^1.109.0",
     "@aws-cdk/aws-cloudformation": "1.98.0",
     "@aws-cdk/aws-codebuild": "^1.98.0",
     "@aws-cdk/aws-codecommit": "^1.98.0",
+    "@aws-cdk/aws-codedeploy": "^1.98.0",
     "@aws-cdk/aws-codepipeline": "^1.98.0",
     "@aws-cdk/aws-codepipeline-actions": "^1.98.0",
     "@aws-cdk/aws-iot": "^1.98.0",
