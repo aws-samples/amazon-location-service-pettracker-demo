@@ -24,7 +24,7 @@ export class PetTrackerWebAppStack extends cdk.Stack {
         repository: repo,
       }),
     });
-    const masterBranch = amplifyApp.addBranch("develop");
+    const devBranch = amplifyApp.addBranch("develop");
 
     const customPolicyStatement = iam.PolicyStatement.fromJson(policies.amplifyPolicyDocument);
 
