@@ -2,6 +2,8 @@ import * as cdk from '@aws-cdk/core';
 import * as codepipeline from '@aws-cdk/aws-codepipeline';
 import * as codecommit from '@aws-cdk/aws-codecommit';
 import * as amplify from "@aws-cdk/aws-amplify";
+import * as iam from '@aws-cdk/aws-iam';
+import * as policies from './policy-statements'
 
 import path = require("path");
 
@@ -23,6 +25,10 @@ export class PetTrackerWebAppStack extends cdk.Stack {
       }),
     });
     const masterBranch = amplifyApp.addBranch("develop");
+
+    const customPolicyStatement = iam.PolicyStatement.fromJson(policies.amplifyPolicyDocument);
+
+    amplifyApp.grantPrincipal.addToPrincipalPolicy(customPolicyStatement);
 
   }
 }
