@@ -1,22 +1,24 @@
 version: 1
-frontend:
+backend:
   phases:
     preBuild:
       commands:
         - cd web
+    build:
+      commands:
+        - amplifyPush --simple
+frontend:
+  phases:
+    preBuild:
+      commands:
         - npm ci
     build:
       commands:
         - npm run build
   artifacts:
-    baseDirectory: build
+    baseDirectory: web/build
     files:
       - '**/*'
   cache:
     paths:
-      - node_modules/**/*
-backend:
-  phases:
-    build:
-      commands:
-        - amplifyPush --simple
+      - web/node_modules/**/*
