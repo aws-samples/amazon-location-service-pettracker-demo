@@ -20,10 +20,6 @@ backend:
     preBuild:
       commands:
         - cd web
-        - npm ci
     build:
       commands:
         - amplifyPush --simple
-  cache:
-    paths:
-      - node_modules/**/*
