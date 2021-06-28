@@ -17,9 +17,6 @@ frontend:
       - node_modules/**/*
 backend:
   phases:
-    preBuild:
-      commands:
-        - cd web
     build:
       commands:
         - amplifyPush --simple
