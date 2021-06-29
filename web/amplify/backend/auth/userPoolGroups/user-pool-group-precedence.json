@@ -17,7 +17,7 @@
                 "geo:GetMapSprites",
                 "geo:GetMapTile"
               ],
-              "Resource": ["arn:aws:geo:*:*:map/PetTrackerMap"]
+              "Resource": ["arn:aws:geo:*:*:*"]
             }
           ]
         }
