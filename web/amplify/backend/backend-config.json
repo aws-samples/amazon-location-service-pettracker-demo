@@ -57,5 +57,15 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     }
+  },
+  "location": {
+    "maps": {
+      "service": "AmazonLocationService",
+      "providerPlugin": "awscloudformation"
+    },
+    "geofenceCollections": {
+      "service": "AmazonLocationService",
+      "providerPlugin": "awscloudformation"
+    }
   }
 }

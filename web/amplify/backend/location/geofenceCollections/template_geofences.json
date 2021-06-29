@@ -1,0 +1,12 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Amazon Location Service geofence collections resource stack creation using Amplify CLI",
+    "Resources": {
+        "Type": "AWS::Location::GeofenceCollection",
+        "Properties": {
+            "Description": "PetTracker geofence collection",
+            "CollectionName": "PetTrackerGeofenceCollection",
+            "PricingPlan": "RequestBasedUsage"
+        }
+    }
+}
