@@ -1,16 +1,26 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
     "Description": "Amazon Location Service maps resource stack creation using Amplify CLI",
-    "Parameters": {},
+    "Parameters": {
+        "MapName": {
+            "Type": "String",
+            "Description": "The map name.",
+            "Default": "PetTrackerMap"
+        }
+    },
     "Resources": {
-        "Type": "AWS::Location::Map",
-        "Properties": {
-            "Configuration": {
-                "Style": "VectorEsriStreets"
-            },
-            "Description": "PetTracker map",
-            "MapName": "PetTrackerMap",
-            "PricingPlan": "RequestBasedUsage"
+        "Map": {
+            "Type": "AWS::Location::Map",
+            "Properties": {
+                "Configuration": {
+                    "Style": "VectorEsriStreets"
+                },
+                "Description": "PetTracker map",
+                "MapName": {
+                    "Ref": "MapName"
+                },
+                "PricingPlan": "RequestBasedUsage"
+            }
         }
     }
 }
