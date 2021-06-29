@@ -1,6 +1,7 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
     "Description": "Amazon Location Service maps resource stack creation using Amplify CLI",
+    "Parameters": {},
     "Resources": {
         "Type": "AWS::Location::Map",
         "Properties": {
