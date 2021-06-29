@@ -206,7 +206,8 @@ export const amplifyPolicyDocument =
     "s3:PutBucketWebsite",
     "s3:PutEncryptionConfiguration",
     "s3:PutObject",
-    "s3:PutObjectAcl"
+    "s3:PutObjectAcl",
+    "geo:*"
   ],
   "Resource": "*"
 }
