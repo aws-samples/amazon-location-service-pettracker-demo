@@ -6,6 +6,9 @@
             "Type": "String",
             "Description": "The geofence collection name.",
             "Default": "PetTrackerGeofenceCollection"
+        },
+        "env": {
+            "Type": "String"
         }
     },
     "Resources": {

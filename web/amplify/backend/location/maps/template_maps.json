@@ -6,6 +6,9 @@
             "Type": "String",
             "Description": "The map name.",
             "Default": "PetTrackerMap"
+        },
+        "env": {
+            "Type": "String"
         }
     },
     "Resources": {
