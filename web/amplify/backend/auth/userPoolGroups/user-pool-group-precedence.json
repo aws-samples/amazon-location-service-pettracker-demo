@@ -1,0 +1,27 @@
+[
+  {
+    "groupName": "users",
+    "precedence": 1,
+    "customPolicies": [
+      {
+        "PolicyName": "pettracker-users-policy",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "MapsReadOnly",
+              "Effect": "Allow",
+              "Action": [
+                "geo:GetMapStyleDescriptor",
+                "geo:GetMapGlyphs",
+                "geo:GetMapSprites",
+                "geo:GetMapTile"
+              ],
+              "Resource": ["arn:aws:geo:*:*:map/PetTrackerMap"]
+            }
+          ]
+        }
+      }
+    ]
+  }
+]
