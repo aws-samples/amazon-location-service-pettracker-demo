@@ -30,6 +30,7 @@ export class PetTrackerWebAppStack extends cdk.Stack {
     const customPolicyStatement = iam.PolicyStatement.fromJson(policies.amplifyPolicyDocument);
 
     amplifyApp.grantPrincipal.addToPrincipalPolicy(customPolicyStatement);
+    amplifyApp.addEnvironment('_LIVE_UPDATES', '[{"pkg":"@aws-amplify/cli","type":"npm","version":"5.0.2"}]');
 
   }
 }
