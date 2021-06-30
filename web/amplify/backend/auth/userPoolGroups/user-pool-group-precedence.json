@@ -9,13 +9,28 @@
           "Version": "2012-10-17",
           "Statement": [
             {
+              "Sid": "ListMapsTrackers",
+              "Effect": "Allow",
+              "Action": [
+                "geo:ListMaps",
+                "geo:ListTrackers"
+              ],
+              "Resource": "*"
+            },
+            {
               "Sid": "MapsReadOnly",
               "Effect": "Allow",
               "Action": [
+                "geo:DescribeMap",
+                "geo:BatchGetDevicePosition",
+                "geo:GetDevicePositionHistory",
+                "geo:GetDevicePosition",
+                "geo:DescribeTracker",
                 "geo:GetMapStyleDescriptor",
                 "geo:GetMapGlyphs",
                 "geo:GetMapSprites",
-                "geo:GetMapTile"
+                "geo:GetMapTile",
+                "geo:GetMapTileJson"
               ],
               "Resource": ["arn:aws:geo:*:*:*"]
             }
