@@ -158,6 +158,10 @@ Parameters:
     Type: CommaDelimitedList
       
             
+  
+  breakCircularDependency:
+    Type: String
+            
         
   authProviders:
     Type: CommaDelimitedList
@@ -450,6 +454,9 @@ Outputs :
   UserPoolId:
     Value: !Ref 'UserPool'
     Description:  Id for the user pool
+  UserPoolArn:
+    Value: !GetAtt UserPool.Arn
+    Description:  Arn for the user pool
   UserPoolName:
     Value: !Ref userPoolName
   AppClientIDWeb:
