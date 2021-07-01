@@ -1,0 +1,55 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Parameters": {
+        "authpettracking426fb16cUserPoolId": {
+            "Type": "String",
+            "Default": "authpettracking426fb16cUserPoolId"
+        },
+        
+        "authpettracking426fb16cAppClientID": {
+            "Type": "String",
+            "Default": "authpettracking426fb16cAppClientID"
+        },
+        "authpettracking426fb16cAppClientIDWeb": {
+            "Type": "String",
+            "Default": "authpettracking426fb16cAppClientIDWeb"
+        },
+        "AuthRoleArn": {
+            "Type": "String"
+        },
+        "UnauthRoleArn": {
+            "Type": "String"
+        },
+        "env": {
+            "Type": "String"
+        }
+    },
+    "Conditions": {
+        "ShouldNotCreateEnvResources": {
+            "Fn::Equals": [
+                {
+                    "Ref": "env"
+                },
+                "NONE"
+            ]
+        }
+    },
+    "Resources": {
+    
+        "usersGroup": {
+          "Type" : "AWS::Cognito::UserPoolGroup",
+          "Properties" : {
+              "GroupName" : "users",
+              "Precedence" : 1,
+              
+              "UserPoolId" : {
+                "Ref": "authpettracking426fb16cUserPoolId"
+              }
+            }
+        },
+        
+    
+    
+    },
+    
+}
