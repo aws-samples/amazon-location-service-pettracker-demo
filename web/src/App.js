@@ -83,6 +83,12 @@ const App = () => {
 
 
   useEffect(() => {
+    // console.log('in useEffect');
+    const fetchCredentials = async () => {
+      setCredentials(await Auth.currentUserCredentials());
+    };
+    fetchCredentials();
+
     const subscription = API.graphql(
       graphqlOperation(subscriptions.onCreateLocation)
     ).subscribe({
