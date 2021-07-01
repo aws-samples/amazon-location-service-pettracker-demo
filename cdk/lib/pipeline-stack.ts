@@ -6,12 +6,20 @@ import * as codepipeline_actions from '@aws-cdk/aws-codepipeline-actions';
 import * as codecommit from '@aws-cdk/aws-codecommit';
 
 import { PetTrackerDataIngestionStack } from "./data-ingestion-stack";
+import { PetTrackerWebAppStack } from "./webapp-stack";
 
 export class PetTrackerApplication extends Stage {
   constructor(scope: Construct, id: string, props?: StageProps) {
     super(scope, id, props);
 
     new PetTrackerDataIngestionStack(this, 'PetTrackerDataIngestion', {
+      env: {
+        region: props?.env?.region,
+        account: props?.env?.account
+      }
+    });
+
+    new PetTrackerWebAppStack(this, 'PetTrackerWebApp', {
       env: {
         region: props?.env?.region,
         account: props?.env?.account
