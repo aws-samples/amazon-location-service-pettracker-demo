@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 
 import Amplify, { Auth, API, graphqlOperation } from 'aws-amplify';
 import * as subscriptions from './graphql/subscriptions';
-import { AmplifyAuthenticator } from '@aws-amplify/ui-react';
+import { withAuthenticator } from '@aws-amplify/ui-react'
 
 import Location from "aws-sdk/clients/location";
 
@@ -83,12 +83,6 @@ const App = () => {
 
 
   useEffect(() => {
-    // console.log('in useEffect');
-    const fetchCredentials = async () => {
-      setCredentials(await Auth.currentUserCredentials());
-    };
-    fetchCredentials();
-
     const subscription = API.graphql(
       graphqlOperation(subscriptions.onCreateLocation)
     ).subscribe({
@@ -117,7 +111,6 @@ const App = () => {
   });
 
   return (
-    <AmplifyAuthenticator>
       <div className="App">
         <Loader>
           <Header />
@@ -136,9 +129,8 @@ const App = () => {
           )}
         </Loader>
       </div>
-    </AmplifyAuthenticator>
   );
 
 }
 
-export default App;
+export default withAuthenticator(App);

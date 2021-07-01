@@ -98,11 +98,23 @@
             "Version": "2012-10-17",
             "Statement": [
                 {
+                    "Sid": "AppSyncGraphQL",
+                    "Effect": "Allow",
+                    "Action": [
+                        "appsync:GraphQL",
+                        "appsync:GetGraphqlApi",
+                        "appsync:ListGraphqlApis",
+                        "appsync:ListApiKeys"
+                    ],
+                    "Resource": "*"
+                },
+                {
                     "Sid": "ListMapsTrackers",
                     "Effect": "Allow",
                     "Action": [
                         "geo:ListMaps",
-                        "geo:ListTrackers"
+                        "geo:ListTrackers",
+                        "dynamodb:*"
                     ],
                     "Resource": "*"
                 },
