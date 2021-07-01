@@ -42,7 +42,11 @@
                 "geo:GetMapGlyphs",
                 "geo:GetMapSprites",
                 "geo:GetMapTile",
-                "geo:GetMapTileJson"
+                "geo:GetMapTileJson",
+                "geo:BatchPutGeofence",
+                "geo:PutGeofence",
+                "geo:ListGeofences",
+                "geo:GetGeofence"
               ],
               "Resource": ["arn:aws:geo:*:*:*"]
             }
