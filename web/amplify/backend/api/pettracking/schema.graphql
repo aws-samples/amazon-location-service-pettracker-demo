@@ -1,4 +1,4 @@
-type Location @model {
+type Location @model @aws_cognito_user_pools(cognito_groups: ["users"]) {
   long: Float
   lat: Float
   deviceid: String
