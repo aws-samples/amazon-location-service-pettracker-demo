@@ -1,4 +1,4 @@
-import { Stack, StackProps, Construct, SecretValue, Stage, StageProps, DefaultStackSynthesizer } from '@aws-cdk/core';
+import { Stack, StackProps, Construct, SecretValue, Stage, StageProps } from '@aws-cdk/core';
 import { CdkPipeline, SimpleSynthAction } from '@aws-cdk/pipelines';
 
 import * as codepipeline from '@aws-cdk/aws-codepipeline';
@@ -16,20 +16,14 @@ export class PetTrackerApplication extends Stage {
       env: {
         region: props?.env?.region,
         account: props?.env?.account
-      },
-      synthesizer: new DefaultStackSynthesizer({
-        qualifier: 'cdkfix',
-      })
+      }
     });
 
     new PetTrackerWebAppStack(this, 'PetTrackerWebApp', {
       env: {
         region: props?.env?.region,
         account: props?.env?.account
-      },
-      synthesizer: new DefaultStackSynthesizer({
-        qualifier: 'cdkfix',
-      })
+      }
     });
   }
 }
