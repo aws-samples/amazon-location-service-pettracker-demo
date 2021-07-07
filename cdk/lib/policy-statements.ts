@@ -211,6 +211,7 @@ export const amplifyPolicyDocument =
     "ssm:DescribeParameters",
     "ssm:GetParameters",
     "ssm:DeleteParameter",
+    "ssm:AddTagsToResource",
     "geo:*"
   ],
   "Resource": "*"
