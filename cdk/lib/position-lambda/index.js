@@ -1,40 +1,42 @@
-"use strict"
-global.WebSocket = require("ws");
-require('es6-promise').polyfill();
-require('isomorphic-fetch');
-
-// Require AppSync module
-const AUTH_TYPE = require('aws-appsync/lib/link/auth-link').AUTH_TYPE;
-const AWSAppSyncClient = require('aws-appsync').default;
-const type = AUTH_TYPE.AWS_IAM;
-
 const AWS = require('aws-sdk');
-const SSM = new AWS.SSM();
-
-const credentials = AWS.config.credentials;
-
-//environment variables
-const region = process.env.REGION
-AWS.config.update({
-    region
-});
-const appsyncUrlSSM = await SSM.getParameter('PetTrackerGraphQLEndpoint').promise();
-const endpoint = new urlParse(appsyncUrlSSM.Parameter.Value).hostname.toString();
-
+const AWSAppSyncClient = require('aws-appsync').default;
 const gql = require('graphql-tag');
+require('cross-fetch/polyfill');
+
 const queryGQL = gql(require('./graphql/queries').getLocation);
 const createGQL = gql(require('./graphql/mutations').createLocation);
 const updateGQL = gql(require('./graphql/mutations').updateLocation);
+
+const region = process.env.REGION
+
+AWS.config.update({
+    region
+});
+const SSM = new AWS.SSM();
+
+const appsyncUrlSSM = SSM.getParameter('PetTrackerGraphQLEndpoint').promise();
+const endpoint = appsyncUrlSSM.Parameter.Value;
+
+const credentials = AWS.config.credentials;
 
 const client = new AWSAppSyncClient({
     url: endpoint,
     region: region,
     auth: {
-        type: type,
-        credentials: credentials
+        type: 'AWS_IAM',
+        credentials,
     },
-    disableOffline: true
-});
+    disableOffline: true,
+    },
+    {
+        defaultOptions: {
+            query: {
+                fetchPolicy: 'network-only',
+                errorPolicy: 'all',
+            },
+        },
+    }
+);
 
 /**
  * 
@@ -55,7 +57,6 @@ exports.handler = async (event) => {
     client.hydrated().then(function (cl) {
         cl.query({
             query: queryGQL,
-            fetchPolicy: 'network-only',
             variables: {
                 deviceid: event.deviceid
             }
