@@ -9,6 +9,7 @@ const AWSAppSyncClient = require('aws-appsync').default;
 const type = AUTH_TYPE.AWS_IAM;
 
 const AWS = require('aws-sdk');
+const SSM = new AWS.SSM();
 
 const credentials = AWS.config.credentials;
 
@@ -17,8 +18,8 @@ const region = process.env.REGION
 AWS.config.update({
     region
 });
-const appsyncUrl = process.env.API_GRAPHQLAPIENDPOINT
-const endpoint = new urlParse(appsyncUrl).hostname.toString();
+const appsyncUrlSSM = await SSM.getParameter('PetTrackerGraphQLEndpoint').promise();
+const endpoint = new urlParse(appsyncUrlSSM.Parameter.Value).hostname.toString();
 
 const gql = require('graphql-tag');
 const queryGQL = gql(require('./graphql/queries').getLocation);
