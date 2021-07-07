@@ -57,7 +57,7 @@ export class PetTrackerPipelineStack extends Stack {
         cloudAssemblyArtifact,
 
         subdirectory: 'cdk',
-        buildCommand: 'npm install && npm run build',
+        buildCommand: 'cd lib/position-lambda && npm install && cd ../../ && npm install && npm run build',
         synthCommand: 'npx cdk synth PetTrackerPipelineStack'
       }),
     });
