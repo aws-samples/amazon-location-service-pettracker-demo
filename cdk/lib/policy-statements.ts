@@ -207,6 +207,10 @@ export const amplifyPolicyDocument =
     "s3:PutEncryptionConfiguration",
     "s3:PutObject",
     "s3:PutObjectAcl",
+    "ssm:PutParameter",
+    "ssm:DescribeParameters",
+    "ssm:GetParameters",
+    "ssm:DeleteParameter",
     "geo:*"
   ],
   "Resource": "*"
