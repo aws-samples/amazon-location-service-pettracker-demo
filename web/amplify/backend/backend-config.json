@@ -67,5 +67,20 @@
       "service": "AmazonLocationService",
       "providerPlugin": "awscloudformation"
     }
+  },
+  "ssm": {
+    "parameter": {
+      "service": "AWSSystemManager",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [
+        {
+          "category": "api",
+          "resourceName": "pettracking",
+          "attributes": [
+            "GraphQLAPIEndpointOutput"
+          ]
+        }
+      ]
+    }
   }
 }
