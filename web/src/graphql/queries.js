@@ -7,8 +7,6 @@ export const getLocation = /* GraphQL */ `
       id
       long
       lat
-      deviceid
-      result
       createdAt
       updatedAt
     }
@@ -25,8 +23,6 @@ export const listLocations = /* GraphQL */ `
         id
         long
         lat
-        deviceid
-        result
         createdAt
         updatedAt
       }

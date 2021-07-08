@@ -7,8 +7,6 @@ export const onCreateLocation = /* GraphQL */ `
       id
       long
       lat
-      deviceid
-      result
       createdAt
       updatedAt
     }
@@ -20,8 +18,6 @@ export const onUpdateLocation = /* GraphQL */ `
       id
       long
       lat
-      deviceid
-      result
       createdAt
       updatedAt
     }
@@ -33,8 +29,6 @@ export const onDeleteLocation = /* GraphQL */ `
       id
       long
       lat
-      deviceid
-      result
       createdAt
       updatedAt
     }

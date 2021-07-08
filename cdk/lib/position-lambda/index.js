@@ -1,7 +1,9 @@
-const AWS = require('aws-sdk');
+const AWSXRay = require('aws-xray-sdk-core')
+const AWS = AWSXRay.captureAWS(require('aws-sdk'))
 const AWSAppSyncClient = require('aws-appsync').default;
 const gql = require('graphql-tag');
 require('cross-fetch/polyfill');
+require('isomorphic-fetch');
 
 const queryGQL = gql(require('./graphql/queries').getLocation);
 const createGQL = gql(require('./graphql/mutations').createLocation);
@@ -14,32 +16,11 @@ AWS.config.update({
 });
 const SSM = new AWS.SSM();
 
-const appsyncUrlSSM = SSM.getParameter('PetTrackerGraphQLEndpoint').promise();
-const endpoint = appsyncUrlSSM.Parameter.Value;
-
+const parameterPromise = SSM.getParameter({Name: 'PetTrackerGraphQLEndpoint'}).promise();
 const credentials = AWS.config.credentials;
 
-const client = new AWSAppSyncClient({
-    url: endpoint,
-    region: region,
-    auth: {
-        type: 'AWS_IAM',
-        credentials,
-    },
-    disableOffline: true,
-    },
-    {
-        defaultOptions: {
-            query: {
-                fetchPolicy: 'network-only',
-                errorPolicy: 'all',
-            },
-        },
-    }
-);
-
 /**
- * 
+ *
  * @param {*} event event body, format:
  * { "deviceid": "thing123", 
  *  "timestamp": 1604940328,
@@ -48,50 +29,83 @@ const client = new AWSAppSyncClient({
  *   "long": -123.1187
  *  }
  * }
- * @returns 
+ * @returns
  */
-exports.handler = async (event) => {
+exports.handler = (event) => {
 
     console.log('event received:' + JSON.stringify(event));
 
-    client.hydrated().then(function (cl) {
-        cl.query({
+    return parameterPromise.then(function (data, err) {
+        if (err) {
+            console.error(err)
+            throw err
+        } else return data.Parameter.Value;
+    }).then(function (endpoint) {
+        console.log('SSM Parameter value:' + endpoint);
+
+        return new AWSAppSyncClient({
+                url: endpoint,
+                region: region,
+                auth: {
+                    type: 'AWS_IAM',
+                    credentials: credentials,
+                },
+                disableOffline: true,
+            },
+            {
+                defaultOptions: {
+                    query: {
+                        fetchPolicy: 'network-only',
+                        errorPolicy: 'all',
+                    },
+                },
+            }
+        ).hydrated();
+    }).then(function (cl) {
+        console.log('Searching for an existing device');
+        return cl.query({
             query: queryGQL,
             variables: {
-                deviceid: event.deviceid
+                id: event.deviceid
             }
-        }).then(function createOrUpdate(data) {
-            console.log('Result of the query for device id: ' + event.deviceid + ', : ' + JSON.stringify(data));
-
-            if (data) {
-                cl.mutate({
+        }).then(function (queryResult) {
+            console.log('Query result:' + JSON.stringify(queryResult.data));
+            if (queryResult.data.getLocation) {
+                console.log('Updating existing device');
+                return cl.mutate({
                     mutation: updateGQL,
                     variables: {
-                        id: event.deviceid,
-                        deviceid: event.deviceid,
-                        lat: event.location.lat,
-                        long: event.location.long,
-                        updatedAt: event.timestamp
+                        input: {
+                            id: event.deviceid,
+                            lat: event.location.lat,
+                            long: event.location.long
+                        }
                     }
                 });
             } else {
-                cl.mutate({
+                console.log('Creating new device');
+                return cl.mutate({
                     mutation: createGQL,
                     variables: {
-                        deviceid: event.deviceid,
-                        lat: event.location.lat,
-                        long: event.location.long,
-                        createdAt: event.timestamp
+                        input: {
+                            id: event.deviceid,
+                            lat: event.location.lat,
+                            long: event.location.long
+                        }
                     }
                 });
             }
-        }).catch(console.error);
-    });
+        })
 
-    console.log("Successful update");
-
-
-    return {
-        statusCode: 200
-    };
+    }).then(() => {
+        return {
+            statusCode: 200
+        }
+    })
+        .catch(error => {
+            console.error(error)
+            return {
+                statusCode: error.statusCode ? error.statusCode : 500
+            }
+        });
 }

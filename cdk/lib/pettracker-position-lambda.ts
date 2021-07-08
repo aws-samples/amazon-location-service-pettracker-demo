@@ -25,15 +25,16 @@ export class PetTrackerPositionLambda extends cdk.Construct {
         );
 
         const trackerLambda = new lambda.Function(this, "PetTrackerPositionLambda", {
-            runtime: lambda.Runtime.NODEJS_12_X,
+            runtime: lambda.Runtime.NODEJS_14_X,
             code: lambda.Code.fromAsset(path.join(__dirname, "position-lambda")),
             handler: "index.handler",
             memorySize: 128,
             role: trackerLambdaRole,
-            timeout: cdk.Duration.seconds(15)
+            timeout: cdk.Duration.seconds(15),
+            tracing: lambda.Tracing.ACTIVE
         });
 
-        trackerLambda.addEnvironment("API_GRAPHQLAPIENDPOINT", "https://path-to-graphql.com");
+        trackerLambda.addEnvironment("REGION", props.region);
 
         const trackerLambdaAlias = new lambda.Alias(
             this,
@@ -56,12 +57,9 @@ export class PetTrackerPositionLambda extends cdk.Construct {
         trackerLambdaRole.addToPolicy(new iam.PolicyStatement({
             resources: ['*'],
             actions: [
-                "appsync:Create*",
                 "appsync:GraphQL",
-                "appsync:Get*",
-                "appsync:List*",
-                "appsync:Update*",
-                "appsync:Delete*"
+                "ssm:GetParameters",
+                "ssm:GetParameter"
             ]
         }));
 
