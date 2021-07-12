@@ -94,7 +94,7 @@ const App = () => {
       graphqlOperation(subscriptions.onCreateLocation)
     ).subscribe({
       next: (itemData) => {
-        // console.log('subscribe next - itemData >>>', itemData);
+        console.log('New item created', itemData);
         getDevicePosition(itemData.value.data.onCreateLocation);
       },
       error: error => console.warn(error)
@@ -104,7 +104,7 @@ const App = () => {
       graphqlOperation(subscriptions.onUpdateLocation)
     ).subscribe({
       next: (itemData) => {
-        // console.log('subscribe next - itemData >>>', itemData);
+        console.log('Existinng item updated', itemData);
         getDevicePosition(itemData.value.data.onUpdateLocation);
       },
       error: error => console.warn(error)

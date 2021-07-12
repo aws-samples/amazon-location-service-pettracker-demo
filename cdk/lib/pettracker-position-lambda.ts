@@ -71,7 +71,7 @@ export class PetTrackerPositionLambda extends cdk.Construct {
                     actions: [
                         {
                             lambda: {
-                                functionArn: trackerLambdaAlias.functionArn
+                                functionArn: trackerLambda.functionArn
                             }
                         }
                     ],
@@ -84,7 +84,7 @@ export class PetTrackerPositionLambda extends cdk.Construct {
         trackerLambda.addPermission("PetTrackerPositionLambdaPermission", {
             principal: new iam.ServicePrincipal("iot.amazonaws.com"),
             sourceAccount: props.account,
-            sourceArn: `arn:aws:iot:${props.region}:${props.account}:rule/${trackerTopicRule.ruleName}`
+            sourceArn: trackerTopicRule.attrArn
         });
 
     }
