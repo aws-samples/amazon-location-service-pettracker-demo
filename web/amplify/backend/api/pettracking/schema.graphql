@@ -1,0 +1,8 @@
+type Location 
+@model (subscriptions: { level: public })
+@auth(rules: [{allow: private, provider: iam, operations: [create, update, read]}]) 
+@aws_cognito_user_pools(cognito_groups: ["users"]) {
+  id: ID!
+  long: Float
+  lat: Float
+}

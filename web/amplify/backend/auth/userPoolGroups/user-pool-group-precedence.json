@@ -1,0 +1,58 @@
+[
+  {
+    "groupName": "users",
+    "precedence": 1,
+    "customPolicies": [
+      {
+        "PolicyName": "pettracker-users-policy",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "AppSyncGraphQL",
+              "Effect": "Allow",
+              "Action": [
+                "appsync:GraphQL",
+                "appsync:GetGraphqlApi",
+                "appsync:ListGraphqlApis",
+                "appsync:ListApiKeys"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "ListMapsTrackers",
+              "Effect": "Allow",
+              "Action": [
+                "geo:ListMaps",
+                "geo:ListTrackers",
+                "dynamodb:*"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "MapsReadOnly",
+              "Effect": "Allow",
+              "Action": [
+                "geo:DescribeMap",
+                "geo:BatchGetDevicePosition",
+                "geo:GetDevicePositionHistory",
+                "geo:GetDevicePosition",
+                "geo:DescribeTracker",
+                "geo:GetMapStyleDescriptor",
+                "geo:GetMapGlyphs",
+                "geo:GetMapSprites",
+                "geo:GetMapTile",
+                "geo:GetMapTileJson",
+                "geo:BatchPutGeofence",
+                "geo:PutGeofence",
+                "geo:ListGeofences",
+                "geo:GetGeofence"
+              ],
+              "Resource": ["arn:aws:geo:*:*:*"]
+            }
+          ]
+        }
+      }
+    ]
+  }
+]
