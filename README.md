@@ -12,7 +12,7 @@ The **PetTracker Demo** is a cloud native application built using an serverless 
 2. Copy and past the following commands into the terminal:
 
 ```shell
-curl -O https://raw.githubusercontent.com/fbdo/iot-workshop-for-pet-tracking-and-geofencing/develop/cloud9-cfn.yaml
+curl -O https://raw.githubusercontent.com/aws-samples/amazon-location-service-pettracker-demo/main/cloud9-cfn.yaml
 
 aws cloudformation create-stack --stack-name C9-ALS-Workshop --template-body file://cloud9-cfn.yaml --capabilities CAPABILITY_NAMED_IAM
 
@@ -23,7 +23,7 @@ aws cloudformation wait stack-create-complete --stack-name C9-ALS-Workshop && ec
 4. Execute the following command in the terminal:
 
 ```shell
-curl -sSL https://raw.githubusercontent.com/fbdo/iot-workshop-for-pet-tracking-and-geofencing/develop/envsetup.sh | bash -s stable
+curl -sSL https://raw.githubusercontent.com/aws-samples/amazon-location-service-pettracker-demo/main/envsetup.sh | bash -s stable
 ```
 
 5. Wait for the setup, go take a coffee! And happy coding!
@@ -34,7 +34,7 @@ curl -sSL https://raw.githubusercontent.com/fbdo/iot-workshop-for-pet-tracking-a
 2. Copy and past the following commands into the terminal:
 
 ```shell
-curl -sSL https://raw.githubusercontent.com/fbdo/iot-workshop-for-pet-tracking-and-geofencing/develop/envcleanup.sh | bash -s stable
+curl -sSL https://raw.githubusercontent.com/aws-samples/amazon-location-service-pettracker-demo/main/envcleanup.sh | bash -s stable
 ```
 
 
