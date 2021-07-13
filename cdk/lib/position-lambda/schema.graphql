@@ -4,37 +4,34 @@
   subscription: Subscription
 }
 
-type Location {
+type Location @aws_cognito_user_pools(cognito_groups : ["users"]) @aws_iam {
   createdAt: AWSDateTime!
-  deviceid: String
-  id: ID
+  id: ID!
   lat: Float
   long: Float
-  result: String
   updatedAt: AWSDateTime!
 }
 
-type ModelLocationConnection {
+type ModelLocationConnection @aws_iam {
   items: [Location]
   nextToken: String
 }
 
 type Mutation {
-  createLocation(condition: ModelLocationConditionInput, input: CreateLocationInput!): Location
+  createLocation(condition: ModelLocationConditionInput, input: CreateLocationInput!): Location @aws_iam
   deleteLocation(condition: ModelLocationConditionInput, input: DeleteLocationInput!): Location
-  updateLocation(condition: ModelLocationConditionInput, input: UpdateLocationInput!): Location
+  updateLocation(condition: ModelLocationConditionInput, input: UpdateLocationInput!): Location @aws_iam
 }
 
 type Query {
-  getLocation(id: ID!): Location
-  listLocations(filter: ModelLocationFilterInput, limit: Int, nextToken: String): ModelLocationConnection
-  testPublishLocation(deviceid: String, lat: Float, long: Float): Location
+  getLocation(id: ID!): Location @aws_iam
+  listLocations(filter: ModelLocationFilterInput, limit: Int, nextToken: String): ModelLocationConnection @aws_iam
 }
 
 type Subscription {
-  onCreateLocation: Location @aws_subscribe(mutations : ["createLocation"])
-  onDeleteLocation: Location @aws_subscribe(mutations : ["deleteLocation"])
-  onUpdateLocation: Location @aws_subscribe(mutations : ["updateLocation"])
+  onCreateLocation: Location @aws_iam @aws_subscribe(mutations : ["createLocation"])
+  onDeleteLocation: Location @aws_iam @aws_subscribe(mutations : ["deleteLocation"])
+  onUpdateLocation: Location @aws_iam @aws_subscribe(mutations : ["updateLocation"])
 }
 
 enum ModelAttributeTypes {
@@ -56,15 +53,13 @@ enum ModelSortDirection {
 }
 
 input CreateLocationInput {
-  deviceid: String
   id: ID
   lat: Float
   long: Float
-  result: String
 }
 
 input DeleteLocationInput {
-  id: ID
+  id: ID!
 }
 
 input ModelBooleanInput {
@@ -116,22 +111,19 @@ input ModelIntInput {
 
 input ModelLocationConditionInput {
   and: [ModelLocationConditionInput]
-  deviceid: ModelStringInput
   lat: ModelFloatInput
   long: ModelFloatInput
   not: ModelLocationConditionInput
   or: [ModelLocationConditionInput]
-  result: ModelStringInput
 }
 
 input ModelLocationFilterInput {
   and: [ModelLocationFilterInput]
-  deviceid: ModelStringInput
-  lat: ModelIntInput
-  long: ModelIntInput
+  id: ModelIDInput
+  lat: ModelFloatInput
+  long: ModelFloatInput
   not: ModelLocationFilterInput
   or: [ModelLocationFilterInput]
-  result: ModelStringInput
 }
 
 input ModelSizeInput {
@@ -161,8 +153,7 @@ input ModelStringInput {
 }
 
 input UpdateLocationInput {
-  deviceid: String
+  id: ID!
   lat: Float
   long: Float
-  result: String
 }

@@ -41,25 +41,22 @@ const Loader = ({ children }) => {
 const App = () => {
 
   const trackerName = 'PetTracker';
-  const deviceID = 'Device1';
-
   const [credentials, setCredentials] = useState(null);
   const [devPosMarkers, setDevPosMarkers] = useState([]);
 
-  const getDevicePosition = () => {
+  const getDevicePosition = (itemData) => {
+    console.log('itemData >>>', itemData);
     setDevPosMarkers([]);
 
     const params = {
-      DeviceId: deviceID,
-      TrackerName: trackerName,
-      StartTimeInclusive: new Date('2020-11-02T19:05:07.327Z'),
-      EndTimeExclusive: new Date()
+      DeviceId: itemData.id,
+      TrackerName: trackerName
     };
 
     client.getDevicePositionHistory(params, (err, data) => {
       if (err) console.log(err, err.stack); 
-      if (data) { 
-        // console.log('data >>>', data);
+      else if (data) { 
+        console.log('data >>>', data);
         const tempPosMarkers =  data.DevicePositions.map( function (devPos, index) {
 
           return {
@@ -69,13 +66,17 @@ const App = () => {
           } 
         });
 
-        setDevPosMarkers(tempPosMarkers);
+        tempPosMarkers.push({
+          index: tempPosMarkers.length,
+          long: itemData.long,
+          lat: itemData.lat
+        });
 
-        const pos = tempPosMarkers.length -1;
+        setDevPosMarkers(tempPosMarkers);
         
         setViewport({
-          longitude: tempPosMarkers[pos].long,
-          latitude: tempPosMarkers[pos].lat, 
+          longitude: itemData.long,
+          latitude: itemData.lat, 
           zoom: 5});
       }
     });
@@ -89,18 +90,29 @@ const App = () => {
     };
     fetchCredentials();
 
-    const subscription = API.graphql(
+    const onCreateSubscription = API.graphql(
       graphqlOperation(subscriptions.onCreateLocation)
     ).subscribe({
       next: (itemData) => {
-        // console.log('subscribe next - itemData >>>', itemData);
-        getDevicePosition();
+        console.log('New item created', itemData);
+        getDevicePosition(itemData.value.data.onCreateLocation);
+      },
+      error: error => console.warn(error)
+    });
+
+    const onUpdateSubscription = API.graphql(
+      graphqlOperation(subscriptions.onUpdateLocation)
+    ).subscribe({
+      next: (itemData) => {
+        console.log('Existinng item updated', itemData);
+        getDevicePosition(itemData.value.data.onUpdateLocation);
       },
       error: error => console.warn(error)
     });
 
     return () => {
-      subscription.unsubscribe();
+      onCreateSubscription.unsubscribe();
+      onUpdateSubscription.unsubscribe();
     }
 
   }, []);

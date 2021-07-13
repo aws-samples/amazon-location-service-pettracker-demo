@@ -24,7 +24,7 @@ def lambda_handler(event, context):
   updates = [
     {
       "DeviceId": event["deviceid"],
-      "SampleTime": datetime.fromtimestamp(event["timestamp"]).isoformat(),
+      "SampleTime": datetime.utcfromtimestamp(event["timestamp"] / 1000).isoformat(),
       "Position": [
         event["location"]["long"],
         event["location"]["lat"]

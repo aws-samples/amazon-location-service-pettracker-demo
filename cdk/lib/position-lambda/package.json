@@ -5,16 +5,17 @@
   "main": "index.js",
   "license": "Apache-2.0",
   "dependencies": {
-    "apollo-cache-inmemory": "^1.6.6",
-    "apollo-client": "^2.6.10",
-    "apollo-link": "^1.2.14",
-    "apollo-link-http": "^1.5.17",
-    "aws-appsync": "^4.0.3",
-    "aws-sdk": "^2.909.0",
-    "es6-promise": "^4.2.8",
-    "graphql": "^15.5.0",
-    "graphql-tag": "^2.12.4",
-    "isomorphic-fetch": "^3.0.0",
-    "ws": "^7.4.5"
+    "aws-appsync": "^1.8.1",
+    "aws-sdk": "^2.472.0",
+    "aws-xray-sdk-core": "^3.3.3",
+    "cross-fetch": "^3.0.4",
+    "graphql-tag": "^2.10.1",
+    "isomorphic-fetch": "^3.0.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.14.5",
+    "@babel/core": "^7.14.6",
+    "@babel/node": "^7.14.7",
+    "@babel/preset-env": "^7.14.7"
   }
 }
