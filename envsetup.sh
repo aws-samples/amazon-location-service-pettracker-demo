@@ -29,6 +29,12 @@
 set -e
 IFS='|'
 
+# Install jq
+sudo yum -y -q install jq
+
+# Update awscli
+pip install --user --upgrade awscli
+
 # Install awscli v2
 curl -O "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" 
 unzip -o awscli-exe-linux-x86_64.zip

@@ -55,6 +55,11 @@ export class PetTrackerDataIngestionStack extends cdk.Stack {
       }
     });
 
+    new iot.CfnPolicyPrincipalAttachment(this, "PetTrackerThingPolicyAttachment", {
+      policyName: trackerPolicy.policyName!,
+      principal: trackerCredentials.certificateArn
+    });
+
     const locationTracker = new CustomTrackerResource(this, 'pettracker-location-tracker', {
       trackerName: "PetTracker",
       region: region,

@@ -28,6 +28,44 @@ curl -sSL https://raw.githubusercontent.com/aws-samples/amazon-location-service-
 
 5. Wait for the setup, go take a coffee! And happy coding!
 
+## How to test
+
+1. Change to the emulator directory:
+
+```shell
+cd emulator
+```
+
+2. Execute the command below to set an environment variable with AWS IoT MQTT endpoint:
+
+```shell
+IOT_ENDPOINT=`aws iot describe-endpoint --endpoint-type iot:Data-ATS --query endpointAddress --output text`
+```
+
+3. Save the Aamazon Root CA in the "certs" folder:
+
+```shell
+curl https://www.amazontrust.com/repository/AmazonRootCA1.pem --output certs/AmazonRootCA1.pem
+```
+
+4. Save the device certificate in the "certs" folder:
+
+```shell
+aws secretsmanager get-secret-value --secret-id PetTrackerThing-Credentials --query SecretString --output text | jq -r '.[0].certificatePem' > certs/device.pem.crt
+```
+
+5. Save the device private key in the "certs" folder:
+
+```shell
+aws secretsmanager get-secret-value --secret-id PetTrackerThing-Credentials --query SecretString --output text | jq -r '.[1].privateKey' > certs/private.pem.key
+```
+
+6. Execute the pet emulator. It will emulate a pet running around a initial geolocation:
+
+```shell
+python3 pet.py --lat 48.192459 --long 11.617745 --topic pettracker --root-ca "$PWD/certs/AmazonRootCA1.pem" --cert "$PWD/certs/device.pem.crt" --key "$PWD/certs/private.pem.key" --endpoint $IOT_ENDPOINT
+```
+
 ## How to clean up
 
 1. In the AWS Management Console on the Services menu, navigate to [CloudShell](https://console.aws.amazon.com/cloudshell/home).
