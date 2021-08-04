@@ -54,7 +54,13 @@
       }
     }
   },
-  "hosting": {},
+  "hosting": {
+    "amplifyhosting": {
+      "service": "amplifyhosting",
+      "providerPlugin": "awscloudformation",
+      "type": "manual"
+    }
+  },
   "function": {
     "pettracking426fb16cPostConfirmation": {
       "build": true,
