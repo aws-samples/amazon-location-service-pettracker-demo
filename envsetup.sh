@@ -42,10 +42,10 @@ npm install -g npm@latest
 npm i aws-cdk --force
 
 # Clone lab repository
-git clone https://github.com/fbdo/iot-workshop-for-pet-tracking-and-geofencing
+git clone https://github.com/aws-samples/amazon-location-service-pettracker-demo.git
 
 # Install lab resources
-cd iot-workshop-for-pet-tracking-and-geofencing/cdk
+cd ~/environment/amazon-location-service-pettracker-demo/cdk
 npm install
 cdk bootstrap
 cdk deploy PetTrackerStack --require-approval never
@@ -81,7 +81,7 @@ PROVIDERS="{\
 }"
 
 ln -s ~/.aws/credentials ~/.aws/config
-cd ~/environment/iot-workshop-for-pet-tracking-and-geofencing/web
+cd ~/environment/amazon-location-service-pettracker-demo/web
 
 npm install -g @aws-amplify/cli
 
