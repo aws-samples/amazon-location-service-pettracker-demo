@@ -1,15 +1,18 @@
 from datetime import datetime
 import json
 import os
+import logging
 
 import boto3
 
 # Update this to match the name of your Tracker resource
 TRACKER_NAME = os.environ['TRACKER_NAME']
 
+client = boto3.client("location")
+
 # Expected event body:
 #
-#{ "deviceid": "thing123", 
+#{ "deviceId": "thing123", 
 #  "timestamp": 1604940328,
 #  "location": {
 #    "lat": 49.2819, 
@@ -18,13 +21,14 @@ TRACKER_NAME = os.environ['TRACKER_NAME']
 # }
 #
 def lambda_handler(event, context):
-  # load the side-loaded Amazon Location Service model; needed during Public Preview
-  os.environ["AWS_DATA_PATH"] = os.environ["LAMBDA_TASK_ROOT"]
+  logger = logging.getLogger(__name__)
+
+  logger.debug('Received event: %s.', event)
 
   updates = [
     {
-      "DeviceId": event["deviceid"],
-      "SampleTime": datetime.utcfromtimestamp(event["timestamp"] / 1000).isoformat(),
+      "DeviceId": event["deviceId"],
+      "SampleTime": datetime.utcfromtimestamp(event["timestamp"]).isoformat(),
       "Position": [
         event["location"]["long"],
         event["location"]["lat"]
@@ -32,7 +36,7 @@ def lambda_handler(event, context):
     }
   ]
 
-  client = boto3.client("location")
+  logger.debug('Sending updates: %s.', updates)
   response = client.batch_update_device_position(TrackerName=TRACKER_NAME, Updates=updates)
 
   return {
