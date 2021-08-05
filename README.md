@@ -36,13 +36,14 @@ curl -sSL https://raw.githubusercontent.com/aws-samples/amazon-location-service-
 cd emulator
 ```
 
-2. Execute the command below to set an environment variable with AWS IoT MQTT endpoint:
+2. Execute the command below to set an environment variable with AWS IoT MQTT endpoint and fix the PATH variable:
 
 ```shell
+PATH=/usr/local/bin:$PATH
 IOT_ENDPOINT=`aws iot describe-endpoint --endpoint-type iot:Data-ATS --query endpointAddress --output text`
 ```
 
-3. Save the Aamazon Root CA in the "certs" folder:
+3. Save the Amazon Root CA in the "certs" folder:
 
 ```shell
 curl https://www.amazontrust.com/repository/AmazonRootCA1.pem --output certs/AmazonRootCA1.pem
@@ -60,7 +61,25 @@ aws secretsmanager get-secret-value --secret-id PetTrackerThing-Credentials --qu
 aws secretsmanager get-secret-value --secret-id PetTrackerThing-Credentials --query SecretString --output text | jq -r '.[1].privateKey' > certs/private.pem.key
 ```
 
-6. Execute the pet emulator. It will emulate a pet running around a initial geolocation:
+6. Create a Python virtual environment
+
+```shell
+virtualenv .pettracker
+```
+
+7. Activate the virtual environment:
+
+```shell
+source .pettracker/bin/activate
+```
+
+8. Install the required Python modules and libraries:
+
+```shell
+pip3 install -r requirements.txt
+```
+
+9. Execute the pet emulator. It will emulate a pet running around a initial geolocation:
 
 ```shell
 python3 pet.py --lat 48.192459 --long 11.617745 --topic pettracker --root-ca "$PWD/certs/AmazonRootCA1.pem" --cert "$PWD/certs/device.pem.crt" --key "$PWD/certs/private.pem.key" --endpoint $IOT_ENDPOINT
