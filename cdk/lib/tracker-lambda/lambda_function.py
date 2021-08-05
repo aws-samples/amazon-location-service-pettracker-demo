@@ -9,6 +9,8 @@ import boto3
 TRACKER_NAME = os.environ['TRACKER_NAME']
 
 client = boto3.client("location")
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 # Expected event body:
 #
@@ -21,9 +23,9 @@ client = boto3.client("location")
 # }
 #
 def lambda_handler(event, context):
-  logger = logging.getLogger(__name__)
 
-  logger.debug('Received event: %s.', event)
+
+  logger.info('Received event: %s.', event)
 
   updates = [
     {
@@ -36,7 +38,7 @@ def lambda_handler(event, context):
     }
   ]
 
-  logger.debug('Sending updates: %s.', updates)
+  logger.info('Sending updates: %s.', updates)
   response = client.batch_update_device_position(TrackerName=TRACKER_NAME, Updates=updates)
 
   return {
