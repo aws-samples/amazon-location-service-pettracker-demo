@@ -50,9 +50,15 @@ npm i aws-cdk --force
 # Clone lab repository
 git clone https://github.com/aws-samples/amazon-location-service-pettracker-demo.git
 
-# Install lab resources
+# Install position-lambda libraries
+cd ~/environment/amazon-location-service-pettracker-demo/cdk/lib/position-lambda
+npm install
+
+# Install cdk libraries
 cd ~/environment/amazon-location-service-pettracker-demo/cdk
 npm install
+
+# Deploy lab resources
 cdk bootstrap
 cdk deploy PetTrackerStack --require-approval never
 
