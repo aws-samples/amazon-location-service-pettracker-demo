@@ -1,4 +1,4 @@
-# PetTracker Demo
+# Amazon Location Service PetTracker Demo
 
 The **PetTracker Demo** is a cloud native application built using an serverless architecture based on AWS services to show case [AWS IoT](https://aws.amazon.com/iot/) integrations for geospatial use cases in conjuction with the [Amazon Location Services](https://aws.amazon.com/location/) to help Solution Architects around the world to make use of it in their demos and workshops.
 
@@ -12,7 +12,7 @@ The **PetTracker Demo** is a cloud native application built using an serverless 
 2. Copy and past the following commands into the terminal:
 
 ```shell
-curl -O https://raw.githubusercontent.com/fbdo/iot-workshop-for-pet-tracking-and-geofencing/develop/cloud9-cfn.yaml
+curl -O https://raw.githubusercontent.com/aws-samples/amazon-location-service-pettracker-demo/main/cloud9-cfn.yaml
 
 aws cloudformation create-stack --stack-name C9-ALS-Workshop --template-body file://cloud9-cfn.yaml --capabilities CAPABILITY_NAMED_IAM
 
@@ -23,10 +23,48 @@ aws cloudformation wait stack-create-complete --stack-name C9-ALS-Workshop && ec
 4. Execute the following command in the terminal:
 
 ```shell
-curl -sSL https://raw.githubusercontent.com/fbdo/iot-workshop-for-pet-tracking-and-geofencing/develop/envsetup.sh | bash -s stable
+curl -sSL https://raw.githubusercontent.com/aws-samples/amazon-location-service-pettracker-demo/main/envsetup.sh | bash -s stable
 ```
 
 5. Wait for the setup, go take a coffee! And happy coding!
+
+## How to test
+
+1. Change to the emulator directory:
+
+```shell
+cd emulator
+```
+
+2. Execute the command below to set an environment variable with AWS IoT MQTT endpoint:
+
+```shell
+IOT_ENDPOINT=`aws iot describe-endpoint --endpoint-type iot:Data-ATS --query endpointAddress --output text`
+```
+
+3. Save the Aamazon Root CA in the "certs" folder:
+
+```shell
+curl https://www.amazontrust.com/repository/AmazonRootCA1.pem --output certs/AmazonRootCA1.pem
+```
+
+4. Save the device certificate in the "certs" folder:
+
+```shell
+aws secretsmanager get-secret-value --secret-id PetTrackerThing-Credentials --query SecretString --output text | jq -r '.[0].certificatePem' > certs/device.pem.crt
+```
+
+5. Save the device private key in the "certs" folder:
+
+```shell
+aws secretsmanager get-secret-value --secret-id PetTrackerThing-Credentials --query SecretString --output text | jq -r '.[1].privateKey' > certs/private.pem.key
+```
+
+6. Execute the pet emulator. It will emulate a pet running around a initial geolocation:
+
+```shell
+python3 pet.py --lat 48.192459 --long 11.617745 --topic pettracker --root-ca "$PWD/certs/AmazonRootCA1.pem" --cert "$PWD/certs/device.pem.crt" --key "$PWD/certs/private.pem.key" --endpoint $IOT_ENDPOINT
+```
 
 ## How to clean up
 
@@ -34,7 +72,7 @@ curl -sSL https://raw.githubusercontent.com/fbdo/iot-workshop-for-pet-tracking-a
 2. Copy and past the following commands into the terminal:
 
 ```shell
-curl -sSL https://raw.githubusercontent.com/fbdo/iot-workshop-for-pet-tracking-and-geofencing/develop/envcleanup.sh | bash -s stable
+curl -sSL https://raw.githubusercontent.com/aws-samples/amazon-location-service-pettracker-demo/main/envcleanup.sh | bash -s stable
 ```
 
 
@@ -52,8 +90,12 @@ curl -sSL https://raw.githubusercontent.com/fbdo/iot-workshop-for-pet-tracking-a
 
 ## Contributions
 
-To contribute with improvements and bug fixes, please clone this repository and file a PR.
+To contribute with improvements and bug fixes, see [CONTRIBUTING](CONTRIBUTING.md).
+
+## Security
+
+See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
 
 ## License
 
-This project is licensed under the Apache-2.0 License.
+This library is licensed under the MIT-0 License. See the LICENSE file.
