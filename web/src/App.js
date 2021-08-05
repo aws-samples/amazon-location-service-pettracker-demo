@@ -77,7 +77,8 @@ const App = () => {
         setViewport({
           longitude: itemData.long,
           latitude: itemData.lat, 
-          zoom: 5});
+          zoom: 15
+        });
       }
     });
   }

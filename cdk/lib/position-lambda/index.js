@@ -70,7 +70,7 @@ exports.handler = (event) => {
             }
         }).then(function (queryResult) {
             console.log('Query result:' + JSON.stringify(queryResult.data));
-            if (queryResult.data.getLocation) {
+            if (queryResult.data) {
                 console.log('Updating existing device');
                 return cl.mutate({
                     mutation: updateGQL,

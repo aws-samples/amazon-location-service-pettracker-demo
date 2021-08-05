@@ -131,8 +131,8 @@ if __name__ == '__main__':
                 payload=message,
                 qos=mqtt.QoS.AT_LEAST_ONCE)
             time.sleep(5)
-            latitude = latitude + random.uniform(0, 1) / 1000
-            longitude = longitude + random.uniform(0, 1) / 1000
+            latitude = latitude + (random.uniform(0, 1) / 1000 - 0.0005)
+            longitude = longitude + (random.uniform(0, 1) / 1000 - 0.0005)
     finally:
         # Disconnect
         print("Disconnecting...")
