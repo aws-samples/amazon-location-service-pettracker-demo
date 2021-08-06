@@ -66,10 +66,9 @@ const App = () => {
           } 
         });
 
-        tempPosMarkers.push({
-          index: tempPosMarkers.length,
-          long: itemData.long,
-          lat: itemData.lat
+        setMarker({
+          longitude: itemData.long,
+          latitude: itemData.lat
         });
 
         setDevPosMarkers(tempPosMarkers);
@@ -124,7 +123,7 @@ const App = () => {
     zoom: 10,
   });
 
-  const [marker] = useState({
+  const [marker, setMarker] = useState({
     longitude: -97.72682189941406,
     latitude: 30.483000484352313,
   });

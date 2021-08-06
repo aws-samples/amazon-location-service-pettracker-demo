@@ -139,6 +139,9 @@ const Map = (props) => {
             offsetLeft={-10}
           >
             <Pin size={20}/>
+            <div style={{ color: 'blue', cursor: 'pointer' }} onClick={() => alert(`Position: ${marker.latitude}, ${marker.longitude}`)}>
+              <span>Pet!</span>
+            </div>
           </Marker>
           {trackerMarkers}
           <div style={{ position: "absolute", left: 20, top: 20 }}>

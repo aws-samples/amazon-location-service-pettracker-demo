@@ -66,17 +66,17 @@ exports.handler = (event) => {
         return cl.query({
             query: queryGQL,
             variables: {
-                id: event.deviceid
+                id: event.deviceId
             }
         }).then(function (queryResult) {
             console.log('Query result:' + JSON.stringify(queryResult.data));
-            if (queryResult.data) {
+            if (queryResult.data.getLocation) {
                 console.log('Updating existing device');
                 return cl.mutate({
                     mutation: updateGQL,
                     variables: {
                         input: {
-                            id: event.deviceid,
+                            id: event.deviceId,
                             lat: event.location.lat,
                             long: event.location.long
                         }
@@ -88,7 +88,7 @@ exports.handler = (event) => {
                     mutation: createGQL,
                     variables: {
                         input: {
-                            id: event.deviceid,
+                            id: event.deviceId,
                             lat: event.location.lat,
                             long: event.location.long
                         }
