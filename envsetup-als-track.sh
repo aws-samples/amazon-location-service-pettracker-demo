@@ -30,7 +30,7 @@ set -e
 IFS='|'
 
 # Clone lab repository
-git clone https://github.com/aws-samples/amazon-location-service-pettracker-demo.git
+[[ ! -d ~/environment/amazon-location-service-pettracker-demo ]] && git clone https://github.com/aws-samples/amazon-location-service-pettracker-demo.git ~/environment/amazon-location-service-pettracker-demo
 
 # Checkout track branch
 cd ~/environment/amazon-location-service-pettracker-demo

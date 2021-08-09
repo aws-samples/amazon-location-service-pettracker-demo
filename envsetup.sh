@@ -38,7 +38,7 @@ pip install --user --upgrade awscli
 # Install awscli v2
 curl -O "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" 
 unzip -o awscli-exe-linux-x86_64.zip
-sudo ./aws/install
+sudo ./aws/install --update
 rm awscli-exe-linux-x86_64.zip
 
 # Upgrade npm
@@ -89,7 +89,7 @@ PROVIDERS="{\
 \"awscloudformation\":$AWSCLOUDFORMATIONCONFIG\
 }"
 
-ln -s ~/.aws/credentials ~/.aws/config
+[[ ! -f ~/.aws/config ]] && ln -s ~/.aws/credentials ~/.aws/config
 cd ~/environment/amazon-location-service-pettracker-demo/web
 
 npm install -g @aws-amplify/cli
