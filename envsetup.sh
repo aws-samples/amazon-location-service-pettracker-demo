@@ -47,9 +47,6 @@ npm install -g npm@latest
 # Upgrade CDK version
 npm i aws-cdk --force
 
-# Clone lab repository
-git clone https://github.com/aws-samples/amazon-location-service-pettracker-demo.git
-
 # Install position-lambda libraries
 cd ~/environment/amazon-location-service-pettracker-demo/cdk/lib/position-lambda
 npm install
