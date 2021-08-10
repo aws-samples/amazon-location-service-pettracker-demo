@@ -28,4 +28,4 @@ IOT_ENDPOINT=`aws iot describe-endpoint --endpoint-type iot:Data-ATS --query end
 [[ ! -f certs/private.pem.key ]] && aws secretsmanager get-secret-value --secret-id PetTrackerThing-Credentials --query SecretString --output text | jq -r '.[1].privateKey' > certs/private.pem.key
 
 
-python3 pet.py --lat 48.192459 --long 11.617745 --topic pettracker --root-ca "$PWD/certs/AmazonRootCA1.pem" --cert "$PWD/certs/device.pem.crt" --key "$PWD/certs/private.pem.key" --endpoint $IOT_ENDPOINT
+python3 pet.py --lat $1 --long $2 --topic pettracker --root-ca "$PWD/certs/AmazonRootCA1.pem" --cert "$PWD/certs/device.pem.crt" --key "$PWD/certs/private.pem.key" --endpoint $IOT_ENDPOINT
