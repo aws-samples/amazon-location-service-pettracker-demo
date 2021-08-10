@@ -33,7 +33,7 @@ curl -sSL https://raw.githubusercontent.com/aws-samples/amazon-location-service-
 1. Execute the pet emulator. It will emulate a pet running around a initial geolocation:
 
 ```shell
-./run_emulator.sh
+./run_emulator.sh 48.192459 11.617745 
 ```
 
 ## How to clean up
