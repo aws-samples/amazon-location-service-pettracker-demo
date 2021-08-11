@@ -48,38 +48,6 @@ const App = () => {
     console.log('itemData >>>', itemData);
     setDevPosMarkers([]);
 
-    const params = {
-      DeviceId: itemData.id,
-      TrackerName: trackerName
-    };
-
-    client.getDevicePositionHistory(params, (err, data) => {
-      if (err) console.log(err, err.stack); 
-      else if (data) { 
-        console.log('data >>>', data);
-        const tempPosMarkers =  data.DevicePositions.map( function (devPos, index) {
-
-          return {
-            index: index,
-            long: devPos.Position[0],
-            lat: devPos.Position[1]
-          } 
-        });
-
-        setMarker({
-          longitude: itemData.long,
-          latitude: itemData.lat
-        });
-
-        setDevPosMarkers(tempPosMarkers);
-        
-        setViewport({
-          longitude: itemData.long,
-          latitude: itemData.lat, 
-          zoom: 15
-        });
-      }
-    });
   }
 
 
@@ -90,29 +58,9 @@ const App = () => {
     };
     fetchCredentials();
 
-    const onCreateSubscription = API.graphql(
-      graphqlOperation(subscriptions.onCreateLocation)
-    ).subscribe({
-      next: (itemData) => {
-        console.log('New item created', itemData);
-        getDevicePosition(itemData.value.data.onCreateLocation);
-      },
-      error: error => console.warn(error)
-    });
-
-    const onUpdateSubscription = API.graphql(
-      graphqlOperation(subscriptions.onUpdateLocation)
-    ).subscribe({
-      next: (itemData) => {
-        console.log('Existinng item updated', itemData);
-        getDevicePosition(itemData.value.data.onUpdateLocation);
-      },
-      error: error => console.warn(error)
-    });
 
     return () => {
-      onCreateSubscription.unsubscribe();
-      onUpdateSubscription.unsubscribe();
+      
     }
 
   }, []);
