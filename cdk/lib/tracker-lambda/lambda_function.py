@@ -27,19 +27,7 @@ def lambda_handler(event, context):
 
   logger.info('Received event: %s.', event)
 
-  updates = [
-    {
-      "DeviceId": event["deviceId"],
-      "SampleTime": datetime.utcfromtimestamp(event["timestamp"]).isoformat(),
-      "Position": [
-        event["location"]["long"],
-        event["location"]["lat"]
-      ]
-    }
-  ]
-
-  logger.info('Sending updates: %s.', updates)
-  response = client.batch_update_device_position(TrackerName=TRACKER_NAME, Updates=updates)
+  response = {}
 
   return {
     "statusCode": 200,
