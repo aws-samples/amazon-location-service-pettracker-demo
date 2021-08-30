@@ -33,7 +33,7 @@ export class PetTrackerALSLambda extends cdk.Construct {
             timeout: cdk.Duration.seconds(15)
         });
 
-        trackerLambda.addEnvironment("TRACKER_NAME", props.trackerName);
+        
 
         const trackerLambdaAlias = new lambda.Alias(
             this,
