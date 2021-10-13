@@ -60,12 +60,6 @@ export class PetTrackerDataIngestionStack extends cdk.Stack {
       principal: trackerCredentials.certificateArn
     });
 
-    const locationTracker = new CustomTrackerResource(this, 'pettracker-location-tracker', {
-      trackerName: "PetTracker",
-      region: region,
-      account: account
-    });
-
     new PetTrackerPositionLambda(this, 'pettracker-position-lambda', {
       region: region,
       account: account
@@ -74,7 +68,7 @@ export class PetTrackerDataIngestionStack extends cdk.Stack {
     new PetTrackerALSLambda(this, 'pettracker-als-lambda', {
       region: region,
       account: account,
-      trackerName: locationTracker.trackerName
+      trackerName: "PetTracker"
     });
 
   }
