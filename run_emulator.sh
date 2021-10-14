@@ -2,6 +2,9 @@
 
 set -e
 
+# Install jq
+sudo yum -y -q install jq
+
 # Change to the emulator directory
 cd ~/environment/amazon-location-service-pettracker-demo/emulator
 
