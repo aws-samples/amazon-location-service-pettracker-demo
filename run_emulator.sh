@@ -1,13 +1,18 @@
 #!/bin/bash
 
+set -e
+
 # Change to the emulator directory
 cd ~/environment/amazon-location-service-pettracker-demo/emulator
 
 if [[ ! -d .pettracker ]]
 then
+    # First time executing script
     # Create a Python virtual environment
     virtualenv .pettracker
-
+    
+    source .pettracker/bin/activate
+    
     # Install the required Python modules and libraries:
     pip3 install -r requirements.txt
 fi
