@@ -71,7 +71,7 @@ PROVIDERS="{\
 \"awscloudformation\":$AWSCLOUDFORMATIONCONFIG\
 }"
 
-ln -s ~/.aws/credentials ~/.aws/config
+[[ ! -f ~/.aws/config ]] && ln -s ~/.aws/credentials ~/.aws/config
 cd ~/environment/amazon-location-service-pettracker-demo/web
 
 npm install -g @aws-amplify/cli
