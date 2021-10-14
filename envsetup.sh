@@ -29,27 +29,6 @@
 set -e
 IFS='|'
 
-# Install jq
-sudo yum -y -q install jq
-
-# Update awscli
-pip install --user --upgrade awscli
-
-# Install awscli v2
-curl -O "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" 
-unzip -o awscli-exe-linux-x86_64.zip
-sudo ./aws/install
-rm awscli-exe-linux-x86_64.zip
-
-# Upgrade npm
-npm install -g npm@latest
-
-# Upgrade CDK version
-npm i aws-cdk --force
-
-# Clone lab repository
-git clone https://github.com/aws-samples/amazon-location-service-pettracker-demo.git
-
 # Install position-lambda libraries
 cd ~/environment/amazon-location-service-pettracker-demo/cdk/lib/position-lambda
 npm install
