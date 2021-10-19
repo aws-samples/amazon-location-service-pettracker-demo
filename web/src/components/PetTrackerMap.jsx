@@ -21,27 +21,68 @@ const PetTrackerMap = (props) => {
 
   useEffect(() => {
     async function initializeMap() {
-      if (mapRef.current != null) {
-        const map = await createMap({
-          container: mapRef.current,
-          center: [48.192459, 11.617745],
-          zoom: 16,
-          region: mapRegion
-        });
-
-        const draw = new MapboxDraw({
-          displayControlsDefault: false,
-          controls: {
-            polygon: true,
-            trash: true
-          },
-          defaultMode: 'draw_polygon'
-        });
-
-        map.addControl(draw);
-
-        setMap(map);
+      if (mapRef.current == null) {
+        return;
       }
+      const map = await createMap({
+        container: mapRef.current,
+        center: [48.192459, 11.617745],
+        zoom: 16,
+        region: mapRegion
+      });
+      const draw = new MapboxDraw({
+        displayControlsDefault: false,
+        controls: {
+          polygon: true,
+          trash: true
+        },
+        defaultMode: 'draw_polygon'
+      });
+      map.addControl(draw);
+
+      map.on('load', () => {
+        client.listGeofences({
+          CollectionName: geofenceCollectionName
+        }, (err, data) => {
+          if (err) console.log(err, err.stack);
+          if (data && data.Entries.length > 0) {
+            console.log('Geofence stored:', data);
+            draw.set({
+              type: 'FeatureCollection',
+              features: data.Entries.map((entry) => {
+                return {
+                  id: entry.GeofenceId,
+                  type: 'Feature',
+                  properties: {},
+                  geometry: { type: 'Polygon', coordinates: entry.Geometry.Polygon }
+                }
+              })
+            });
+          }
+        });
+      });
+
+      const createGeofence = (e) => {
+        console.log('Geofence event object', e);
+        if (e.features.length > 0) {
+          const params = {
+            CollectionName: geofenceCollectionName,
+            GeofenceId: e.features[e.features.length - 1].id,
+              Geometry: {
+                Polygon: e.features[e.features.length - 1].geometry.coordinates
+              }
+          };
+          client.putGeofence(params, function(err, data) {
+            if (err) console.log(err, err.stack); // an error occurred
+            else console.log(data);           // successful response
+          });
+        }
+
+      }
+
+      map.on('draw.create', createGeofence);
+
+      setMap(map);
     }
 
     initializeMap();
