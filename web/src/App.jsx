@@ -12,7 +12,7 @@ import Location from "aws-sdk/clients/location";
 import awsconfig from './aws-exports';
 
 import Header from './components/Header';
-import Map from './components/Map';
+import PetTrackerMap from './components/PetTrackerMap';
 
 Amplify.configure(awsconfig);
 
@@ -133,7 +133,7 @@ const App = () => {
         <Loader>
           <Header />
           {credentials ? (
-            <Map
+            <PetTrackerMap
               config={awsconfig}
               client={client}
               cred={credentials}
