@@ -1,6 +1,8 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {NavigationControl, Marker} from "maplibre-gl";
+import MapboxDraw from "mapbox-gl-draw";
 import "maplibre-gl/dist/maplibre-gl.css";
+import "mapbox-gl-draw/dist/mapbox-gl-draw.css";
 import {createMap} from "maplibre-gl-js-amplify";
 
 const geofenceCollectionName = 'PetTrackerGeofenceCollection';
@@ -26,6 +28,17 @@ const PetTrackerMap = (props) => {
           zoom: 16,
           region: mapRegion
         });
+
+        const draw = new MapboxDraw({
+          displayControlsDefault: false,
+          controls: {
+            polygon: true,
+            trash: true
+          },
+          defaultMode: 'draw_polygon'
+        });
+
+        map.addControl(draw);
 
         setMap(map);
       }
