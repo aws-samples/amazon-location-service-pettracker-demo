@@ -69,10 +69,6 @@
     }
   },
   "location": {
-    "maps": {
-      "service": "AmazonLocationService",
-      "providerPlugin": "awscloudformation"
-    },
     "geofenceCollections": {
       "service": "AmazonLocationService",
       "providerPlugin": "awscloudformation"
@@ -91,6 +87,16 @@
           ]
         }
       ]
+    }
+  },
+  "geo": {
+    "PetTrackerMap": {
+      "isDefault": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Map",
+      "mapStyle": "VectorEsriStreets",
+      "pricingPlan": "RequestBasedUsage",
+      "accessType": "AuthorizedUsers"
     }
   }
 }

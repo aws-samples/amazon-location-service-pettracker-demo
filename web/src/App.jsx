@@ -12,18 +12,12 @@ import Location from "aws-sdk/clients/location";
 import awsconfig from './aws-exports';
 
 import Header from './components/Header';
-import Map from './components/Map';
+import PetTrackerMap from './components/PetTrackerMap';
 
 Amplify.configure(awsconfig);
 
-let client;
 const init = async () => {
-  const credentials = await Auth.currentCredentials();
-
-  client = new Location({
-    credentials,
-    region: awsconfig.aws_project_region,
-  });
+  await Auth.currentCredentials();
 }
 
 const Loader = ({ children }) => {
@@ -41,58 +35,29 @@ const Loader = ({ children }) => {
 const App = () => {
 
   const trackerName = 'PetTracker';
-  const [credentials, setCredentials] = useState(null);
   const [devPosMarkers, setDevPosMarkers] = useState([]);
 
   const getDevicePosition = (itemData) => {
     console.log('itemData >>>', itemData);
     setDevPosMarkers([]);
-
   }
 
 
   useEffect(() => {
-    // console.log('in useEffect');
-    const fetchCredentials = async () => {
-      setCredentials(await Auth.currentUserCredentials());
-    };
-    fetchCredentials();
-
-
     return () => {
-      
+
     }
 
   }, []);
-
-  const [viewport, setViewport] = useState({
-    longitude: -97.6762,
-    latitude: 30.4287,
-    zoom: 10,
-  });
-
-  const [marker, setMarker] = useState({
-    longitude: -97.72682189941406,
-    latitude: 30.483000484352313,
-  });
 
   return (
       <div className="App">
         <Loader>
           <Header />
-          {credentials ? (
-            <Map
+            <PetTrackerMap
               config={awsconfig}
-              client={client}
-              cred={credentials}
-              marker={marker}
               devPosMarkers={devPosMarkers}
-              viewport={viewport}
-              setViewport={setViewport}
             />
-          ) : (
-            <h1>Loading...</h1>
-          )}
         </Loader>
       </div>
   );
