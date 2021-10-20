@@ -4,6 +4,7 @@ import MapboxDraw from "mapbox-gl-draw";
 import "maplibre-gl/dist/maplibre-gl.css";
 import "mapbox-gl-draw/dist/mapbox-gl-draw.css";
 import {createMap} from "maplibre-gl-js-amplify";
+import polygonArea from 'area-polygon';
 
 const geofenceCollectionName = 'PetTrackerGeofenceCollection';
 
@@ -18,6 +19,18 @@ const PetTrackerMap = (props) => {
   const mapRegion = props.config.aws_project_region;
   const mapRef = useRef(null);
   const [map, setMap] = useState();
+
+  const ccwPolygon = (coordinates) => {
+    const area = polygonArea(coordinates,true);
+    //if area is negative, polygon is drawn in clockwise orientation
+    //else area is positive, polygon is drawn in counter-clockwise orientation
+    if(area < 0){
+      //return the reversed array of coordinates
+      //since reversing clockwise coordinates will make them counter-clockwise
+      return coordinates.slice().reverse();
+    }
+    return coordinates;
+  }
 
   useEffect(() => {
     async function initializeMap() {
@@ -63,13 +76,13 @@ const PetTrackerMap = (props) => {
       });
 
       const createGeofence = (e) => {
-        console.log('Geofence event object', e);
+        console.log('Geofence create event object', e);
         if (e.features.length > 0) {
           const params = {
             CollectionName: geofenceCollectionName,
             GeofenceId: e.features[e.features.length - 1].id,
               Geometry: {
-                Polygon: e.features[e.features.length - 1].geometry.coordinates
+                Polygon: e.features[e.features.length - 1].geometry.coordinates.map(ccwPolygon)
               }
           };
           client.putGeofence(params, function(err, data) {
@@ -97,6 +110,8 @@ const PetTrackerMap = (props) => {
         .addTo(map)
     )), [devPosMarkers]
   );
+
+
 
   useEffect(() => {
     if (map != null) {

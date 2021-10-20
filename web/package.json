@@ -5,6 +5,7 @@
   "license": "MIT-0",
   "dependencies": {
     "@aws-amplify/ui-react": "^1.2.20",
+    "area-polygon": "^1.0.1",
     "aws-amplify": "^4.3.2",
     "aws-sdk": "^2.1010.0",
     "bootstrap": "^5.1.3",
