@@ -16,14 +16,8 @@ import PetTrackerMap from './components/PetTrackerMap';
 
 Amplify.configure(awsconfig);
 
-let client;
 const init = async () => {
-  const credentials = await Auth.currentCredentials();
-
-  client = new Location({
-    credentials,
-    region: awsconfig.aws_project_region,
-  });
+  await Auth.currentCredentials();
 }
 
 const Loader = ({ children }) => {
@@ -41,55 +35,45 @@ const Loader = ({ children }) => {
 const App = () => {
 
   const trackerName = 'PetTracker';
-  const [credentials, setCredentials] = useState(null);
   const [devPosMarkers, setDevPosMarkers] = useState([]);
 
   const getDevicePosition = (itemData) => {
     console.log('itemData >>>', itemData);
     setDevPosMarkers([]);
 
-    const params = {
-      DeviceId: itemData.id,
-      TrackerName: trackerName
-    };
+    Auth.currentCredentials().then((credentials) => {
+      const client = new Location({
+        credentials: credentials,
+        region: awsconfig.aws_project_region,
+      });
 
-    client.getDevicePositionHistory(params, (err, data) => {
-      if (err) console.log(err, err.stack); 
-      else if (data) { 
-        console.log('data >>>', data);
-        const tempPosMarkers =  data.DevicePositions.map( function (devPos, index) {
+      const params = {
+        DeviceId: itemData.id,
+        TrackerName: trackerName
+      };
 
-          return {
-            index: index,
-            long: devPos.Position[0],
-            lat: devPos.Position[1]
-          } 
-        });
+      client.getDevicePositionHistory(params, (err, data) => {
+        if (err) console.log(err, err.stack);
+        else if (data) {
+          console.log('data >>>', data);
+          const tempPosMarkers =  data.DevicePositions.map( function (devPos, index) {
 
-        setMarker({
-          longitude: itemData.long,
-          latitude: itemData.lat
-        });
+            return {
+              index: index,
+              long: devPos.Position[0],
+              lat: devPos.Position[1]
+            }
+          });
 
-        setDevPosMarkers(tempPosMarkers);
-        
-        setViewport({
-          longitude: itemData.long,
-          latitude: itemData.lat, 
-          zoom: 15
-        });
-      }
+          setDevPosMarkers(tempPosMarkers);
+        }
+      });
+
     });
   }
 
 
   useEffect(() => {
-    // console.log('in useEffect');
-    const fetchCredentials = async () => {
-      setCredentials(await Auth.currentUserCredentials());
-    };
-    fetchCredentials();
-
     const onCreateSubscription = API.graphql(
       graphqlOperation(subscriptions.onCreateLocation)
     ).subscribe({
@@ -117,34 +101,14 @@ const App = () => {
 
   }, []);
 
-  const [viewport, setViewport] = useState({
-    longitude: -97.6762,
-    latitude: 30.4287,
-    zoom: 10,
-  });
-
-  const [marker, setMarker] = useState({
-    longitude: -97.72682189941406,
-    latitude: 30.483000484352313,
-  });
-
   return (
       <div className="App">
         <Loader>
           <Header />
-          {credentials ? (
             <PetTrackerMap
               config={awsconfig}
-              client={client}
-              cred={credentials}
-              marker={marker}
               devPosMarkers={devPosMarkers}
-              viewport={viewport}
-              setViewport={setViewport}
             />
-          ) : (
-            <h1>Loading...</h1>
-          )}
         </Loader>
       </div>
   );
