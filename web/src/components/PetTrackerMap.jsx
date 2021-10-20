@@ -95,6 +95,22 @@ const PetTrackerMap = (props) => {
 
       map.on('draw.create', createGeofence);
 
+      const deleteGeofence = (e) => {
+        console.log('Geofence delete event object', e);
+        if (e.features.length > 0) {
+          const params = {
+            CollectionName: geofenceCollectionName,
+            GeofenceIds: [ e.features[e.features.length - 1].id ]
+          };
+          client.batchDeleteGeofence(params, function(err, data) {
+            if (err) console.log(err, err.stack); // an error occurred
+            else console.log(data);           // successful response
+          });
+        }
+      }
+
+      map.on('draw.delete', deleteGeofence);
+
       setMap(map);
     }
 
