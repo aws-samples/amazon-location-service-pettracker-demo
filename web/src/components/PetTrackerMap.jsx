@@ -75,7 +75,7 @@ const PetTrackerMap = (props) => {
         });
       });
 
-      const createGeofence = (e) => {
+      const createUpdateGeofence = (e) => {
         console.log('Geofence create event object', e);
         if (e.features.length > 0) {
           const params = {
@@ -93,7 +93,8 @@ const PetTrackerMap = (props) => {
 
       }
 
-      map.on('draw.create', createGeofence);
+      map.on('draw.create', createUpdateGeofence);
+      map.on('draw.update', createUpdateGeofence);
 
       const deleteGeofence = (e) => {
         console.log('Geofence delete event object', e);
