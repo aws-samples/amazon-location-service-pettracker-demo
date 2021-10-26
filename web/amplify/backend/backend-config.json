@@ -68,12 +68,6 @@
       "service": "Lambda"
     }
   },
-  "location": {
-    "geofenceCollections": {
-      "service": "AmazonLocationService",
-      "providerPlugin": "awscloudformation"
-    }
-  },
   "ssm": {
     "parameter": {
       "service": "AWSSystemManager",
