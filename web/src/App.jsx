@@ -36,6 +36,7 @@ const App = () => {
 
   const trackerName = 'PetTracker';
   const [devPosMarkers, setDevPosMarkers] = useState([]);
+  const [mapCenter, setMapCenter] = useState([48.192459, 11.617745]);
 
   const getDevicePosition = (itemData) => {
     console.log('itemData >>>', itemData);
@@ -57,6 +58,7 @@ const App = () => {
             <PetTrackerMap
               config={awsconfig}
               devPosMarkers={devPosMarkers}
+              center={mapCenter}
             />
         </Loader>
       </div>
