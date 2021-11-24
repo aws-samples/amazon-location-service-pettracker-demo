@@ -76,7 +76,7 @@ cd ~/environment/amazon-location-service-pettracker-demo/web
 
 npm install -g @aws-amplify/cli
 
-npm install
+npm update && npm install
 
 amplify init \
 --amplify $AMPLIFY \
