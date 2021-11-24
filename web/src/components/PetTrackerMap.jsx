@@ -1,8 +1,8 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {NavigationControl, Marker} from "maplibre-gl";
-import MapboxDraw from "mapbox-gl-draw";
+import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import "maplibre-gl/dist/maplibre-gl.css";
-import "mapbox-gl-draw/dist/mapbox-gl-draw.css";
+import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 import {createMap} from "maplibre-gl-js-amplify";
 import polygonArea from 'area-polygon';
 import {Auth} from "aws-amplify";
