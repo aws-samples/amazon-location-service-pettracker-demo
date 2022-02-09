@@ -119,7 +119,7 @@
                     "Resource": "*"
                 },
                 {
-                    "Sid": "MapsReadOnly",
+                    "Sid": "MapActions",
                     "Effect": "Allow",
                     "Action": [
                         "geo:DescribeMap",
@@ -135,7 +135,8 @@
                         "geo:BatchPutGeofence",
                         "geo:PutGeofence",
                         "geo:ListGeofences",
-                        "geo:GetGeofence"
+                        "geo:GetGeofence",
+                        "geo:BatchDeleteGeofence"
                     ],
                     "Resource": [
                         "arn:aws:geo:*:*:*"
