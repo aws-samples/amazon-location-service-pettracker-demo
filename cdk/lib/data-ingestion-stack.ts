@@ -51,8 +51,17 @@ export class PetTrackerDataIngestionStack extends cdk.Stack {
         Statement: [
           {
             Effect: "Allow",
-            Action: "iot:*",
-            Resource: "*"
+            Action: [
+              "iot:Connect"
+            ],
+            Resource: [`arn:aws:iot:${region}:${account}:client/pettracker-*`]
+          },
+          {
+            Effect: "Allow",
+            Action: [
+              "iot:Publish"
+            ],
+            Resource: [`arn:aws:iot:${region}:${account}:topic/pettracker`]
           }
         ]
       }
