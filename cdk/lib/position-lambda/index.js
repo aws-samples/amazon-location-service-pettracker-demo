@@ -35,76 +35,102 @@ const credentials = AWS.config.credentials;
  * @returns
  */
 exports.handler = (event) => {
-
     console.log('event received:' + JSON.stringify(event));
 
-    return parameterPromise.then(function (data, err) {
-        if (err) {
-            console.error(err)
-            throw err
-        } else return data.Parameter.Value;
-    }).then(function (endpoint) {
-        console.log('SSM Parameter value:' + endpoint);
+    function retrievePetTrackeGraphQLEndpoint() {
+        return parameterPromise.then(function (data, err) {
+            if (err) {
+                console.error(err)
+                throw err
+            } else return data.Parameter.Value;
+        });
+    }
 
-        return new AWSAppSyncClient({
-                url: endpoint,
-                region: region,
-                auth: {
-                    type: 'AWS_IAM',
-                    credentials: credentials,
-                },
-                disableOffline: true,
-            },
-            {
-                defaultOptions: {
-                    query: {
-                        fetchPolicy: 'network-only',
-                        errorPolicy: 'all',
+    function createAppSyncClient() {
+        return function (endpoint) {
+            console.log('SSM Parameter value:' + endpoint);
+
+            return new AWSAppSyncClient({
+                    url: endpoint,
+                    region: region,
+                    auth: {
+                        type: 'AWS_IAM',
+                        credentials: credentials,
                     },
+                    disableOffline: true,
                 },
+                {
+                    defaultOptions: {
+                        query: {
+                            fetchPolicy: 'network-only',
+                            errorPolicy: 'all',
+                        },
+                    },
+                }
+            ).hydrated();
+        };
+    }
+
+    function updateExistingDevice(appSyncClient) {
+        console.log('Updating existing device, id: ', event.deviceId);
+        return appSyncClient.mutate({
+            mutation: updateGQL,
+            variables: {
+                input: {
+                    id: event.deviceId,
+                    lat: event.location.lat,
+                    long: event.location.long
+                }
             }
-        ).hydrated();
-    }).then(function (cl) {
-        console.log('Searching for an existing device');
-        return cl.query({
+        });
+    }
+
+    function createNewDevice(appSyncClient) {
+        console.log('Creating new device, id:', event.deviceId);
+        return appSyncClient.mutate({
+            mutation: createGQL,
+            variables: {
+                input: {
+                    id: event.deviceId,
+                    lat: event.location.lat,
+                    long: event.location.long
+                }
+            }
+        });
+    }
+
+    function searchForExistingDevice(appSyncClient) {
+        console.log('Searching for an existing device, id:', event.deviceId);
+        return appSyncClient.query({
             query: queryGQL,
             variables: {
                 id: event.deviceId
             }
-        }).then(function (queryResult) {
-            console.log('Query result:' + JSON.stringify(queryResult.data));
-            if (queryResult.data.getLocation) {
-                console.log('Updating existing device');
-                return cl.mutate({
-                    mutation: updateGQL,
-                    variables: {
-                        input: {
-                            id: event.deviceId,
-                            lat: event.location.lat,
-                            long: event.location.long
-                        }
-                    }
-                });
-            } else {
-                console.log('Creating new device');
-                return cl.mutate({
-                    mutation: createGQL,
-                    variables: {
-                        input: {
-                            id: event.deviceId,
-                            lat: event.location.lat,
-                            long: event.location.long
-                        }
-                    }
-                });
+        });
+    }
+
+    function createOrUpdateDevicePosition() {
+        return function (appSyncClient) {
+            return searchForExistingDevice(appSyncClient).then(function (queryResult) {
+                console.log('Query result:' + JSON.stringify(queryResult.data));
+                if (queryResult.data.getLocation) {
+                    return updateExistingDevice(appSyncClient);
+                } else {
+                    return createNewDevice(appSyncClient);
+                }
+            })
+
+        };
+    }
+
+    return retrievePetTrackeGraphQLEndpoint()
+        .then(createAppSyncClient())
+        .then(createOrUpdateDevicePosition())
+        .then(() => {
+            return {
+                statusCode: 200
             }
         })
-
-    }).then(() => {
-        return {
-            statusCode: 200
-        }
-    })
         .catch(error => {
             console.error(error)
             return {
