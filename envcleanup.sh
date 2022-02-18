@@ -24,7 +24,7 @@
 #usage           curl -sSL https://raw.githubusercontent.com/fbdo/iot-workshop-for-pet-tracking-and-geofencing/develop/envcleanup.sh | bash -s stable
 #==============================================================================
 
-for appId in "$(aws amplify list-apps --query 'apps[?name == `pettrackerapp`].appId' --output text)"; do aws amplify delete-app --app-id $appId; done
+for appId in "$(aws amplify list-apps --query 'apps[?name == `pettrackerapp`].appId' --output text)"; do if [[ $appId ]]; then aws amplify delete-app --app-id $appId; fi; done
 aws cloudformation delete-stack --stack-name C9-ALS-Workshop
 aws cloudformation delete-stack --stack-name PetTrackerStack
 aws cloudformation wait stack-delete-complete --stack-name PetTrackerStack && aws cloudformation delete-stack --stack-name CDKToolkit
