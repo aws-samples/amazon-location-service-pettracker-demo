@@ -6,8 +6,9 @@ import React, { useState, useEffect } from 'react';
 import Amplify, { Auth, API, graphqlOperation } from 'aws-amplify';
 import * as subscriptions from './graphql/subscriptions';
 import { withAuthenticator } from '@aws-amplify/ui-react'
+import '@aws-amplify/ui-react/styles.css';
 
-import Location from "aws-sdk/clients/location";
+import Location from "@aws-sdk/client-location";
 
 import awsconfig from './aws-exports';
 
@@ -32,7 +33,7 @@ const Loader = ({ children }) => {
   return <>{children}</>;
 };
 
-const App = () => {
+const App = ({signOut}) => {
 
   const trackerName = 'PetTracker';
   const [devPosMarkers, setDevPosMarkers] = useState([]);
@@ -52,16 +53,18 @@ const App = () => {
   }, []);
 
   return (
-      <div className="App">
-        <Loader>
-          <Header />
-            <PetTrackerMap
-              config={awsconfig}
-              devPosMarkers={devPosMarkers}
-              center={mapCenter}
-            />
-        </Loader>
-      </div>
+    <div className="App">
+      <Loader>
+        <Header
+          signOut={signOut}
+        />
+        <PetTrackerMap
+          config={awsconfig}
+          devPosMarkers={devPosMarkers}
+          center={mapCenter}
+        />
+      </Loader>
+    </div>
   );
 
 }
