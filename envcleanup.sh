@@ -32,5 +32,4 @@ aws iot delete-policy --policy-name PetTrackerThing_Policy
 for stackId in $(aws cloudformation list-stacks --query 'StackSummaries[?ParentId == `null`]|[?starts_with(StackName, `amplify-pettrackerapp`) == `true`].StackId' --output text); do if [[ $stackId ]]; then aws cloudformation delete-stack --stack-name "$stackId"; fi; done
 aws cloudformation delete-stack --stack-name PetTrackerStack
 for bucketName in $(aws s3api list-buckets --query 'Buckets[?starts_with(Name, `amplify-pettrackerapp`) == `true`].Name' --output text); do if [[ $bucketName ]]; then aws s3 rb s3://"$bucketName" --force; fi; done
-aws cloudformation wait stack-delete-complete --stack-name PetTrackerStack && aws cloudformation delete-stack --stack-name CDKToolkit
-for bucketName in $(aws s3api list-buckets --query 'Buckets[?starts_with(Name, `cdktoolkit-stagingbucket`) == `true`].Name' --output text); do if [[ $bucketName ]]; then aws s3 rb s3://"$bucketName" --force; fi; done
+aws cloudformation wait stack-delete-complete --stack-name PetTrackerStack
