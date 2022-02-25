@@ -25,11 +25,12 @@
 #==============================================================================
 
 for appId in $(aws amplify list-apps --query 'apps[?name == `pettrackerapp`].appId' --output text); do if [[ $appId ]]; then aws amplify delete-app --app-id "$appId"; fi; done
+for stackId in $(aws cloudformation list-stacks --query 'StackSummaries[?ParentId == `null`]|[?starts_with(StackName, `amplify-pettrackerapp`) == `true`].StackId' --output text); do if [[ $stackId ]]; then aws cloudformation delete-stack --stack-name "$stackId"; fi; done
+
+aws cloudformation delete-stack --stack-name C9-ALS-Workshop && aws cloudformation wait stack-delete-complete --stack-name C9-ALS-Workshop
 for policyARN in $(aws iam list-attached-role-policies --role-name amazonlocationserviceworkshop-admin --query 'AttachedPolicies[*].PolicyArn' --output text); do if [[ $policyARN ]]; then aws iam detach-role-policy --role-name amazonlocationserviceworkshop-admin --policy-arn "$policyARN"; fi; done
 aws iam delete-role --role-name amazonlocationserviceworkshop-admin
-aws cloudformation delete-stack --stack-name C9-ALS-Workshop
+
+aws cloudformation delete-stack --stack-name PetTrackerStack && aws cloudformation wait stack-delete-complete --stack-name PetTrackerStack
 aws iot delete-policy --policy-name PetTrackerThing_Policy
-for stackId in $(aws cloudformation list-stacks --query 'StackSummaries[?ParentId == `null`]|[?starts_with(StackName, `amplify-pettrackerapp`) == `true`].StackId' --output text); do if [[ $stackId ]]; then aws cloudformation delete-stack --stack-name "$stackId"; fi; done
-aws cloudformation delete-stack --stack-name PetTrackerStack
 for bucketName in $(aws s3api list-buckets --query 'Buckets[?starts_with(Name, `amplify-pettrackerapp`) == `true`].Name' --output text); do if [[ $bucketName ]]; then aws s3 rb s3://"$bucketName" --force; fi; done
-aws cloudformation wait stack-delete-complete --stack-name PetTrackerStack
