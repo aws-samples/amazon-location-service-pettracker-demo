@@ -8,8 +8,6 @@ import * as subscriptions from './graphql/subscriptions';
 import { withAuthenticator } from '@aws-amplify/ui-react'
 import '@aws-amplify/ui-react/styles.css';
 
-import { LocationClient } from "@aws-sdk/client-location";
-
 import awsconfig from './aws-exports';
 
 import Header from './components/Header';

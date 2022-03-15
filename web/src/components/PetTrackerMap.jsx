@@ -6,7 +6,7 @@ import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 import {createMap} from "maplibre-gl-js-amplify";
 import polygonArea from 'area-polygon';
 import {Auth} from "aws-amplify";
-import LocationClient from "@aws-sdk/client-location";
+import { LocationClient, ListGeofencesCommand, BatchDeleteGeofenceCommand, PutGeofenceCommand } from "@aws-sdk/client-location";
 import awsconfig from "../aws-exports";
 
 const geofenceCollectionName = 'PetTrackerGeofenceCollection';
