@@ -1,10 +1,11 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 
-import cfn = require("@aws-cdk/aws-cloudformation");
-import lambda = require("@aws-cdk/aws-lambda");
-import cdk = require("@aws-cdk/core");
-import iam = require("@aws-cdk/aws-iam");
+import { aws_lambda as lambda } from "aws-cdk-lib";
+import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import { aws_iam as iam } from "aws-cdk-lib";
+import { custom_resources } from "aws-cdk-lib";
 
 import path = require("path");
 
@@ -14,14 +15,14 @@ export interface CustomCertificateResourceProps {
   thingName: string;
 }
 
-export class CustomCertificateResource extends cdk.Construct {
+export class CustomCertificateResource extends Construct {
   public readonly certificateArn: string;
   public readonly certificateId: string;
   public readonly secretArn: string;
   public readonly iotEndpoint: string;
 
   constructor(
-    scope: cdk.Construct,
+    scope: Construct,
     id: string,
     props: CustomCertificateResourceProps
   ) {
@@ -93,26 +94,34 @@ export class CustomCertificateResource extends cdk.Construct {
       })
     );
 
-    const custom_certificate_resource = new cfn.CustomResource(
+    const fn = new lambda.SingletonFunction(
+      this,
+      "CustomCertificateResourceFunction",
+      {
+        uuid: "e8d4f732-4ee1-11e8-9c2d-fa7ae01bbeba",
+        code: lambda.Code.fromAsset(
+          path.join(__dirname, "custom-certificate-handler")
+        ),
+        handler: "custom-certificate-lambda.handler",
+        timeout: cdk.Duration.seconds(30),
+        runtime: lambda.Runtime.PYTHON_3_7,
+        role: custom_resource_lambda_role
+      }
+    );
+
+    const provider = new custom_resources.Provider(
+      this,
+      'CustomCertificateResourceProvider',
+      {
+        onEventHandler: fn
+      }
+    );
+
+    const custom_certificate_resource = new cdk.CustomResource(
       this,
       "CoreCredentials",
       {
-        provider: cfn.CustomResourceProvider.lambda(
-          new lambda.SingletonFunction(
-            this,
-            "CustomCertificateResourceFunction",
-            {
-              uuid: "e8d4f732-4ee1-11e8-9c2d-fa7ae01bbeba",
-              code: lambda.Code.fromAsset(
-                path.join(__dirname, "custom-certificate-handler")
-              ),
-              handler: "custom-certificate-lambda.handler",
-              timeout: cdk.Duration.seconds(30),
-              runtime: lambda.Runtime.PYTHON_3_6,
-              role: custom_resource_lambda_role
-            }
-          )
-        ),
+        serviceToken: provider.serviceToken,
         properties: props
       }
     );

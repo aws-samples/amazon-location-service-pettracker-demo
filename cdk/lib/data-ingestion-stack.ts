@@ -1,17 +1,17 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 
-import * as cdk from '@aws-cdk/core';
-import * as iot from '@aws-cdk/aws-iot';
+import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import * as iot from 'aws-cdk-lib/aws-iot';
 
 import { CustomCertificateResource } from './custom-certificate-resource';
 import path = require("path");
 import { PetTrackerPositionLambda } from './pettracker-position-lambda'
 import { PetTrackerALSLambda } from './pettracker-als-lambda'
-import { CustomTrackerResource } from './custom-tracker-resource'
 
 export class PetTrackerDataIngestionStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
     const region = props?.env?.region || 'us-east-1'

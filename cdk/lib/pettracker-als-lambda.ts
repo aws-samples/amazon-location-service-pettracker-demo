@@ -1,10 +1,12 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 
-import * as cdk from '@aws-cdk/core';
-import * as iam from '@aws-cdk/aws-iam';
-import * as lambda from '@aws-cdk/aws-lambda';
-import * as iot from '@aws-cdk/aws-iot';
+import { aws_iot as iot} from 'aws-cdk-lib';
+import { aws_lambda as lambda } from "aws-cdk-lib";
+import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import { aws_iam as iam } from "aws-cdk-lib";
+
 import path = require("path");
 
 
@@ -14,9 +16,9 @@ export interface PetTrackerALSProps {
     trackerName: string
 }
 
-export class PetTrackerALSLambda extends cdk.Construct {
+export class PetTrackerALSLambda extends Construct {
 
-    constructor(scope: cdk.Construct, id: string, props: PetTrackerALSProps) {
+    constructor(scope: Construct, id: string, props: PetTrackerALSProps) {
         super(scope, id);
 
         const trackerLambdaRole = new iam.Role(

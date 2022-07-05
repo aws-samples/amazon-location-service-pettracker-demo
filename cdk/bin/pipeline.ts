@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import * as cdk from '@aws-cdk/core';
+import * as cdk from 'aws-cdk-lib';
 import { PetTrackerDataIngestionStack } from '../lib/data-ingestion-stack';
 
 const app = new cdk.App();
@@ -10,5 +10,3 @@ new PetTrackerDataIngestionStack(app, 'PetTrackerStack', {
     region: process.env.CDK_DEFAULT_REGION,
   }
 });
-
-app.synth();
