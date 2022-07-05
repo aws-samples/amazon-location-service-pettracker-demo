@@ -20,7 +20,7 @@ def handler(event, context):
         iot = boto3.client('iot')
         secretsmanager = boto3.client('secretsmanager')
 
-        thingName = event['ResourceProperties']['ThingName']
+        thingName = event['ResourceProperties']['thingName']
         certId = event.setdefault('PhysicalResourceId', '')
 
         response = iot.describe_endpoint(
