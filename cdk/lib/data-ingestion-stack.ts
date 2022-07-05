@@ -5,7 +5,6 @@ import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as iot from 'aws-cdk-lib/aws-iot';
 
-import { CustomCertificateResource } from './custom-certificate-resource';
 import path = require("path");
 import { PetTrackerPositionLambda } from './pettracker-position-lambda'
 import { PetTrackerALSLambda } from './pettracker-als-lambda'
@@ -25,13 +24,12 @@ export class PetTrackerDataIngestionStack extends cdk.Stack {
       thingName: "PetTrackerThing"
     });
 
-    const trackerCredentials = new CustomCertificateResource(
+    const trackerCertificate = new iot.CfnCertificate(
       this,
       "PetTrackerCredentials",
       {
-        account: this.account,
-        stackName: this.stackName,
-        thingName: trackerThing.ref
+        status: 'ACTIVE',
+
       }
     );
 
@@ -39,7 +37,7 @@ export class PetTrackerDataIngestionStack extends cdk.Stack {
       this,
       "PetTrackerThingCredentialAttachment",
       {
-        principal: trackerCredentials.certificateArn,
+        principal: trackerCertificate.attrArn,
         thingName: trackerThing.ref
       }
     );
@@ -69,7 +67,7 @@ export class PetTrackerDataIngestionStack extends cdk.Stack {
 
     new iot.CfnPolicyPrincipalAttachment(this, "PetTrackerThingPolicyAttachment", {
       policyName: trackerPolicy.policyName!,
-      principal: trackerCredentials.certificateArn
+      principal: trackerCertificate.attrArn
     });
 
     new PetTrackerPositionLambda(this, 'pettracker-position-lambda', {
