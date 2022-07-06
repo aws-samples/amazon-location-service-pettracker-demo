@@ -6,14 +6,17 @@ import { aws_lambda as lambda } from "aws-cdk-lib";
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { aws_iam as iam } from "aws-cdk-lib";
+import { aws_s3 as s3 } from 'aws-cdk-lib';
 
 import path = require("path");
 
 
 export interface PetTrackerALSProps {
-    account: string
-    region: string
-    trackerName: string
+    account: string;
+    region: string;
+    trackerName: string;
+    readonly bucket: s3.IBucket;
+    readonly version: string;
 }
 
 export class PetTrackerALSLambda extends Construct {
@@ -31,7 +34,7 @@ export class PetTrackerALSLambda extends Construct {
 
         const trackerLambda = new lambda.Function(this, "PetTrackerPositionLambda", {
             runtime: lambda.Runtime.PYTHON_3_8,
-            code: lambda.Code.fromAsset(path.join(__dirname, "tracker-lambda")),
+            code: lambda.Code.fromBucket(props.bucket, `tracker-lambda-${props.version}.zip`),
             handler: "lambda_function.lambda_handler",
             memorySize: 128,
             role: trackerLambdaRole,

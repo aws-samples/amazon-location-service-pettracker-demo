@@ -4,6 +4,7 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { ThingWithCert } from './thing-with-cert-resource';
+import { aws_s3 as s3 } from 'aws-cdk-lib';
 
 import path = require("path");
 import { PetTrackerPositionLambda } from './pettracker-position-lambda'
@@ -13,24 +14,34 @@ export class PetTrackerDataIngestionStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const region = props?.env?.region || 'us-east-1'
-    const account = props?.env?.account || ''
+    const region = props?.env?.region || 'us-east-1';
+    const account = props?.env?.account || '';
+    const version = this.node.tryGetContext('version') || '';
+
+    const assetsBucket = s3.Bucket.fromBucketName(this, 'pettracker-bucket', `amazon-location-service-pettracker-${region}`);
 
     new ThingWithCert(this, 'ThingWithCert', {
       thingName:"PetTrackerThing",
       saveToParamStore: true,
       paramPrefix: '/devices',
+      region: region,
+      bucket: assetsBucket,
+      version: version
     });
 
     new PetTrackerPositionLambda(this, 'pettracker-position-lambda', {
       region: region,
-      account: account
+      account: account,
+      bucket: assetsBucket,
+      version: version
     });
 
     new PetTrackerALSLambda(this, 'pettracker-als-lambda', {
       region: region,
       account: account,
-      trackerName: "PetTracker"
+      trackerName: "PetTracker",
+      bucket: assetsBucket,
+      version: version
     });
 
   }
