@@ -2,6 +2,7 @@ import * as lambda from 'aws-lambda';
 import { Iot } from 'aws-sdk';
 import { iotAdaptor } from './adapters/iot';
 import { thingAdaptor } from './adapters/thing';
+import * as cfn from 'cfn-response';
 
 type Success = lambda.CloudFormationCustomResourceSuccessResponse;
 type Failure = lambda.CloudFormationCustomResourceFailedResponse;
@@ -10,6 +11,7 @@ const thingHandler = thingAdaptor(iotAdaptor(new Iot()));
 
 export const handler = async (
   event: lambda.CloudFormationCustomResourceEvent,
+  context: lambda.Context
 ): Promise<Success | Failure> => {
   try {
     const thingName = event.ResourceProperties.ThingName;
@@ -17,6 +19,17 @@ export const handler = async (
       console.info(`Creating thing: ${thingName}`);
       const { thingArn, certId, certPem, privKey } = await thingHandler.create(
         thingName,
+      );
+      cfn.send(
+        event,
+        context,
+        cfn.SUCCESS,
+        {
+          certPem: certPem,
+          privKey: privKey,
+          certId: certId,
+        },
+        thingArn
       );
       return {
         Status: 'SUCCESS',
@@ -33,6 +46,15 @@ export const handler = async (
     } else if (event.RequestType === 'Delete') {
       console.info(`Deleting thing: ${thingName}`);
       await thingHandler.delete(thingName);
+
+      cfn.send(
+        event,
+        context,
+        cfn.SUCCESS,
+        {},
+        event.PhysicalResourceId
+      );
+
       return {
         Status: 'SUCCESS',
         PhysicalResourceId: event.PhysicalResourceId,
@@ -42,6 +64,15 @@ export const handler = async (
       };
     } else if (event.RequestType === 'Update') {
       console.info(`Updating thing: ${thingName}`);
+
+      cfn.send(
+        event,
+        context,
+        cfn.SUCCESS,
+        {},
+        event.PhysicalResourceId
+      );
+
       return {
         Status: 'SUCCESS',
         PhysicalResourceId: event.PhysicalResourceId,
@@ -59,6 +90,16 @@ export const handler = async (
     } else if (err instanceof Error) {
         reasonStr = err.message;
     }
+
+    cfn.send(
+      event,
+      context,
+      cfn.FAILED,
+      {},
+      // @ts-ignore
+      event.PhysicalResourceId || event.LogicalResourceId
+    );
+
     return {
       Status: 'FAILED',
       Reason: reasonStr,
