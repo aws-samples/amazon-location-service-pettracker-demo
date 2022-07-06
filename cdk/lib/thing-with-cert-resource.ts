@@ -1,7 +1,7 @@
 import { Duration, ResourceProps } from 'aws-cdk-lib';
 import { CfnCustomResource } from 'aws-cdk-lib/aws-cloudformation';
 import { CompositePrincipal, PolicyStatement, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
-import { aws_lambda_nodejs as lambda } from 'aws-cdk-lib';
+import { aws_lambda as lambda } from 'aws-cdk-lib';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { CfnParameter } from 'aws-cdk-lib/aws-ssm';
 import { Provider } from 'aws-cdk-lib/custom-resources';
@@ -41,19 +41,19 @@ export class ThingWithCert extends Construct {
       })
     );
 
-    const lambdaFunction = new lambda.NodejsFunction(this, 'lambdaFunction', {
-      entry: `${__dirname}/thing-with-cert-lambda/index.ts`,
-      handler: 'handler',
-      timeout: Duration.seconds(10),
-      role: lambdaExecutionRole,
-      logRetention: RetentionDays.ONE_DAY,
-      bundling: {
-        minify: true,
-        sourceMap: true,
-        sourceMapMode: lambda.SourceMapMode.INLINE,
-        sourcesContent: false
+    const lambdaFunction = new lambda.SingletonFunction(
+      this,
+      "CustomCertificateResourceFunction",
+      {
+        uuid: "e8d4f732-4ee1-11e8-9c2d-fa7ae01bbeba",
+        code: lambda.Code.fromAsset(`${__dirname}/thing-with-cert-lambda/dist`),
+        handler: 'handler',
+        logRetention: RetentionDays.ONE_DAY,
+        timeout: Duration.seconds(30),
+        runtime: lambda.Runtime.NODEJS_16_X,
+        role: lambdaExecutionRole
       }
-    });
+    );
 
     const lambdaProvider = new Provider(this, 'lambdaProvider', {
       onEventHandler: lambdaFunction,
