@@ -47,7 +47,8 @@ export class ThingWithCert extends Construct {
       {
         uuid: "e8d4f732-4ee1-11e8-9c2d-fa7ae01bbeba",
         code: lambda.Code.fromAsset(`${__dirname}/thing-with-cert-lambda/dist`),
-        handler: 'handler',
+        handler: 'index.handler',
+        memorySize: 128,
         logRetention: RetentionDays.ONE_DAY,
         timeout: Duration.seconds(30),
         runtime: lambda.Runtime.NODEJS_16_X,
