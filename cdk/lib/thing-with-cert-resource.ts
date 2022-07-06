@@ -5,7 +5,6 @@ import { aws_lambda as lambda } from 'aws-cdk-lib';
 import { aws_s3 as s3 } from 'aws-cdk-lib';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { CfnParameter } from 'aws-cdk-lib/aws-ssm';
-import { Provider } from 'aws-cdk-lib/custom-resources';
 import { Construct } from 'constructs';
 
 export interface ThingWithCertProps extends ResourceProps {
@@ -52,19 +51,14 @@ export class ThingWithCert extends Construct {
         code: lambda.Code.fromBucket(props.bucket, `thing-with-cert-lambda-${props.version}.zip`),
         handler: 'index.handler',
         memorySize: 256,
-        logRetention: RetentionDays.ONE_DAY,
         timeout: Duration.seconds(10),
         runtime: lambda.Runtime.NODEJS_16_X,
         role: lambdaExecutionRole
       }
     );
 
-    const lambdaProvider = new Provider(this, 'lambdaProvider', {
-      onEventHandler: lambdaFunction,
-    });
-
     const lambdaCustomResource = new CfnCustomResource(this, 'lambdaCustomResource', {
-      serviceToken: lambdaProvider.serviceToken,
+      serviceToken: lambdaFunction.functionArn,
     });
 
     lambdaCustomResource.addPropertyOverride('ThingName', thingName);

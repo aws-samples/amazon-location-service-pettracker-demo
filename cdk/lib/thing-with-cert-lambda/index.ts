@@ -1,10 +1,7 @@
-import { StandardLogger } from 'aws-cloudformation-custom-resource';
 import * as lambda from 'aws-lambda';
 import { Iot } from 'aws-sdk';
 import { iotAdaptor } from './adapters/iot';
 import { thingAdaptor } from './adapters/thing';
-
-const logger = new StandardLogger();
 
 type Success = lambda.CloudFormationCustomResourceSuccessResponse;
 type Failure = lambda.CloudFormationCustomResourceFailedResponse;
@@ -17,7 +14,7 @@ export const handler = async (
   try {
     const thingName = event.ResourceProperties.ThingName;
     if (event.RequestType === 'Create') {
-      logger.info(`Creating thing: ${thingName}`);
+      console.info(`Creating thing: ${thingName}`);
       const { thingArn, certId, certPem, privKey } = await thingHandler.create(
         thingName,
       );
@@ -34,7 +31,7 @@ export const handler = async (
         },
       };
     } else if (event.RequestType === 'Delete') {
-      logger.info(`Deleting thing: ${thingName}`);
+      console.info(`Deleting thing: ${thingName}`);
       await thingHandler.delete(thingName);
       return {
         Status: 'SUCCESS',
@@ -44,7 +41,7 @@ export const handler = async (
         StackId: event.StackId,
       };
     } else if (event.RequestType === 'Update') {
-      logger.info(`Updating thing: ${thingName}`);
+      console.info(`Updating thing: ${thingName}`);
       return {
         Status: 'SUCCESS',
         PhysicalResourceId: event.PhysicalResourceId,
