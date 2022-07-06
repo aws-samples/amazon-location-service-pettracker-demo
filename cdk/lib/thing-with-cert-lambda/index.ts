@@ -17,6 +17,7 @@ export const handler = async (
   try {
     const thingName = event.ResourceProperties.ThingName;
     if (event.RequestType === 'Create') {
+      logger.info(`Creating thing: ${thingName}`);
       const { thingArn, certId, certPem, privKey } = await thingHandler.create(
         thingName,
       );
@@ -33,6 +34,7 @@ export const handler = async (
         },
       };
     } else if (event.RequestType === 'Delete') {
+      logger.info(`Deleting thing: ${thingName}`);
       await thingHandler.delete(thingName);
       return {
         Status: 'SUCCESS',
