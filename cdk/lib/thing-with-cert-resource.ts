@@ -50,7 +50,7 @@ export class ThingWithCert extends Construct {
         handler: 'index.handler',
         memorySize: 256,
         logRetention: RetentionDays.ONE_DAY,
-        timeout: Duration.seconds(480),
+        timeout: Duration.seconds(10),
         runtime: lambda.Runtime.NODEJS_16_X,
         role: lambdaExecutionRole
       }
