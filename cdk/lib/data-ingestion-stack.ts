@@ -3,7 +3,7 @@
 
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import * as iot from 'aws-cdk-lib/aws-iot';
+import { ThingWithCert } from './thing-with-cert-resource';
 
 import path = require("path");
 import { PetTrackerPositionLambda } from './pettracker-position-lambda'
@@ -16,58 +16,10 @@ export class PetTrackerDataIngestionStack extends cdk.Stack {
     const region = props?.env?.region || 'us-east-1'
     const account = props?.env?.account || ''
 
-    /**
-     * Create Device.
-     * The PetTrackerThing will receives messages from the tracker device or emulator.
-     */
-    const trackerThing = new iot.CfnThing(this, "IoTDevice", {
-      thingName: "PetTrackerThing"
-    });
-
-    const trackerCertificate = new iot.CfnCertificate(
-      this,
-      "PetTrackerCredentials",
-      {
-        status: 'ACTIVE',
-
-      }
-    );
-
-    new iot.CfnThingPrincipalAttachment(
-      this,
-      "PetTrackerThingCredentialAttachment",
-      {
-        principal: trackerCertificate.attrArn,
-        thingName: trackerThing.ref
-      }
-    );
-
-    const trackerPolicy = new iot.CfnPolicy(this, "PetTrackerPolicy", {
-      policyName: `${trackerThing.thingName}_Policy`,
-      policyDocument: {
-        Version: "2012-10-17",
-        Statement: [
-          {
-            Effect: "Allow",
-            Action: [
-              "iot:Connect"
-            ],
-            Resource: [`arn:aws:iot:${region}:${account}:client/pettracker-*`]
-          },
-          {
-            Effect: "Allow",
-            Action: [
-              "iot:Publish"
-            ],
-            Resource: [`arn:aws:iot:${region}:${account}:topic/pettracker`]
-          }
-        ]
-      }
-    });
-
-    new iot.CfnPolicyPrincipalAttachment(this, "PetTrackerThingPolicyAttachment", {
-      policyName: trackerPolicy.policyName!,
-      principal: trackerCertificate.attrArn
+    new ThingWithCert(this, 'ThingWithCert', {
+      thingName:"PetTrackerThing",
+      saveToParamStore: true,
+      paramPrefix: '/devices',
     });
 
     new PetTrackerPositionLambda(this, 'pettracker-position-lambda', {
