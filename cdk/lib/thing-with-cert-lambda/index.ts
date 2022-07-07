@@ -52,43 +52,30 @@ export const handler = async (
           event.PhysicalResourceId
         );
       });
+
     } else if (event.RequestType === 'Update') {
       console.info(`Updating thing: ${thingName}`);
-      await thingHandler.delete(thingName);
 
-      return new Promise(() => {
-        cfn.send(
-          event,
-          context,
-          cfn.SUCCESS,
-          {},
-          event.PhysicalResourceId
+      return thingHandler.delete(thingName)
+        .then(() => thingHandler.create(thingName)
+        ).then((res) =>
+          cfn.send(
+            event,
+            context,
+            cfn.SUCCESS,
+            {
+              certPem: res.certPem,
+              privKey: res.privKey,
+              certId: res.certId,
+            },
+            res.thingArn
+          )
         );
-      }).then(() => thingHandler.create(thingName)
-      ).then((res) =>
-        cfn.send(
-          event,
-          context,
-          cfn.SUCCESS,
-          {
-            certPem: res.certPem,
-            privKey: res.privKey,
-            certId: res.certId,
-          },
-          res.thingArn
-        )
-      );
 
     } else {
       throw new Error('Received invalid request type');
     }
   } catch (err) {
-    let reasonStr = "";
-    if (typeof err === "string") {
-      reasonStr = err;
-    } else if (err instanceof Error) {
-      reasonStr = err.message;
-    }
 
     return new Promise(() =>
       cfn.send(
