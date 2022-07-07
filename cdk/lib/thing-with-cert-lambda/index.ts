@@ -22,7 +22,7 @@ export const handler = async (
     if (event.RequestType === 'Create') {
       console.info(`Creating thing: ${thingName}`);
 
-      return thingHandler.create(thingName).then((res) => {
+      return thingHandler.create(thingName).then((res) =>
         cfn.send(
           event,
           context,
@@ -35,21 +35,21 @@ export const handler = async (
           res.thingArn,
           true
         )
-      });
+      );
 
 
     } else if (event.RequestType === 'Delete') {
       console.info(`Deleting thing: ${thingName}`);
 
-      return thingHandler.delete(thingName).then(() => {
+      return thingHandler.delete(thingName).then(() =>
         cfn.send(
           event,
           context,
           cfn.SUCCESS,
           {},
           event.PhysicalResourceId
-        );
-      });
+        )
+      );
 
     } else if (event.RequestType === 'Update') {
       console.info(`Updating thing: ${thingName}`);
