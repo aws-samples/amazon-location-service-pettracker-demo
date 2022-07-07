@@ -21,9 +21,8 @@ export const handler = async (
     const thingName = event.ResourceProperties.ThingName;
     if (event.RequestType === 'Create') {
       console.info(`Creating thing: ${thingName}`);
-      const res = await thingHandler.create(thingName);
 
-      return new Promise(() => {
+      return thingHandler.create(thingName).then((res) => {
         cfn.send(
           event,
           context,
@@ -41,9 +40,8 @@ export const handler = async (
 
     } else if (event.RequestType === 'Delete') {
       console.info(`Deleting thing: ${thingName}`);
-      await thingHandler.delete(thingName);
 
-      return new Promise(() => {
+      return thingHandler.delete(thingName).then(() => {
         cfn.send(
           event,
           context,
