@@ -17,90 +17,94 @@ export const handler = async (
     const thingName = event.ResourceProperties.ThingName;
     if (event.RequestType === 'Create') {
       console.info(`Creating thing: ${thingName}`);
-      const { thingArn, certId, certPem, privKey } = await thingHandler.create(
-        thingName,
-      );
-      cfn.send(
+      return thingHandler.create(thingName).then(res => cfn.send(
         event,
         context,
         cfn.SUCCESS,
         {
-          certPem: certPem,
-          privKey: privKey,
-          certId: certId,
+          certPem: res.certPem,
+          privKey: res.privKey,
+          certId: res.certId,
         },
-        thingArn
-      );
-      return {
+        res.thingArn
+      )).then(() => ({
         Status: 'SUCCESS',
-        PhysicalResourceId: thingArn,
+        // @ts-ignore
+        PhysicalResourceId: event.PhysicalResourceId || event.LogicalResourceId,
         LogicalResourceId: event.LogicalResourceId,
         RequestId: event.RequestId,
         StackId: event.StackId,
-        Data: {
-          certPem: certPem,
-          privKey: privKey,
-          certId: certId,
-        },
-      };
+      }));
+
     } else if (event.RequestType === 'Delete') {
       console.info(`Deleting thing: ${thingName}`);
-      await thingHandler.delete(thingName);
-
-      cfn.send(
+      return thingHandler.delete(thingName).then(res => cfn.send(
         event,
         context,
         cfn.SUCCESS,
         {},
         event.PhysicalResourceId
-      );
-
-      return {
+      )).then(() => ({
         Status: 'SUCCESS',
         PhysicalResourceId: event.PhysicalResourceId,
         LogicalResourceId: event.LogicalResourceId,
         RequestId: event.RequestId,
         StackId: event.StackId,
-      };
+      }));
     } else if (event.RequestType === 'Update') {
       console.info(`Updating thing: ${thingName}`);
-
-      cfn.send(
+      return thingHandler.delete(thingName).then(res => cfn.send(
         event,
         context,
         cfn.SUCCESS,
         {},
         event.PhysicalResourceId
-      );
-
-      return {
-        Status: 'SUCCESS',
-        PhysicalResourceId: event.PhysicalResourceId,
-        LogicalResourceId: event.LogicalResourceId,
-        RequestId: event.RequestId,
-        StackId: event.StackId,
-      };
+      ))
+        .then(() => thingHandler.create(thingName))
+        .then(res => cfn.send(
+          event,
+          context,
+          cfn.SUCCESS,
+          {
+            certPem: res.certPem,
+            privKey: res.privKey,
+            certId: res.certId,
+          },
+          res.thingArn
+        ))
+        .then(() => ({
+          Status: 'SUCCESS',
+          // @ts-ignore
+          PhysicalResourceId: event.PhysicalResourceId || event.LogicalResourceId,
+          LogicalResourceId: event.LogicalResourceId,
+          RequestId: event.RequestId,
+          StackId: event.StackId,
+        }))
     } else {
       throw new Error('Received invalid request type');
     }
   } catch (err) {
     let reasonStr = "";
     if (typeof err === "string") {
-        reasonStr = err;
+      reasonStr = err;
     } else if (err instanceof Error) {
-        reasonStr = err.message;
+      reasonStr = err.message;
     }
 
-    cfn.send(
-      event,
-      context,
-      cfn.FAILED,
-      {},
-      // @ts-ignore
-      event.PhysicalResourceId || event.LogicalResourceId
-    );
+    const asyncCfnCall = () => {
+      return new Promise((resolve, reject) => {
+        cfn.send(
+          event,
+          context,
+          cfn.FAILED,
+          {},
+          // @ts-ignore
+          event.PhysicalResourceId || event.LogicalResourceId
+        );
+      })
+    }
 
-    return {
+    return asyncCfnCall().then(() => ({
       Status: 'FAILED',
       Reason: reasonStr,
       RequestId: event.RequestId,
@@ -108,6 +112,6 @@ export const handler = async (
       LogicalResourceId: event.LogicalResourceId!,
       // @ts-ignore
       PhysicalResourceId: event.PhysicalResourceId || event.LogicalResourceId,
-    };
+    }))
   }
 };
