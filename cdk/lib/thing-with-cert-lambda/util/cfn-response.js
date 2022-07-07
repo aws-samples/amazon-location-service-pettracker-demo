@@ -34,6 +34,7 @@ export function send(event, context, responseStatus, responseData, physicalResou
         }
     };
  
+    console.log("Preparing request to CloudFormation");
     var request = https.request(options, function(response) {
         console.log("Status code: " + response.statusCode);
         console.log("Status message: " + response.statusMessage);
@@ -45,6 +46,7 @@ export function send(event, context, responseStatus, responseData, physicalResou
         context.done();
     });
  
+    console.log("Sending request to CloudFormation");
     request.write(responseBody);
     request.end();
 }
