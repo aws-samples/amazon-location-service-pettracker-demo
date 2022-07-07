@@ -1,9 +1,11 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: MIT-0
+
 import * as lambda from 'aws-lambda';
 import { Iot } from 'aws-sdk';
 import { iotAdaptor } from './adapters/iot';
 import { thingAdaptor } from './adapters/thing';
-
-var cfn = require('cfn-response');
+import * as cfn from './util/cfn-response';
 
 type Success = lambda.CloudFormationCustomResourceSuccessResponse;
 type Failure = lambda.CloudFormationCustomResourceFailedResponse;

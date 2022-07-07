@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: MIT-0
+
 import { Iot } from 'aws-sdk';
 import { IotPort } from '../ports/iot';
 import { getCertIdFromARN } from '../util/iot';
