@@ -22,51 +22,63 @@ export const handler = async (
     if (event.RequestType === 'Create') {
       console.info(`Creating thing: ${thingName}`);
       const res = await thingHandler.create(thingName);
-      cfn.send(
-        event,
-        context,
-        cfn.SUCCESS,
-        {
-          certPem: res.certPem,
-          privKey: res.privKey,
-          certId: res.certId,
-        },
-        res.thingArn,
-        true
-      );
+
+      return new Promise(() => {
+        cfn.send(
+          event,
+          context,
+          cfn.SUCCESS,
+          {
+            certPem: res.certPem,
+            privKey: res.privKey,
+            certId: res.certId,
+          },
+          res.thingArn,
+          true
+        )
+      });
+
 
     } else if (event.RequestType === 'Delete') {
       console.info(`Deleting thing: ${thingName}`);
       await thingHandler.delete(thingName);
-      cfn.send(
-        event,
-        context,
-        cfn.SUCCESS,
-        {},
-        event.PhysicalResourceId
-      );
+
+      return new Promise(() => {
+        cfn.send(
+          event,
+          context,
+          cfn.SUCCESS,
+          {},
+          event.PhysicalResourceId
+        );
+      });
     } else if (event.RequestType === 'Update') {
       console.info(`Updating thing: ${thingName}`);
       await thingHandler.delete(thingName);
-      cfn.send(
-        event,
-        context,
-        cfn.SUCCESS,
-        {},
-        event.PhysicalResourceId
+
+      return new Promise(() => {
+        cfn.send(
+          event,
+          context,
+          cfn.SUCCESS,
+          {},
+          event.PhysicalResourceId
+        );
+      }).then(() => thingHandler.create(thingName)
+      ).then((res) =>
+        cfn.send(
+          event,
+          context,
+          cfn.SUCCESS,
+          {
+            certPem: res.certPem,
+            privKey: res.privKey,
+            certId: res.certId,
+          },
+          res.thingArn
+        )
       );
-      const res = await thingHandler.create(thingName);
-      cfn.send(
-        event,
-        context,
-        cfn.SUCCESS,
-        {
-          certPem: res.certPem,
-          privKey: res.privKey,
-          certId: res.certId,
-        },
-        res.thingArn
-      );
+
     } else {
       throw new Error('Received invalid request type');
     }
@@ -78,13 +90,15 @@ export const handler = async (
       reasonStr = err.message;
     }
 
-    cfn.send(
-      event,
-      context,
-      cfn.FAILED,
-      {},
-      // @ts-ignore
-      event.PhysicalResourceId || event.LogicalResourceId
+    return new Promise(() =>
+      cfn.send(
+        event,
+        context,
+        cfn.FAILED,
+        {},
+        // @ts-ignore
+        event.PhysicalResourceId || event.LogicalResourceId
+      )
     );
   }
 };
