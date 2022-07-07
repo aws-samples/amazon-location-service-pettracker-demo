@@ -2,7 +2,8 @@ import * as lambda from 'aws-lambda';
 import { Iot } from 'aws-sdk';
 import { iotAdaptor } from './adapters/iot';
 import { thingAdaptor } from './adapters/thing';
-import * as cfn from 'cfn-response';
+
+var cfn = require('cfn-response');
 
 type Success = lambda.CloudFormationCustomResourceSuccessResponse;
 type Failure = lambda.CloudFormationCustomResourceFailedResponse;
@@ -14,6 +15,7 @@ export const handler = async (
   context: lambda.Context
 ): Promise<Success | Failure> => {
   try {
+    console.info(`Event: ${event}`);
     const thingName = event.ResourceProperties.ThingName;
     if (event.RequestType === 'Create') {
       console.info(`Creating thing: ${thingName}`);
@@ -26,7 +28,8 @@ export const handler = async (
           privKey: res.privKey,
           certId: res.certId,
         },
-        res.thingArn
+        res.thingArn,
+        true
       )).then(() => ({
         Status: 'SUCCESS',
         // @ts-ignore
