@@ -15,9 +15,9 @@ const thingHandler = thingAdaptor(iotAdaptor(new Iot()));
 export const handler = async (
   event: lambda.CloudFormationCustomResourceEvent,
   context: lambda.Context
-): Promise<Success | Failure> => {
+): Promise<void> => {
   try {
-    console.info(`Event: ${event}`);
+    console.info(`Event: ${JSON.stringify(event)}`);
     const thingName = event.ResourceProperties.ThingName;
     if (event.RequestType === 'Create') {
       console.info(`Creating thing: ${thingName}`);
@@ -34,14 +34,6 @@ export const handler = async (
         res.thingArn,
         true
       );
-      return ({
-        Status: 'SUCCESS',
-        // @ts-ignore
-        PhysicalResourceId: event.PhysicalResourceId || event.LogicalResourceId,
-        LogicalResourceId: event.LogicalResourceId,
-        RequestId: event.RequestId,
-        StackId: event.StackId,
-      });
 
     } else if (event.RequestType === 'Delete') {
       console.info(`Deleting thing: ${thingName}`);
@@ -53,13 +45,6 @@ export const handler = async (
         {},
         event.PhysicalResourceId
       );
-      return ({
-        Status: 'SUCCESS',
-        PhysicalResourceId: event.PhysicalResourceId,
-        LogicalResourceId: event.LogicalResourceId,
-        RequestId: event.RequestId,
-        StackId: event.StackId,
-      });
     } else if (event.RequestType === 'Update') {
       console.info(`Updating thing: ${thingName}`);
       await thingHandler.delete(thingName);
@@ -82,14 +67,6 @@ export const handler = async (
         },
         res.thingArn
       );
-      return ({
-        Status: 'SUCCESS',
-        // @ts-ignore
-        PhysicalResourceId: event.PhysicalResourceId || event.LogicalResourceId,
-        LogicalResourceId: event.LogicalResourceId,
-        RequestId: event.RequestId,
-        StackId: event.StackId,
-      });
     } else {
       throw new Error('Received invalid request type');
     }
@@ -109,15 +86,5 @@ export const handler = async (
       // @ts-ignore
       event.PhysicalResourceId || event.LogicalResourceId
     );
-
-    return ({
-      Status: 'FAILED',
-      Reason: reasonStr,
-      RequestId: event.RequestId,
-      StackId: event.StackId,
-      LogicalResourceId: event.LogicalResourceId!,
-      // @ts-ignore
-      PhysicalResourceId: event.PhysicalResourceId || event.LogicalResourceId,
-    });
   }
 };
