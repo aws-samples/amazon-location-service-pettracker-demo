@@ -21,7 +21,8 @@ export const handler = async (
     const thingName = event.ResourceProperties.ThingName;
     if (event.RequestType === 'Create') {
       console.info(`Creating thing: ${thingName}`);
-      return thingHandler.create(thingName).then(res => cfn.send(
+      const res = await thingHandler.create(thingName);
+      cfn.send(
         event,
         context,
         cfn.SUCCESS,
@@ -32,59 +33,63 @@ export const handler = async (
         },
         res.thingArn,
         true
-      )).then(() => ({
+      );
+      return ({
         Status: 'SUCCESS',
         // @ts-ignore
         PhysicalResourceId: event.PhysicalResourceId || event.LogicalResourceId,
         LogicalResourceId: event.LogicalResourceId,
         RequestId: event.RequestId,
         StackId: event.StackId,
-      }));
+      });
 
     } else if (event.RequestType === 'Delete') {
       console.info(`Deleting thing: ${thingName}`);
-      return thingHandler.delete(thingName).then(res => cfn.send(
+      await thingHandler.delete(thingName);
+      cfn.send(
         event,
         context,
         cfn.SUCCESS,
         {},
         event.PhysicalResourceId
-      )).then(() => ({
+      );
+      return ({
         Status: 'SUCCESS',
         PhysicalResourceId: event.PhysicalResourceId,
         LogicalResourceId: event.LogicalResourceId,
         RequestId: event.RequestId,
         StackId: event.StackId,
-      }));
+      });
     } else if (event.RequestType === 'Update') {
       console.info(`Updating thing: ${thingName}`);
-      return thingHandler.delete(thingName).then(res => cfn.send(
+      await thingHandler.delete(thingName);
+      cfn.send(
         event,
         context,
         cfn.SUCCESS,
         {},
         event.PhysicalResourceId
-      ))
-        .then(() => thingHandler.create(thingName))
-        .then(res => cfn.send(
-          event,
-          context,
-          cfn.SUCCESS,
-          {
-            certPem: res.certPem,
-            privKey: res.privKey,
-            certId: res.certId,
-          },
-          res.thingArn
-        ))
-        .then(() => ({
-          Status: 'SUCCESS',
-          // @ts-ignore
-          PhysicalResourceId: event.PhysicalResourceId || event.LogicalResourceId,
-          LogicalResourceId: event.LogicalResourceId,
-          RequestId: event.RequestId,
-          StackId: event.StackId,
-        }))
+      );
+      const res = await thingHandler.create(thingName);
+      cfn.send(
+        event,
+        context,
+        cfn.SUCCESS,
+        {
+          certPem: res.certPem,
+          privKey: res.privKey,
+          certId: res.certId,
+        },
+        res.thingArn
+      );
+      return ({
+        Status: 'SUCCESS',
+        // @ts-ignore
+        PhysicalResourceId: event.PhysicalResourceId || event.LogicalResourceId,
+        LogicalResourceId: event.LogicalResourceId,
+        RequestId: event.RequestId,
+        StackId: event.StackId,
+      });
     } else {
       throw new Error('Received invalid request type');
     }
@@ -96,20 +101,16 @@ export const handler = async (
       reasonStr = err.message;
     }
 
-    const asyncCfnCall = () => {
-      return new Promise((resolve, reject) => {
-        cfn.send(
-          event,
-          context,
-          cfn.FAILED,
-          {},
-          // @ts-ignore
-          event.PhysicalResourceId || event.LogicalResourceId
-        );
-      })
-    }
+    cfn.send(
+      event,
+      context,
+      cfn.FAILED,
+      {},
+      // @ts-ignore
+      event.PhysicalResourceId || event.LogicalResourceId
+    );
 
-    return asyncCfnCall().then(() => ({
+    return ({
       Status: 'FAILED',
       Reason: reasonStr,
       RequestId: event.RequestId,
@@ -117,6 +118,6 @@ export const handler = async (
       LogicalResourceId: event.LogicalResourceId!,
       // @ts-ignore
       PhysicalResourceId: event.PhysicalResourceId || event.LogicalResourceId,
-    }))
+    });
   }
 };
