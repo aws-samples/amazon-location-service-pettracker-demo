@@ -11,8 +11,6 @@ import { aws_s3 as s3 } from 'aws-cdk-lib';
 import path = require("path");
 
 export interface PetTrackerPositionProps {
-    readonly account: string;
-    readonly region: string;
     readonly bucket: s3.IBucket;
     readonly version: string;
 }
@@ -41,7 +39,7 @@ export class PetTrackerPositionLambda extends Construct {
             tracing: lambda.Tracing.ACTIVE
         });
 
-        trackerLambda.addEnvironment("REGION", props.region);
+        trackerLambda.addEnvironment("REGION", cdk.Aws.REGION);
 
         const trackerLambdaAlias = new lambda.Alias(
             this,
@@ -53,7 +51,7 @@ export class PetTrackerPositionLambda extends Construct {
         );
 
         trackerLambdaRole.addToPolicy(new iam.PolicyStatement({
-            resources: [`arn:aws:logs:${props.region}:${props.account}:*`],
+            resources: [`arn:aws:logs:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:*`],
             actions: [
                 "logs:CreateLogGroup",
                 "logs:CreateLogStream",
@@ -90,7 +88,7 @@ export class PetTrackerPositionLambda extends Construct {
 
         trackerLambda.addPermission("PetTrackerPositionLambdaPermission", {
             principal: new iam.ServicePrincipal("iot.amazonaws.com"),
-            sourceAccount: props.account,
+            sourceAccount: cdk.Aws.ACCOUNT_ID,
             sourceArn: trackerTopicRule.attrArn
         });
 

@@ -1,4 +1,4 @@
-import { Duration, ResourceProps } from 'aws-cdk-lib';
+import { Duration, Aws } from 'aws-cdk-lib';
 import { CfnCustomResource } from 'aws-cdk-lib/aws-cloudformation';
 import { CompositePrincipal, PolicyStatement, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { aws_lambda as lambda } from 'aws-cdk-lib';
@@ -10,15 +10,11 @@ export interface ThingWithCertProps {
   readonly thingName: string;
   readonly bucket: s3.IBucket;
   readonly version: string;
-  readonly account: string;
-  readonly region: string;
 }
 
 export class ThingWithCert extends Construct {
   constructor(scope: Construct, id: string, props: ThingWithCertProps) {
     super(scope, id);
-
-    const { thingName, account, region } = props;
 
 
     const trackerThing = new iot.CfnThing(this, "IoTDevice", {
@@ -73,7 +69,7 @@ export class ThingWithCert extends Construct {
       serviceToken: lambdaFunction.functionArn,
     });
 
-    lambdaCustomResource.addPropertyOverride('ThingName', thingName);
+    lambdaCustomResource.addPropertyOverride('ThingName', props.thingName);
 
     new iot.CfnThingPrincipalAttachment(
       this,
@@ -94,14 +90,14 @@ export class ThingWithCert extends Construct {
             Action: [
               "iot:Connect"
             ],
-            Resource: [`arn:aws:iot:${region}:${account}:client/pettracker-*`]
+            Resource: [`arn:aws:iot:${Aws.REGION}:${Aws.ACCOUNT_ID}:client/pettracker-*`]
           },
           {
             Effect: "Allow",
             Action: [
               "iot:Publish"
             ],
-            Resource: [`arn:aws:iot:${region}:${account}:topic/pettracker`]
+            Resource: [`arn:aws:iot:${Aws.REGION}:${Aws.ACCOUNT_ID}:topic/pettracker`]
           }
         ]
       }

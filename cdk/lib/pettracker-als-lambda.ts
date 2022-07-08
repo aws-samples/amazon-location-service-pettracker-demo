@@ -12,9 +12,7 @@ import path = require("path");
 
 
 export interface PetTrackerALSProps {
-    account: string;
-    region: string;
-    trackerName: string;
+    readonly trackerName: string;
     readonly bucket: s3.IBucket;
     readonly version: string;
 }
@@ -53,7 +51,7 @@ export class PetTrackerALSLambda extends Construct {
         );
 
         trackerLambdaRole.addToPolicy(new iam.PolicyStatement({
-            resources: [`arn:aws:logs:${props.region}:${props.account}:*`],
+            resources: [`arn:aws:logs:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:*`],
             actions: [
                 "logs:CreateLogGroup",
                 "logs:CreateLogStream",
@@ -88,7 +86,7 @@ export class PetTrackerALSLambda extends Construct {
 
         trackerLambda.addPermission("PetTrackerPositionLambdaPermission", {
             principal: new iam.ServicePrincipal("iot.amazonaws.com"),
-            sourceAccount: props.account,
+            sourceAccount: cdk.Aws.ACCOUNT_ID,
             sourceArn: trackerTopicRule.attrArn
         });
     }

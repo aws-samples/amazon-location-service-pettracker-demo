@@ -13,31 +13,22 @@ import { PetTrackerALSLambda } from './pettracker-als-lambda'
 export class PetTrackerDataIngestionStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
-
-    const region = props?.env?.region || 'us-east-1';
-    const account = props?.env?.account || '';
     const version = this.node.tryGetContext('version') || '';
 
-    const assetsBucket = s3.Bucket.fromBucketName(this, 'pettracker-bucket', `amazon-location-service-pettracker-${region}`);
+    const assetsBucket = s3.Bucket.fromBucketName(this, 'pettracker-bucket', `amazon-location-service-pettracker-${cdk.Aws.REGION}`);
 
     new ThingWithCert(this, 'thing-with-cert', {
       thingName: "PetTrackerThing",
-      region: region,
-      account: account,
       bucket: assetsBucket,
       version: version
     });
 
     new PetTrackerPositionLambda(this, 'pettracker-position-lambda', {
-      region: region,
-      account: account,
       bucket: assetsBucket,
       version: version
     });
 
     new PetTrackerALSLambda(this, 'pettracker-als-lambda', {
-      region: region,
-      account: account,
       trackerName: "PetTracker",
       bucket: assetsBucket,
       version: version
