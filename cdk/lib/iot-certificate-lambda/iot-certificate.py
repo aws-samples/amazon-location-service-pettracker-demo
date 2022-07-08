@@ -26,7 +26,7 @@ def handler(event, context):
         if event['RequestType'] == 'Create':
             log.info('Creating certificate for thing: %s' % thingName)
 
-            certId, certARN, secretARN = create(responseData, iot, secretsmanager, thingName)
+            certId, certARN, secretARN = create(iot, secretsmanager, thingName)
 
             responseData['certificateId'] = certId
             responseData['certificateArn'] = certARN
@@ -37,7 +37,7 @@ def handler(event, context):
             log.info('Updating certificate: %s' % certId)
 
             delete(iot, secretsmanager, thingName, certId)
-            certId, certARN, secretARN = create(responseData, iot, secretsmanager, thingName)
+            certId, certARN, secretARN = create(iot, secretsmanager, thingName)
 
             responseData['certificateId'] = certId
             responseData['certificateArn'] = certARN
