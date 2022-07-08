@@ -20,11 +20,10 @@ export class PetTrackerDataIngestionStack extends cdk.Stack {
 
     const assetsBucket = s3.Bucket.fromBucketName(this, 'pettracker-bucket', `amazon-location-service-pettracker-${region}`);
 
-    new ThingWithCert(this, 'ThingWithCert', {
-      thingName:"PetTrackerThing",
-      saveToParamStore: true,
-      paramPrefix: '/devices',
+    new ThingWithCert(this, 'thing-with-cert', {
+      thingName: "PetTrackerThing",
       region: region,
+      account: account,
       bucket: assetsBucket,
       version: version
     });

@@ -3,27 +3,28 @@ import { CfnCustomResource } from 'aws-cdk-lib/aws-cloudformation';
 import { CompositePrincipal, PolicyStatement, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { aws_lambda as lambda } from 'aws-cdk-lib';
 import { aws_s3 as s3 } from 'aws-cdk-lib';
-import { RetentionDays } from 'aws-cdk-lib/aws-logs';
-import { CfnParameter } from 'aws-cdk-lib/aws-ssm';
+import { aws_iot as iot } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 
-export interface ThingWithCertProps extends ResourceProps {
+export interface ThingWithCertProps {
   readonly thingName: string;
-  readonly saveToParamStore?: boolean;
-  readonly paramPrefix?: string;
   readonly bucket: s3.IBucket;
   readonly version: string;
+  readonly account: string;
+  readonly region: string;
 }
 
 export class ThingWithCert extends Construct {
-  public readonly thingArn: string;
-  public readonly certId: string;
-  public readonly certPem: string;
-  public readonly privKey: string;
   constructor(scope: Construct, id: string, props: ThingWithCertProps) {
     super(scope, id);
 
-    const { thingName, saveToParamStore, paramPrefix } = props;
+    const { thingName, account, region } = props;
+
+
+    const trackerThing = new iot.CfnThing(this, "IoTDevice", {
+      thingName: "PetTrackerThing"
+    });
+
 
     const lambdaExecutionRole = new Role(this, 'LambdaExecutionRole', {
       assumedBy: new CompositePrincipal(new ServicePrincipal('lambda.amazonaws.com')),
@@ -43,16 +44,27 @@ export class ThingWithCert extends Construct {
       })
     );
 
+    lambdaExecutionRole.addToPolicy(
+      new PolicyStatement({
+        resources: ["*"],
+        actions: [
+          "secretsmanager:CreateSecret",
+          "secretsmanager:DeleteSecret",
+          "secretsmanager:UpdateSecret"
+        ]
+      })
+    );
+
     const lambdaFunction = new lambda.SingletonFunction(
       this,
       "CustomCertificateResourceFunction",
       {
         uuid: "e8d4f732-4ee1-11e8-9c2d-fa7ae01bbeba",
-        code: lambda.Code.fromBucket(props.bucket, `thing-with-cert-lambda-${props.version}.zip`),
-        handler: 'index.handler',
+        code: lambda.Code.fromBucket(props.bucket, `iot-certificate-${props.version}.zip`),
+        handler: 'iot-certificate.handler',
         memorySize: 256,
-        timeout: Duration.seconds(10),
-        runtime: lambda.Runtime.NODEJS_16_X,
+        timeout: Duration.seconds(30),
+        runtime: lambda.Runtime.PYTHON_3_9,
         role: lambdaExecutionRole
       }
     );
@@ -63,25 +75,42 @@ export class ThingWithCert extends Construct {
 
     lambdaCustomResource.addPropertyOverride('ThingName', thingName);
 
-    let paramStorePath = paramPrefix ? `${paramPrefix}/${thingName}` : thingName;
+    new iot.CfnThingPrincipalAttachment(
+      this,
+      "PetTrackerThingCredentialAttachment",
+      {
+        principal: lambdaCustomResource.getAtt('certificateArn').toString(),
+        thingName: trackerThing.ref
+      }
+    );
 
-    if (saveToParamStore) {
-      new CfnParameter(this, 'paramStoreCertPem', {
-        type: 'String',
-        value: lambdaCustomResource.getAtt('certPem').toString(),
-        name: `${paramStorePath}/certPem`,
-      });
+    const trackerPolicy = new iot.CfnPolicy(this, "PetTrackerPolicy", {
+      policyName: `${trackerThing.thingName}_Policy`,
+      policyDocument: {
+        Version: "2012-10-17",
+        Statement: [
+          {
+            Effect: "Allow",
+            Action: [
+              "iot:Connect"
+            ],
+            Resource: [`arn:aws:iot:${region}:${account}:client/pettracker-*`]
+          },
+          {
+            Effect: "Allow",
+            Action: [
+              "iot:Publish"
+            ],
+            Resource: [`arn:aws:iot:${region}:${account}:topic/pettracker`]
+          }
+        ]
+      }
+    });
 
-      new CfnParameter(this, 'paramStorePrivKey', {
-        type: 'String',
-        value: lambdaCustomResource.getAtt('privKey').toString(),
-        name: `${paramStorePath}/privKey`,
-      });
-    }
+    new iot.CfnPolicyPrincipalAttachment(this, "PetTrackerThingPolicyAttachment", {
+      policyName: trackerPolicy.policyName!,
+      principal: lambdaCustomResource.getAtt('certificateArn').toString()
+    });
 
-    this.thingArn = lambdaCustomResource.getAtt('thingArn').toString();
-    this.certId = lambdaCustomResource.getAtt('certId').toString();
-    this.certPem = lambdaCustomResource.getAtt('certPem').toString();
-    this.privKey = lambdaCustomResource.getAtt('privKey').toString();
   }
 }
