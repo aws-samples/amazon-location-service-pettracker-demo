@@ -60,7 +60,7 @@ export class ThingWithCert extends Construct {
       "CustomCertificateResourceFunction",
       {
         uuid: "e8d4f732-4ee1-11e8-9c2d-fa7ae01bbeba",
-        code: lambda.Code.fromBucket(props.bucket, `iot-certificate-${props.version}.zip`),
+        code: lambda.Code.fromBucket(props.bucket, `iot-certificate-lambda-${props.version}.zip`),
         handler: 'iot-certificate.handler',
         memorySize: 256,
         timeout: Duration.seconds(30),
