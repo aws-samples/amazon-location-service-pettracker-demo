@@ -8,5 +8,8 @@ new PetTrackerDataIngestionStack(app, 'PetTrackerStack', {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: process.env.CDK_DEFAULT_REGION,
-  }
+  },
+  synthesizer: new cdk.DefaultStackSynthesizer({
+    generateBootstrapVersionRule: false
+  })
 });
