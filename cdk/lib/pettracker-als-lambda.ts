@@ -1,22 +1,25 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 
-import * as cdk from '@aws-cdk/core';
-import * as iam from '@aws-cdk/aws-iam';
-import * as lambda from '@aws-cdk/aws-lambda';
-import * as iot from '@aws-cdk/aws-iot';
+import { aws_iot as iot} from 'aws-cdk-lib';
+import { aws_lambda as lambda } from "aws-cdk-lib";
+import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import { aws_iam as iam } from "aws-cdk-lib";
+import { aws_s3 as s3 } from 'aws-cdk-lib';
+
 import path = require("path");
 
 
 export interface PetTrackerALSProps {
-    account: string
-    region: string
-    trackerName: string
+    readonly trackerName: string;
+    readonly bucket: s3.IBucket;
+    readonly version: string;
 }
 
-export class PetTrackerALSLambda extends cdk.Construct {
+export class PetTrackerALSLambda extends Construct {
 
-    constructor(scope: cdk.Construct, id: string, props: PetTrackerALSProps) {
+    constructor(scope: Construct, id: string, props: PetTrackerALSProps) {
         super(scope, id);
 
         const trackerLambdaRole = new iam.Role(
@@ -29,7 +32,7 @@ export class PetTrackerALSLambda extends cdk.Construct {
 
         const trackerLambda = new lambda.Function(this, "PetTrackerPositionLambda", {
             runtime: lambda.Runtime.PYTHON_3_8,
-            code: lambda.Code.fromAsset(path.join(__dirname, "tracker-lambda")),
+            code: lambda.Code.fromBucket(props.bucket, `tracker-lambda-${props.version}.zip`),
             handler: "lambda_function.lambda_handler",
             memorySize: 128,
             role: trackerLambdaRole,
@@ -48,7 +51,7 @@ export class PetTrackerALSLambda extends cdk.Construct {
         );
 
         trackerLambdaRole.addToPolicy(new iam.PolicyStatement({
-            resources: [`arn:aws:logs:${props.region}:${props.account}:*`],
+            resources: [`arn:aws:logs:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:*`],
             actions: [
                 "logs:CreateLogGroup",
                 "logs:CreateLogStream",
@@ -83,7 +86,7 @@ export class PetTrackerALSLambda extends cdk.Construct {
 
         trackerLambda.addPermission("PetTrackerPositionLambdaPermission", {
             principal: new iam.ServicePrincipal("iot.amazonaws.com"),
-            sourceAccount: props.account,
+            sourceAccount: cdk.Aws.ACCOUNT_ID,
             sourceArn: trackerTopicRule.attrArn
         });
     }
