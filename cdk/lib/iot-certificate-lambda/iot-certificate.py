@@ -34,7 +34,7 @@ def handler(event, context):
             result = cfnresponse.SUCCESS
 
         elif event['RequestType'] == 'Update':
-            log.info('Updating certificate: %s' % certId)
+            log.info('Updating certificate')
 
             delete(iot, secretsmanager, thingName, certId)
             certId, certARN, secretARN = create(iot, secretsmanager, thingName)
@@ -45,7 +45,7 @@ def handler(event, context):
             result = cfnresponse.SUCCESS
 
         elif event['RequestType'] == 'Delete':
-            log.info('Deleting certificate: %s' % certId)
+            log.info('Deleting certificate')
 
             delete(iot, secretsmanager, thingName, certId)
             result = cfnresponse.SUCCESS
