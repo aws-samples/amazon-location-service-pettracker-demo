@@ -1,0 +1,27 @@
+type Position {
+  id: ID
+  updatedAt: AWSDate!
+  lng: Float!
+  lat: Float!
+}
+
+input PositionInput {
+  id: ID
+  updatedAt: AWSDate!
+  lng: Float!
+  lat: Float!
+}
+
+type Query {
+  getPosition(id: ID!): Position @aws_api_key
+  listPositions: [Position] @aws_api_key
+}
+
+type Mutation {
+  addPosition(input: PositionInput): Position @aws_api_key
+  updatePosition(input: PositionInput): Position @aws_api_key
+}
+
+type Subscription {
+  onUpdatePosition: Position @aws_subscribe(mutations: ["updatePosition"])
+}
