@@ -1,0 +1,12 @@
+/* 
+Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+SPDX-License-Identifier: MIT-0
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:slnt,wght@-10..0,100..900&display=swap');
+@import "@aws-amplify/ui-react/styles.css";
+
+body, html, body::after, body::before {
+  margin: 0;
+  padding: 0;
+}
