@@ -140,6 +140,19 @@
                     "Resource": [
                         "arn:aws:geo:*:*:*"
                     ]
+                },
+                {
+                    "Sid": "Geofences",
+                    "Effect": "Allow",
+                    "Action": [
+                        "geo:ListGeofences",
+                        "geo:BatchPutGeofence",
+                        "geo:BatchDeleteGeofence"
+                    ],
+                    "Resource": {
+                        "Fn::Sub":
+                            "arn:aws:geo:${AWS::Region}:${AWS::AccountId}:geofence-collection/*"
+                        }
                 }
             ]
         }
