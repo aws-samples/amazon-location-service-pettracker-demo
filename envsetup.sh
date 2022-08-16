@@ -30,16 +30,18 @@ set -e
 IFS='|'
 
 # Install position-lambda libraries
-cd ~/environment/amazon-location-service-pettracker-demo/cdk/lib/position-lambda
-npm install
+# cd ~/environment/amazon-location-service-pettracker-demo/cdk/lib/position-lambda
+# npm install
 
 # Install cdk libraries
-cd ~/environment/amazon-location-service-pettracker-demo/cdk
-npm install
+# cd ~/environment/amazon-location-service-pettracker-demo/cdk
+# npm install
 
 # Deploy lab resources
-cdk bootstrap
-cdk deploy PetTrackerStack --require-approval never
+# cdk bootstrap
+# cdk deploy PetTrackerStack --require-approval never
+
+sh ~/environment/amazon-location-service-pettracker-demo/resize.sh
 
 # Install webapp resources using Amplify
 REACTCONFIG="{\
@@ -83,5 +85,3 @@ amplify init \
 --frontend $FRONTEND \
 --providers $PROVIDERS \
 --yes
-
-amplify publish --yes
