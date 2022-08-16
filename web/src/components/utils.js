@@ -1,18 +1,26 @@
 import polygonArea from "area-polygon";
+import { Auth } from "aws-amplify";
 import {
   LocationClient,
   ListGeofencesCommand,
   BatchDeleteGeofenceCommand,
   PutGeofenceCommand,
 } from "@aws-sdk/client-location";
+import awsconfig from "../aws-exports";
 
 export class Location {
-  constructor(credentials, awsRegion, geofenceCollectionName) {
+  constructor(geofenceCollectionName) {
+    this.client = null;
+    this.geofenceCollectionName = geofenceCollectionName;
+  }
+
+  async buildClient() {
+    const credentials = await Auth.currentCredentials();
     this.client = new LocationClient({
       credentials: credentials,
-      region: awsRegion,
+      region: awsconfig.aws_project_region,
     });
-    this.geofenceCollectionName = geofenceCollectionName;
+    return this.client;
   }
 
   ccwPolygon(coordinates) {
@@ -28,6 +36,9 @@ export class Location {
   }
 
   async deleteGeofence(e) {
+    if (!this.client) {
+      await this.buildClient();
+    }
     console.log("Geofence delete event object", e);
     if (e.features.length > 0) {
       const params = {
@@ -42,16 +53,18 @@ export class Location {
   }
 
   async createUpdateGeofence(e) {
+    if (!this.client) {
+      await this.buildClient();
+    }
     console.log("Geofence create event object", e);
     if (e.features.length > 0) {
       const params = {
         CollectionName: this.geofenceCollectionName,
         GeofenceId: e.features[e.features.length - 1].id,
         Geometry: {
-          Polygon:
-            e.features[e.features.length - 1].geometry.coordinates.map(
-              ccwPolygon
-            ),
+          Polygon: e.features[e.features.length - 1].geometry.coordinates.map(
+            this.ccwPolygon
+          ),
         },
       };
       const res = await this.client.send(new PutGeofenceCommand(params));
@@ -60,6 +73,9 @@ export class Location {
   }
 
   async loadGeofence(draw) {
+    if (!this.client) {
+      await this.buildClient();
+    }
     const res = await this.client.send(
       new ListGeofencesCommand({
         CollectionName: this.geofenceCollectionName,

@@ -76,6 +76,7 @@ PROVIDERS="{\
 [[ ! -f ~/.aws/config ]] && ln -s ~/.aws/credentials ~/.aws/config
 cd ~/environment/amazon-location-service-pettracker-demo/web
 
+npm set audit false
 npm install -g @aws-amplify/cli
 
 npm install
@@ -85,3 +86,5 @@ amplify init \
 --frontend $FRONTEND \
 --providers $PROVIDERS \
 --yes
+
+amplify push -y
