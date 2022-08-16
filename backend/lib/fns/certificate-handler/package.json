@@ -1,0 +1,21 @@
+{
+  "name": "certificate-handler",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "prebuild": "rm -rf dist",
+    "build": "esbuild src/index.ts --bundle --minify --sourcemap --platform=node --target=es2020 --outfile=dist/index.js",
+    "postbuild": "cd dist && zip -r index.zip index.js*"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT-0",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.101"
+  },
+  "dependencies": {
+    "@aws-sdk/client-iot": "^3.144.0",
+    "@aws-sdk/client-secrets-manager": "^3.142.0"
+  }
+}

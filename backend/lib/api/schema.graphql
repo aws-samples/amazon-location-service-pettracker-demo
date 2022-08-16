@@ -1,4 +1,4 @@
-type Position {
+type Position @aws_iam {
   id: ID
   updatedAt: AWSDate!
   lng: Float!
@@ -19,7 +19,7 @@ type Query {
 
 type Mutation {
   addPosition(input: PositionInput): Position @aws_api_key
-  updatePosition(input: PositionInput): Position @aws_api_key
+  updatePosition(input: PositionInput): Position @aws_api_key @aws_iam
 }
 
 type Subscription {

@@ -23,8 +23,11 @@
   "dependencies": {
     "@aws-cdk/aws-appsync-alpha": "^2.35.0-alpha.0",
     "@aws-cdk/aws-cognito-identitypool-alpha": "^2.35.0-alpha.0",
+    "@aws-cdk/aws-iot-actions-alpha": "^2.35.0-alpha.0",
+    "@aws-cdk/aws-iot-alpha": "^2.35.0-alpha.0",
     "aws-cdk-lib": "2.35.0",
     "constructs": "^10.0.0",
+    "esbuild": "^0.14.53",
     "source-map-support": "^0.5.21"
   }
 }

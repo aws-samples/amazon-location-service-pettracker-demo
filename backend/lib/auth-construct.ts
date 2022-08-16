@@ -1,4 +1,4 @@
-import { Stack, StackProps, CfnOutput } from "aws-cdk-lib";
+import { Stack, StackProps, CfnOutput, RemovalPolicy } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { IRole, Policy, PolicyStatement } from "aws-cdk-lib/aws-iam";
 import {
@@ -37,6 +37,7 @@ export class AuthConstruct extends Construct {
           mutable: true,
         },
       },
+      removalPolicy: RemovalPolicy.DESTROY,
     });
 
     const userPoolClient = new UserPoolClient(this, "UserPoolClient", {

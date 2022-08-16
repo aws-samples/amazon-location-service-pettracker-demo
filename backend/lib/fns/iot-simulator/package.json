@@ -1,0 +1,26 @@
+{
+  "name": "iot-simulator",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "prebuild": "rm -rf dist",
+    "build": "esbuild src/index.ts --bundle --minify --sourcemap --platform=node --target=es2020 --outfile=dist/index.js",
+    "postbuild": "cd dist && zip -r index.zip index.js*"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT-0",
+  "description": "",
+  "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.145.0",
+    "@turf/bbox-polygon": "^6.5.0",
+    "@turf/buffer": "^6.5.0",
+    "@turf/intersect": "^6.5.0",
+    "@turf/random": "^6.5.0",
+    "aws-iot-device-sdk-v2": "^1.8.5"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.101",
+    "@types/node-fetch": "^2.6.2"
+  }
+}
