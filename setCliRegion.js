@@ -33,7 +33,7 @@ const getRegion = async (token) => {
 
 const writeAWSCliConfig = (region) => {
   fs.writeFileSync(
-    `/home/ec2-user/.aws/config`,
+    `./config.tmp`,
     `[default]
 output=json
 region=${region}`,
