@@ -42,9 +42,13 @@ region=${region}`,
 };
 
 const main = async () => {
+  console.log('Retrieving IMDSv2 token');
   const token = await getToken();
+  console.log('Token retrieved successfully');
   const region = await getRegion(token);
+  console.log(`Region retrieved successfully ${region}`);
   writeAWSCliConfig(region);
+  console.log(`Wrote tmp config at ${process.cwd()}/config.tmp`);
 };
 
 main();
