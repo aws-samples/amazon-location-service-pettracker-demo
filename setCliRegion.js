@@ -33,7 +33,7 @@ const getRegion = async (token) => {
 
 const writeAWSCliConfig = (region) => {
   fs.writeFileSync(
-    `./config.tmp`,
+    `./.aws/config`,
     `[default]
 output=json
 region=${region}`,
@@ -48,7 +48,7 @@ const main = async () => {
   const region = await getRegion(token);
   console.log(`Region retrieved successfully ${region}`);
   writeAWSCliConfig(region);
-  console.log(`Wrote tmp config at ${process.cwd()}/config.tmp`);
+  console.log(`Wrote config at ${process.cwd()}/.aws/config`);
 };
 
 main();
