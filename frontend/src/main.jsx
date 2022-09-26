@@ -5,8 +5,8 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./index.css";
-import { Amplify, PubSub } from "aws-amplify";
-// import PubSub from "@aws-amplify/pubsub";
+import { Amplify } from "aws-amplify";
+import PubSub from "@aws-amplify/pubsub";
 import { AmplifyProvider } from "@aws-amplify/ui-react";
 import awsconfig from "./aws-exports";
 
