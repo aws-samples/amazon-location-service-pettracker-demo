@@ -1,12 +1,10 @@
-import { StackProps, CfnOutput } from "aws-cdk-lib";
+import { StackProps, Expiration, CfnOutput, Duration } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import {
   GraphqlApi,
   Schema,
   AuthorizationType,
   MappingTemplate,
-  PrimaryKey,
-  Values,
   FieldLogLevel,
 } from "@aws-cdk/aws-appsync-alpha";
 import { ITable } from "aws-cdk-lib/aws-dynamodb";
@@ -36,6 +34,9 @@ export class AppSyncConstruct extends Construct {
       authorizationConfig: {
         defaultAuthorization: {
           authorizationType: AuthorizationType.API_KEY,
+          apiKeyConfig: {
+            expires: Expiration.after(Duration.days(365)),
+          },
         },
         additionalAuthorizationModes: [
           {

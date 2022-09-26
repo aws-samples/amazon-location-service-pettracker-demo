@@ -11,7 +11,6 @@ import { LambdaFunctionAction } from "@aws-cdk/aws-iot-actions-alpha";
 import { Provider } from "aws-cdk-lib/custom-resources";
 import { RetentionDays } from "aws-cdk-lib/aws-logs";
 import { Function } from "aws-cdk-lib/aws-lambda";
-import { Topic } from "aws-cdk-lib/aws-sns";
 
 interface IotCoreConstructProps extends StackProps {
   certificateHandlerFn: Function;

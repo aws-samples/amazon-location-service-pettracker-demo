@@ -47,6 +47,12 @@ const onCreate = async (_event: CloudFormationCustomResourceCreateEvent) => {
 };
 
 const onDelete = async (event: CloudFormationCustomResourceDeleteEvent) => {
+  await secretsManager.send(
+    new DeleteSecretCommand({
+      SecretId: "pettracker/iot-cert",
+      ForceDeleteWithoutRecovery: true,
+    })
+  );
   const certificateId = event.PhysicalResourceId;
   await iot.send(
     new UpdateCertificateCommand({
@@ -55,12 +61,6 @@ const onDelete = async (event: CloudFormationCustomResourceDeleteEvent) => {
     })
   );
   await iot.send(new DeleteCertificateCommand({ certificateId }));
-  await secretsManager.send(
-    new DeleteSecretCommand({
-      SecretId: "pettracker/iot-cert",
-      ForceDeleteWithoutRecovery: true,
-    })
-  );
 };
 
 const iot = new IoTClient({});

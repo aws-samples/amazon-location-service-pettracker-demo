@@ -23,5 +23,7 @@ type Mutation {
 }
 
 type Subscription {
-  onUpdatePosition: Position @aws_subscribe(mutations: ["updatePosition"])
+  onUpdatePosition: Position
+    @aws_subscribe(mutations: ["updatePosition"])
+    @aws_api_key
 }

@@ -5,6 +5,7 @@
     "backend": "bin/backend.js"
   },
   "scripts": {
+    "install:fns": "cd lib/fns/appsync-update && npm i & cd lib/fns/certificate-handler && npm i & cd lib/fns/tracker-update && npm i",
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
