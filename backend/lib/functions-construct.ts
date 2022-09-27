@@ -74,7 +74,7 @@ export class FunctionsConstruct extends Construct {
         sourceMap: true,
       },
       environment: {
-        TRACKER_NAME: "pettracker",
+        TRACKER_NAME: "PetTracker",
         NODE_OPTIONS: "--enable-source-maps",
       },
       memorySize: 256,
@@ -89,7 +89,7 @@ export class FunctionsConstruct extends Construct {
             resources: [
               `arn:aws:geo:${Stack.of(this).region}:${
                 Stack.of(this).account
-              }:tracker/pettracker`,
+              }:tracker/PetTracker`,
             ],
           }),
         ],

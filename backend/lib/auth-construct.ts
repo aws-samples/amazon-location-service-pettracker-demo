@@ -89,6 +89,14 @@ export class AuthConstruct extends Construct {
               }:geofence-collection/*`,
             ],
           }),
+          new PolicyStatement({
+            actions: ["geo:CalculateRoute*"],
+            resources: [
+              `arn:aws:geo:${Stack.of(this).region}:${
+                Stack.of(this).account
+              }:route-calculator/*`,
+            ],
+          }),
         ],
       })
     );

@@ -1,5 +1,6 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
+
 import { IoTEvent } from "aws-lambda";
 import {
   LocationClient,
@@ -14,13 +15,11 @@ type LocationEvent = {
   timestamp: string;
   lat: number;
   lng: number;
-  message: string;
 };
 
 type Event = Extract<IoTEvent<LocationEvent>, { type: "location" }>;
 
 export const handler = async (event: Event) => {
-  console.log(event.message);
   const { id, lng, lat, timestamp } = event;
 
   const updates = [
@@ -38,10 +37,9 @@ export const handler = async (event: Event) => {
       })
     );
 
-    // logger.info("Successfully updated device position");
+    console.info("Successfully updated device position");
   } catch (err) {
-    // logger.error(err);
-    console.log(err);
+    console.error(err);
     throw err;
   }
 };

@@ -12,6 +12,7 @@
     "cdk": "cdk"
   },
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.106",
     "@types/jest": "^27.5.2",
     "@types/node": "10.17.27",
     "@types/prettier": "2.6.0",
@@ -26,9 +27,15 @@
     "@aws-cdk/aws-cognito-identitypool-alpha": "^2.35.0-alpha.0",
     "@aws-cdk/aws-iot-actions-alpha": "^2.35.0-alpha.0",
     "@aws-cdk/aws-iot-alpha": "^2.35.0-alpha.0",
+    "@aws-sdk/client-iot": "^3.179.0",
+    "@aws-sdk/client-location": "^3.179.0",
+    "@aws-sdk/client-secrets-manager": "^3.179.0",
+    "@aws-sdk/credential-provider-node": "^3.178.0",
+    "@aws-sdk/signature-v4": "^3.178.0",
     "aws-cdk-lib": "2.35.0",
     "constructs": "^10.0.0",
     "esbuild": "^0.14.53",
+    "phin": "^3.6.1",
     "source-map-support": "^0.5.21"
   }
 }

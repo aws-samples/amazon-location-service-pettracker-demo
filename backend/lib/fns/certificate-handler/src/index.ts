@@ -1,5 +1,6 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
+
 import {
   CloudFormationCustomResourceEvent,
   CloudFormationCustomResourceCreateEvent,
@@ -17,6 +18,8 @@ import {
   DeleteSecretCommand,
 } from "@aws-sdk/client-secrets-manager";
 
+const SECRET_NAME = "pettracker/iot-cert";
+
 const onCreate = async (_event: CloudFormationCustomResourceCreateEvent) => {
   const { certificateId, certificatePem, keyPair } = await iot.send(
     new CreateKeysAndCertificateCommand({
@@ -30,7 +33,7 @@ const onCreate = async (_event: CloudFormationCustomResourceCreateEvent) => {
 
   await secretsManager.send(
     new CreateSecretCommand({
-      Name: "pettracker/iot-cert",
+      Name: SECRET_NAME,
       SecretString: JSON.stringify({
         cert: certificatePem,
         keyPair: keyPair.PrivateKey,
@@ -49,7 +52,7 @@ const onCreate = async (_event: CloudFormationCustomResourceCreateEvent) => {
 const onDelete = async (event: CloudFormationCustomResourceDeleteEvent) => {
   await secretsManager.send(
     new DeleteSecretCommand({
-      SecretId: "pettracker/iot-cert",
+      SecretId: SECRET_NAME,
       ForceDeleteWithoutRecovery: true,
     })
   );
