@@ -1,7 +1,7 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 
-import { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Geo } from "aws-amplify";
 import { Button } from "@aws-amplify/ui-react";
 import GeofencesPanel from "./GeofencesPanel";
@@ -28,31 +28,30 @@ const convertCounterClockwise = (vertices) => {
 };
 
 // Layer in the app that contains Geofences functionalities
-const GeofencesLayer = ({
-  isOpenedPanel,
-  onPanelChange,
-  isDrawing,
-  onDrawingChange,
-}) => {
+const GeofencesLayer = ({}) => {
   const [geofences, setGeofences] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [geofencesVisible, setGeofencesVisible] = useState(true);
   const [isAddingGeofence, setIsAddingGeofence] = useState(false);
   const [totalGeofences, setTotalGeofences] = useState();
   const [isGeofenceCompletable, setIsGeofenceCompletable] = useState(false);
+  const [isOpenedPanel, setIsOpenedPanel] = useState(false);
+  const [isDrawing, setIsDrawing] = useState(false);
 
   const fetchGeofences = async () => {
     setIsLoading(true);
     const fetchedGeofences = await Geo.listGeofences();
+    console.log(fetchedGeofences);
     setIsLoading(false);
     setTotalGeofences(fetchedGeofences.entries.length);
     // Limit to only display 10 geofences
     setGeofences(fetchedGeofences.entries.reverse().slice(0, 10));
   };
 
-  // Load any geofences immediately when the app runs
   useEffect(() => {
-    fetchGeofences();
+    if (geofences.length === 0) {
+      fetchGeofences();
+    }
   }, []);
 
   useEffect(() => {
@@ -73,8 +72,12 @@ const GeofencesLayer = ({
     }
   };
 
+  const onDrawingChange = (status) =>
+    status ? setIsDrawing(true) : setIsDrawing(false);
+
   //Making call to PutGeofence after user complete drawing a polygon using mapbox-gl-draw
   const handleCreate = useCallback(async (e) => {
+    console.log(e);
     if (e.features) {
       setIsAddingGeofence(true);
       try {
@@ -88,7 +91,8 @@ const GeofencesLayer = ({
             },
           },
         ]);
-        if (putGeofence.createTime) {
+        console.log(putGeofence);
+        if (putGeofence.successes) {
           fetchGeofences();
           onDrawingChange(true);
         }
@@ -126,7 +130,7 @@ const GeofencesLayer = ({
       >
         <Button
           onClick={() => {
-            isOpenedPanel ? onPanelChange() : onPanelChange("GEOFENCES_PANEL");
+            isOpenedPanel ? setIsOpenedPanel(false) : setIsOpenedPanel(true);
           }}
           backgroundColor="white"
           size="small"
@@ -148,7 +152,7 @@ const GeofencesLayer = ({
       </div>
       {isOpenedPanel && (
         <GeofencesPanel
-          onClose={() => onPanelChange()}
+          onClose={() => setIsOpenedPanel(false)}
           geofences={geofences}
           onDeleteGeofences={handleDeleteGeofences}
           onAddGeofence={() => onDrawingChange(true)}

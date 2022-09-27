@@ -18,8 +18,8 @@ parser.add_argument('--key', help="File path to your private key, in PEM format.
 parser.add_argument('--root-ca', help="File path to root certificate authority, in PEM format. " +
                                       "Necessary if MQTT server uses a certificate that's not already in " +
                                       "your trust store.")
-parser.add_argument('--client-id', default="pettracker-" + str(uuid4()), help="Client ID for MQTT connection.")
-parser.add_argument('--topic', default="pettracker", help="Topic to subscribe to, and publish messages to.")
+parser.add_argument('--client-id', default="pettracker", help="Client ID for MQTT connection.")
+parser.add_argument('--topic', default="iot/pettracker", help="Topic to subscribe to, and publish messages to.")
 parser.add_argument('--use-websocket', default=False, action='store_true',
     help="To use a websocket instead of raw mqtt. If you " +
     "specify this option you must specify a region for signing, you can also enable proxy mode.")
@@ -118,12 +118,11 @@ if __name__ == '__main__':
     try:
         while True:
             message = json.dumps({
-                "deviceId": args.client_id, 
+                "id": args.client_id, 
                 "timestamp": int(datetime.datetime.utcnow().replace(microsecond=0).timestamp()),
-                "location": {
-                    "lat": latitude,
-                    "long": longitude
-                }
+                "lng": longitude,
+                "lat": latitude
+                
             })
             print("Publishing message to topic '{}': {}".format(args.topic, message))
             mqtt_connection.publish(
