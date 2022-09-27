@@ -8,7 +8,8 @@
   },
   "workspaces": [
     "infra",
-    "pet_simulator"
+    "pet_simulator",
+    "frontend"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
