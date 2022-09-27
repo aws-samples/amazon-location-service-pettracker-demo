@@ -28,7 +28,7 @@ const convertCounterClockwise = (vertices) => {
 };
 
 // Layer in the app that contains Geofences functionalities
-const GeofencesLayer = ({}) => {
+export const GeofencesControl = ({}) => {
   const [geofences, setGeofences] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [geofencesVisible, setGeofencesVisible] = useState(true);
@@ -202,5 +202,3 @@ const GeofencesLayer = ({}) => {
     </>
   );
 };
-
-export default GeofencesLayer;

@@ -4,7 +4,7 @@
 import React from "react";
 import { MapView } from "@aws-amplify/ui-react";
 import { NavigationControl } from "react-map-gl";
-import GeofencesLayer from "./components/geofences/GeofencesLayer";
+import { GeofencesControl } from "./components/geofences/GeofencesControl";
 import { TrackerControl } from "./components/tracking/TrackerControl";
 import { DistanceControl } from "./components/routing/DistanceControl";
 
@@ -23,7 +23,7 @@ const App = () => {
         }}
       >
         <NavigationControl position={"top-left"} />
-        <GeofencesLayer />
+        <GeofencesControl />
         <TrackerControl />
         <DistanceControl />
       </MapView>
