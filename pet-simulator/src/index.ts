@@ -21,6 +21,3 @@ export const handler = async (): Promise<void> => {
 };
 
 handler();
-
-1664298315;
-1664298385273;
