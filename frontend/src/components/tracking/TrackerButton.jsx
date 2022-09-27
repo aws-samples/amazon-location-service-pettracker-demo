@@ -10,7 +10,7 @@ export const TrackerButton = ({ onClick, isSubscribed }) => {
       style={{
         position: "absolute",
         top: "0.59rem",
-        left: "40.6rem",
+        left: "11.5rem",
       }}
     >
       <Button

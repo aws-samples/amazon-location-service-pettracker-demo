@@ -41,7 +41,6 @@ const GeofencesLayer = ({}) => {
   const fetchGeofences = async () => {
     setIsLoading(true);
     const fetchedGeofences = await Geo.listGeofences();
-    console.log(fetchedGeofences);
     setIsLoading(false);
     setTotalGeofences(fetchedGeofences.entries.length);
     // Limit to only display 10 geofences
@@ -125,7 +124,7 @@ const GeofencesLayer = ({}) => {
         style={{
           position: "absolute",
           top: "0.59rem",
-          left: "31.6rem",
+          left: "3rem",
         }}
       >
         <Button

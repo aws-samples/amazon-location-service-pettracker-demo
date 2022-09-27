@@ -1,42 +1,46 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { Geo, Hub, Auth, BrowserStorageCache } from "aws-amplify";
+import { Geo, Hub, Auth, Cache } from "aws-amplify";
 import {
   CalculateRouteCommand,
   LocationClient,
 } from "@aws-sdk/client-location";
 import { GeolocateControl } from "react-map-gl";
+import awsmobile from "../../aws-exports";
+import { DistanceButton } from "./DistanceButton";
+import { UserPositionLabel } from "./UserPositionLabel";
 
-const getCredentials = async () => {
-  const cachedCredentials = BrowserStorageCache.getItem(
-    "temporary_credentials"
-  );
+const checkCredentials = async (cachedCredentials) => {
   if (!cachedCredentials || cachedCredentials.expiration === undefined) {
     const credentials = await Auth.currentCredentials();
-    BrowserStorageCache.setItem("temporary_credentials", credentials);
+    Cache.setItem("temporary_credentials", credentials);
     return credentials;
   }
   // If credentials are expired or about to expire, refresh them
-  if ((cachedCredentials.expiration.getTime() - Date.now()) / 1000 < 60) {
+  if (
+    (new Date(cachedCredentials.expiration).getTime() - Date.now()) / 1000 <
+    60
+  ) {
     const credentials = await Auth.currentCredentials();
-    BrowserStorageCache.setItem("temporary_credentials", credentials);
+    Cache.setItem("temporary_credentials", credentials);
     return credentials;
   }
 
   return cachedCredentials;
 };
 
-const refreshOrInitLocationClient = async (clientRef) => {
-  const credentials = await getCredentials();
-  if (!client || credentials.accessKeyId !== credentials.accessKeyId) {
-    clientRef.current = new LocationClient({
+const refreshOrInitLocationClient = async (client) => {
+  const cachedCredentials = Cache.getItem("temporary_credentials");
+  const credentials = await checkCredentials(cachedCredentials);
+  if (!client || credentials.accessKeyId !== cachedCredentials.accessKeyId) {
+    client = new LocationClient({
       credentials,
       region: Geo.getDefaultMap().region,
     });
 
-    return clientRef;
+    return client;
   }
 
-  return clientRef;
+  return client;
 };
 
 export const DistanceControl = () => {
@@ -44,54 +48,62 @@ export const DistanceControl = () => {
   const [userLocation, setUserLocation] = useState();
   const [petLocation, setPetLocation] = useState();
 
-  const onPetUpdate = useCallback(async (update) => {
-    const { payload: data } = update;
-    locationClientRef.current = await refreshOrInitLocationClient(
-      locationClientRef
-    );
-    try {
-      const res = await locationClientRef.send(
-        new CalculateRouteCommand({
-          CalculatorName: "routecalculator_supplychain",
-          TravelMode: "Walking",
-          DeparturePosition: [userLocation.lng, userLocation.lat],
-          DestinationPosition: [data.lng, data.lat],
-        })
+  const onPetUpdate = useCallback(
+    async (update) => {
+      const {
+        payload: { data },
+      } = update;
+      if (!userLocation) return;
+      locationClientRef.current = await refreshOrInitLocationClient(
+        locationClientRef.current
       );
-      setPetLocation({
-        lng: data.lng,
-        lat: data.lat,
-        distance: res.Summary?.Distance,
-        duration: res.Summary?.DurationSeconds,
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  });
+      try {
+        const res = await locationClientRef.current.send(
+          new CalculateRouteCommand({
+            CalculatorName: awsmobile.geo.AmazonLocationService.routeCalculator,
+            TravelMode: "Walking",
+            DeparturePosition: [userLocation.lng, userLocation.lat],
+            DestinationPosition: [data.lng, data.lat],
+          })
+        );
+        setPetLocation({
+          lng: data.lng,
+          lat: data.lat,
+          distance: res.Summary?.Distance,
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    [userLocation]
+  );
 
   useEffect(() => {
     Hub.listen("petUpdates", onPetUpdate);
 
     return () => Hub.remove("petUpdates", onPetUpdate);
-  }, []);
+  }, [userLocation]);
 
   return (
     <>
       <GeolocateControl
         position="top-left"
         trackUserLocation={true}
+        positionOptions={{
+          enableHighAccuracy: true,
+        }}
         onGeolocate={(e) => {
           setUserLocation({
             lng: e.coords.longitude,
             lat: e.coords.latitude,
           });
         }}
+        onTrackUserLocationStart={(e) => {
+          console.log("onTrackStart", e);
+        }}
       />
-      {petLocation ? (
-        <>
-          {petLocation?.distance || null} - {petLocation?.duration || null}
-        </>
-      ) : null}
+      {userLocation ? <UserPositionLabel position={userLocation} /> : null}
+      {petLocation ? <DistanceButton distance={petLocation?.distance} /> : null}
     </>
   );
 };

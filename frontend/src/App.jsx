@@ -13,9 +13,9 @@ const App = () => {
     <>
       <MapView
         initialViewState={{
-          latitude: 48.192459,
-          longitude: 11.617745,
-          zoom: 14,
+          longitude: -115.17077150978058,
+          latitude: 36.12309017212961,
+          zoom: 15,
         }}
         style={{
           width: "100vw",
