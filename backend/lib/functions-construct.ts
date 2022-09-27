@@ -22,8 +22,7 @@ export class FunctionsConstruct extends Construct {
 
     const { graphqlUrl } = props;
 
-    this.certificateHandlerFn = new NodejsFunction(this, "certificateHandler", {
-      entry: "lib/fns/certificate-handler/src/index.ts",
+    const sharedConfig = {
       handler: "handler",
       runtime: Runtime.NODEJS_16_X,
       bundling: {
@@ -31,8 +30,13 @@ export class FunctionsConstruct extends Construct {
         target: "es2020",
         sourceMap: true,
       },
-      timeout: Duration.seconds(30),
       logRetention: RetentionDays.ONE_DAY,
+      timeout: Duration.seconds(30),
+    };
+
+    this.certificateHandlerFn = new NodejsFunction(this, "certificateHandler", {
+      entry: "lib/fns/certificate-handler/src/index.ts",
+      ...sharedConfig,
     });
     this.certificateHandlerFn.role?.attachInlinePolicy(
       new Policy(this, "certificateHandlerPolicy", {
@@ -66,20 +70,12 @@ export class FunctionsConstruct extends Construct {
 
     this.trackerUpdateFn = new NodejsFunction(this, "trackerUpdateFn", {
       entry: "lib/fns/tracker-update/src/index.ts",
-      handler: "handler",
-      runtime: Runtime.NODEJS_16_X,
-      bundling: {
-        minify: true,
-        target: "es2020",
-        sourceMap: true,
-      },
       environment: {
         TRACKER_NAME: "PetTracker",
         NODE_OPTIONS: "--enable-source-maps",
       },
       memorySize: 256,
-      timeout: Duration.seconds(30),
-      logRetention: RetentionDays.ONE_DAY,
+      ...sharedConfig,
     });
     this.trackerUpdateFn.role?.attachInlinePolicy(
       new Policy(this, "trackerUpdatePolicy", {
@@ -98,20 +94,12 @@ export class FunctionsConstruct extends Construct {
 
     this.appSyncUpdateFn = new NodejsFunction(this, "appSyncUpdateFn", {
       entry: "lib/fns/appsync-update/src/index.ts",
-      handler: "handler",
-      runtime: Runtime.NODEJS_16_X,
-      bundling: {
-        minify: true,
-        target: "es2020",
-        sourceMap: true,
-      },
       environment: {
         GRAPHQL_URL: graphqlUrl,
         NODE_OPTIONS: "--enable-source-maps",
       },
       memorySize: 256,
-      timeout: Duration.seconds(30),
-      logRetention: RetentionDays.ONE_DAY,
+      ...sharedConfig,
     });
   }
 }

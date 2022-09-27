@@ -44,7 +44,7 @@ export const handler = async (event: Event) => {
         id,
         lng,
         lat,
-        updatedAt: new Date(timestamp).toISOString().split("T")[0],
+        updatedAt: timestamp.split("T")[0],
       },
     },
   };
