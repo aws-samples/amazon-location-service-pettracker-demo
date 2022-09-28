@@ -15,7 +15,8 @@ interface FunctionsConstructProps extends StackProps {
 export class FunctionsConstruct extends Construct {
   certificateHandlerFn: Function;
   trackerUpdateFn: Function;
-  appSyncUpdateFn: Function;
+  appsyncUpdatePositionFn: Function;
+  appsyncSendGeofenceEventFn: Function;
 
   constructor(scope: Construct, id: string, props: FunctionsConstructProps) {
     super(scope, id);
@@ -49,7 +50,7 @@ export class FunctionsConstruct extends Construct {
             resources: [
               `arn:aws:secretsmanager:${Stack.of(this).region}:${
                 Stack.of(this).account
-              }:secret:pettracker*`,
+              }:secret:*`,
             ],
           }),
           new PolicyStatement({
@@ -92,14 +93,32 @@ export class FunctionsConstruct extends Construct {
       })
     );
 
-    this.appSyncUpdateFn = new NodejsFunction(this, "appSyncUpdateFn", {
-      entry: "lib/fns/appsync-update/src/index.ts",
-      environment: {
-        GRAPHQL_URL: graphqlUrl,
-        NODE_OPTIONS: "--enable-source-maps",
-      },
-      memorySize: 256,
-      ...sharedConfig,
-    });
+    this.appsyncUpdatePositionFn = new NodejsFunction(
+      this,
+      "appsyncUpdatePositionFn",
+      {
+        entry: "lib/fns/appsync-update-position/src/index.ts",
+        environment: {
+          GRAPHQL_URL: graphqlUrl,
+          NODE_OPTIONS: "--enable-source-maps",
+        },
+        memorySize: 256,
+        ...sharedConfig,
+      }
+    );
+
+    this.appsyncSendGeofenceEventFn = new NodejsFunction(
+      this,
+      "appsyncSendGeofenceEventFn",
+      {
+        entry: "lib/fns/appsync-send-geofence-event/src/index.ts",
+        environment: {
+          GRAPHQL_URL: graphqlUrl,
+          NODE_OPTIONS: "--enable-source-maps",
+        },
+        memorySize: 256,
+        ...sharedConfig,
+      }
+    );
   }
 }

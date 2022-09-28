@@ -1,13 +1,15 @@
 {
   "name": "pet-simulator",
-  "version": "1.0.0",
-  "description": "",
+  "version": "2.0.0",
+  "description": "Pet Tracker IoT Core Simulator - This small script simulates an IoT device that could be attached to a pet. It wanders around a point used as seed.",
   "main": "index.js",
   "scripts": {
     "simulate": "ts-node src/index.ts"
   },
-  "keywords": [],
-  "author": "",
+  "author": {
+    "name": "Amazon Web Services",
+    "url": "https://aws.amazon.com"
+  },
   "license": "MIT-0",
   "devDependencies": {
     "@types/node": "^18.7.23",

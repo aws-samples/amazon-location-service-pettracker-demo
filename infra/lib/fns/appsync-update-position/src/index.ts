@@ -25,7 +25,7 @@ type LocationEvent = {
 type Event = Extract<IoTEvent<LocationEvent>, { type: "locationPayload" }>;
 
 export const handler = async (event: Event) => {
-  const { id, lng, lat, timestamp } = event;
+  const { id, lng, lat, timestamp: updatedAt } = event;
 
   const updatePosition = {
     query: `
@@ -44,7 +44,7 @@ export const handler = async (event: Event) => {
         id,
         lng,
         lat,
-        updatedAt: timestamp.split("T")[0],
+        updatedAt,
       },
     },
   };

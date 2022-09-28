@@ -1,8 +1,7 @@
-import { Stack, StackProps } from "aws-cdk-lib";
+import { Stack, StackProps, CfnOutput } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { AuthConstruct } from "./auth-construct";
-import { StorageConstruct } from "./storage-construct";
-import { AppSyncConstruct } from "./api";
+import { AppSyncConstruct } from "./appsync-construct";
 import { FunctionsConstruct } from "./functions-construct";
 import { IotCoreConstruct } from "./iot-construct";
 
@@ -10,24 +9,29 @@ export class PetTracker extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const { unauthRole } = new AuthConstruct(this, "authConstruct", {});
+    new AuthConstruct(this, "authConstruct", {});
 
-    const { table } = new StorageConstruct(this, "storageConstruct", {});
+    const { api } = new AppSyncConstruct(this, "apiConstruct", {});
 
-    const { api } = new AppSyncConstruct(this, "apiConstruct", {
-      table,
+    const {
+      certificateHandlerFn,
+      appsyncUpdatePositionFn,
+      appsyncSendGeofenceEventFn,
+      trackerUpdateFn,
+    } = new FunctionsConstruct(this, "functionsConstruct", {
+      graphqlUrl: api.graphqlUrl,
     });
-
-    const { certificateHandlerFn, appSyncUpdateFn, trackerUpdateFn } =
-      new FunctionsConstruct(this, "functionsConstruct", {
-        graphqlUrl: api.graphqlUrl,
-      });
-    api.grantMutation(appSyncUpdateFn, "updatePosition");
+    api.grantMutation(appsyncUpdatePositionFn, "updatePosition");
+    api.grantMutation(appsyncSendGeofenceEventFn, "sendGeofenceEvent");
 
     new IotCoreConstruct(this, "iotCoreConstruct", {
       certificateHandlerFn,
-      appSyncUpdateFn,
+      appsyncUpdatePositionFn,
       trackerUpdateFn,
+    });
+
+    new CfnOutput(this, "AWSRegion", {
+      value: Stack.of(this).region,
     });
   }
 }

@@ -1,0 +1,17 @@
+{
+  "name": "scripts",
+  "version": "2.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "createConfig": "node create-aws-exports.mjs"
+  },
+  "author": {
+    "name": "Amazon Web Services",
+    "url": "https://aws.amazon.com"
+  },
+  "license": "MIT-0",
+  "dependencies": {
+    "@aws-sdk/client-cloudformation": "^3.180.0"
+  }
+}

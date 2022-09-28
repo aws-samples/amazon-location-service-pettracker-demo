@@ -7,18 +7,14 @@ import {
   MappingTemplate,
   FieldLogLevel,
 } from "@aws-cdk/aws-appsync-alpha";
-import { ITable } from "aws-cdk-lib/aws-dynamodb";
 import {
   Role,
   ServicePrincipal,
   PolicyDocument,
   PolicyStatement,
 } from "aws-cdk-lib/aws-iam";
-import { join } from "path";
 
-interface AppSyncConstructProps extends StackProps {
-  table: ITable;
-}
+interface AppSyncConstructProps extends StackProps {}
 
 export class AppSyncConstruct extends Construct {
   api: GraphqlApi;
@@ -26,11 +22,9 @@ export class AppSyncConstruct extends Construct {
   constructor(scope: Construct, id: string, props: AppSyncConstructProps) {
     super(scope, id);
 
-    const { table } = props;
-
     this.api = new GraphqlApi(this, "Api", {
       name: "PetTracker",
-      schema: Schema.fromAsset(join(__dirname, "schema.graphql")),
+      schema: Schema.fromAsset("./lib/schema.graphql"),
       authorizationConfig: {
         defaultAuthorization: {
           authorizationType: AuthorizationType.API_KEY,
@@ -67,10 +61,6 @@ export class AppSyncConstruct extends Construct {
       },
     });
 
-    const dynamoDBSource = this.api.addDynamoDbDataSource(
-      "PetTrackerSource",
-      table
-    );
     const noneSource = this.api.addNoneDataSource("NoneSource");
 
     noneSource.createResolver({
@@ -85,18 +75,16 @@ export class AppSyncConstruct extends Construct {
       ),
     });
 
-    dynamoDBSource.createResolver({
-      typeName: "Query",
-      fieldName: "getPosition",
-      requestMappingTemplate: MappingTemplate.dynamoDbGetItem("id", "id"),
-      responseMappingTemplate: MappingTemplate.dynamoDbResultItem(),
-    });
-
-    dynamoDBSource.createResolver({
-      typeName: "Query",
-      fieldName: "listPositions",
-      requestMappingTemplate: MappingTemplate.dynamoDbScanTable(),
-      responseMappingTemplate: MappingTemplate.dynamoDbResultList(),
+    noneSource.createResolver({
+      typeName: "Mutation",
+      fieldName: "sendGeofenceEvent",
+      requestMappingTemplate: MappingTemplate.fromString(`{
+        "version": "2018-05-29",
+        "payload": $util.toJson($context.arguments)
+    }`),
+      responseMappingTemplate: MappingTemplate.fromString(
+        `$util.toJson($context.result.input)`
+      ),
     });
 
     new CfnOutput(this, "ApiUrl", {

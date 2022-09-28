@@ -1,39 +1,45 @@
 {
   "name": "pettracker",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "bin": {
     "backend": "bin/pettracker.js"
+  },
+  "author": {
+    "name": "Amazon Web Services",
+    "url": "https://aws.amazon.com"
   },
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "cdk:deploy": "cdk deploy",
+    "cdk:destroy": "cdk destroy"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.106",
     "@types/jest": "^27.5.2",
-    "@types/node": "10.17.27",
-    "@types/prettier": "2.6.0",
-    "aws-cdk": "2.35.0",
+    "@types/node": "^18.7.23",
+    "@types/prettier": "^2.6.0",
+    "aws-cdk": "^2.43.1",
     "jest": "^27.5.1",
-    "ts-jest": "^27.1.4",
+    "ts-jest": "^27.1.5",
     "ts-node": "^10.9.1",
     "typescript": "~3.9.7"
   },
   "dependencies": {
-    "@aws-cdk/aws-appsync-alpha": "^2.35.0-alpha.0",
-    "@aws-cdk/aws-cognito-identitypool-alpha": "^2.35.0-alpha.0",
-    "@aws-cdk/aws-iot-actions-alpha": "^2.35.0-alpha.0",
-    "@aws-cdk/aws-iot-alpha": "^2.35.0-alpha.0",
-    "@aws-sdk/client-iot": "^3.179.0",
-    "@aws-sdk/client-location": "^3.179.0",
-    "@aws-sdk/client-secrets-manager": "^3.179.0",
-    "@aws-sdk/credential-provider-node": "^3.178.0",
+    "@aws-cdk/aws-appsync-alpha": "^2.43.1-alpha.0",
+    "@aws-cdk/aws-cognito-identitypool-alpha": "^2.43.1-alpha.0",
+    "@aws-cdk/aws-iot-actions-alpha": "^2.43.1-alpha.0",
+    "@aws-cdk/aws-iot-alpha": "^2.43.1-alpha.0",
+    "@aws-sdk/client-iot": "^3.180.0",
+    "@aws-sdk/client-location": "^3.180.0",
+    "@aws-sdk/client-secrets-manager": "^3.180.0",
+    "@aws-sdk/credential-provider-node": "^3.180.0",
     "@aws-sdk/signature-v4": "^3.178.0",
-    "aws-cdk-lib": "2.35.0",
-    "constructs": "^10.0.0",
-    "esbuild": "^0.14.53",
+    "aws-cdk-lib": "^2.43.1",
+    "constructs": "^10.1.114",
+    "esbuild": "^0.15.9",
     "phin": "^3.6.1",
     "source-map-support": "^0.5.21"
   }

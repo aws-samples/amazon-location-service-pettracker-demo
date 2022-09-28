@@ -14,7 +14,7 @@ import { Function } from "aws-cdk-lib/aws-lambda";
 
 interface IotCoreConstructProps extends StackProps {
   certificateHandlerFn: Function;
-  appSyncUpdateFn: Function;
+  appsyncUpdatePositionFn: Function;
   trackerUpdateFn: Function;
 }
 
@@ -22,7 +22,8 @@ export class IotCoreConstruct extends Construct {
   constructor(scope: Construct, id: string, props: IotCoreConstructProps) {
     super(scope, id);
 
-    const { certificateHandlerFn, appSyncUpdateFn, trackerUpdateFn } = props;
+    const { certificateHandlerFn, appsyncUpdatePositionFn, trackerUpdateFn } =
+      props;
 
     const provider = new Provider(this, "IoTCertProvider", {
       onEventHandler: certificateHandlerFn,
@@ -91,7 +92,7 @@ export class IotCoreConstruct extends Construct {
     new TopicRule(this, "TopicRule", {
       sql: IotSql.fromStringAsVer20160323("SELECT * FROM 'iot/pettracker'"),
       actions: [
-        new LambdaFunctionAction(appSyncUpdateFn),
+        new LambdaFunctionAction(appsyncUpdatePositionFn),
         new LambdaFunctionAction(trackerUpdateFn),
       ],
     });

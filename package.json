@@ -1,6 +1,6 @@
 {
   "name": "amazon-location-service-pettracker-demo",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "The **PetTracker Demo** is a cloud native application built using an serverless architecture based on AWS services to show case [AWS IoT](https://aws.amazon.com/iot/) integrations for geospatial use cases in conjuction with the [Amazon Location Services](https://aws.amazon.com/location/) to help Solution Architects around the world to make use of it in their demos and workshops.",
   "main": "index.js",
   "directories": {
@@ -9,10 +9,15 @@
   "workspaces": [
     "infra",
     "pet_simulator",
-    "frontend"
+    "scripts"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "utils:createConfig": "npm run createConfig -w scripts",
+    "frontend:start": "npm start -w frontend",
+    "frontend:build": "npm run build -w frontend",
+    "infra:deploy": "npm run cdk:deploy -w infra",
+    "infra:destroy": "npm run cdk:destroy -w infra",
+    "sim:start": "npm run simulate -w pet_simulator"
   },
   "repository": {
     "type": "git",

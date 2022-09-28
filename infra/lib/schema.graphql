@@ -1,0 +1,43 @@
+type Position @aws_iam {
+  id: ID
+  updatedAt: AWSDateTime!
+  lng: Float!
+  lat: Float!
+}
+
+type GeofenceEvent @aws_iam {
+  id: ID
+  date: AWSDateTime!
+  type: String!
+  geofenceId: String!
+}
+
+input PositionInput {
+  id: ID
+  updatedAt: AWSDateTime!
+  lng: Float!
+  lat: Float!
+}
+
+input GeofenceEventInput {
+  id: ID
+  date: AWSDateTime!
+  type: String!
+  geofenceId: String!
+}
+
+type Query {}
+
+type Mutation {
+  updatePosition(input: PositionInput): Position @aws_api_key @aws_iam
+  sendGeofenceEvent(input: GeofenceEventInput): GeofenceEvent @aws_api_key @aws_iam
+}
+
+type Subscription {
+  onUpdatePosition: Position
+    @aws_subscribe(mutations: ["updatePosition"])
+    @aws_api_key
+  onGeofenceEvent: GeofenceEvent
+    @aws_subscribe(mutations: ["sendGeofenceEvent"])
+    @aws_api_key
+}
