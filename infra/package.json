@@ -14,7 +14,8 @@
     "test": "jest",
     "cdk": "cdk",
     "cdk:deploy": "cdk deploy",
-    "cdk:destroy": "cdk destroy"
+    "cdk:destroy": "cdk destroy",
+    "cdk:bootstrap": "cdk bootstrap"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.106",

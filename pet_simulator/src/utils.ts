@@ -153,7 +153,7 @@ class Simulator {
   };
 
   /**
-   * Generates a random point within the given bounding box and within the given radius.
+   * Generates a random point within a given radius from another point.
    *
    * It takes the initial position and the map bounds as input. It then creates a buffer
    * around the point which represents the area that the device might end up in.
