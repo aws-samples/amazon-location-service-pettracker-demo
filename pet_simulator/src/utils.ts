@@ -20,6 +20,7 @@ class Simulator {
   private iotCoreClient: IoTClient;
   private secretId: string;
   private currentPosition: Position;
+  private stepDistance: number;
   private cert?: string;
   private key?: string;
   private endpoint?: string;
@@ -29,12 +30,14 @@ class Simulator {
     clientId: string,
     topic: string,
     secretId: string,
-    seed: Position
+    seed: Position,
+    stepDistance: number
   ) {
     this.ioTtopic = topic;
     this.clientId = clientId;
     this.secretId = secretId;
     this.currentPosition = seed;
+    this.stepDistance = stepDistance;
     this.secretsManagerClient = new SecretsManagerClient({});
     this.iotCoreClient = new IoTClient({});
   }
@@ -160,7 +163,9 @@ class Simulator {
   public makeStep = async () => {
     const currentPosition = point(this.currentPosition);
     // Create a buffer around the current position (i.e. a polygon 10m around the point)
-    const bufferAroundPoint = buffer(currentPosition, 10, { units: "meters" });
+    const bufferAroundPoint = buffer(currentPosition, this.stepDistance, {
+      units: "meters",
+    });
     // Create a bounding box around the buffer
     const bboxAroundPoint = bbox(bufferAroundPoint);
     // Generate a random point within the intersection bounding box

@@ -13,8 +13,10 @@
   ],
   "scripts": {
     "utils:createConfig": "npm run createConfig -w scripts",
-    "frontend:start": "npm start -w frontend",
-    "frontend:build": "npm run build -w frontend",
+    "utils:resizeC9EBS": "sh scripts/resize.sh",
+    "frontend:start": "cd frontend && npm start",
+    "frontend:build": "cd frontend && npm run build",
+    "infra:bootstrap": "npm run cdk:bootstrap -w infra",
     "infra:deploy": "npm run cdk:deploy -w infra",
     "infra:destroy": "npm run cdk:destroy -w infra",
     "sim:start": "npm run simulate -w pet_simulator"
