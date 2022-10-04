@@ -13,10 +13,10 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [ main, als-track, iot-track ]
+    branches: [ main, workshop ]
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: [ main, als-track, iot-track ]
+    branches: [ main, workshop ]
   schedule:
     - cron: '22 22 * * 0'
 
@@ -32,7 +32,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'javascript', 'python' ]
+        language: [ 'javascript' ]
         # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
         # Learn more about CodeQL language support at https://git.io/codeql-language-support
 
