@@ -8,13 +8,14 @@
   },
   "workspaces": [
     "infra",
+    "frontend",
     "pet_simulator",
     "scripts"
   ],
   "scripts": {
     "utils:createConfig": "npm run createConfig -w scripts",
     "utils:resizeC9EBS": "sh scripts/resize.sh",
-    "frontend:start": "cd frontend && npm start",
+    "frontend:start": "npm start -w frontend",
     "frontend:build": "cd frontend && npm run build",
     "infra:bootstrap": "npm run cdk:bootstrap -w infra",
     "infra:deploy": "npm run cdk:deploy -w infra",
