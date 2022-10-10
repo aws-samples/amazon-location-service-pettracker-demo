@@ -3,8 +3,8 @@
 
 import Simulator from "./utils";
 
-const LNG = 2.1894745855131217;
-const LAT = 41.39937882497607;
+const LNG = 36.12309017212961;
+const LAT = -115.17077150978058;
 const STEP_DISTANCE = 10; // Distance in meters for each step taken by the pet (default 10m / 32 feet)
 const STEP_FREQUENCY = 10; // Frequency at which updates will be sent (default 10 seconds)
 const IOT_CORE_TOPIC = "iot/pettracker";
