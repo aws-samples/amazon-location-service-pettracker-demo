@@ -22,7 +22,7 @@ const getStackName = async () => {
       })
     );
     const stack = res.StackSummaries.find((stack) =>
-      stack.StackName.includes("PetTracker")
+      stack.StackName.toUpperCase().includes("pettracker".toUpperCase())
     );
     if (!stack) {
       throw new Error("Unable to find stack among loaded ones");

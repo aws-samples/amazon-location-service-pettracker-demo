@@ -13,6 +13,13 @@ import buffer from "@turf/buffer";
 import { point, Position } from "@turf/helpers";
 import promiseRetry from "promise-retry";
 
+const retryOptions = {
+  retries: 10,
+  minTimeout: 5_000,
+  maxTimeout: 10_000,
+  factor: 1.25,
+};
+
 class Simulator {
   private ioTtopic: string;
   private clientId: string;
@@ -44,13 +51,6 @@ class Simulator {
   }
 
   private async getEndpoint(): Promise<string> {
-    const retryOptions = {
-      retries: 10,
-      minTimeout: 5_000,
-      maxTimeout: 10_000,
-      factor: 1.25,
-    };
-
     return promiseRetry(async (retry: (err?: Error) => never, _: number) => {
       try {
         const endpoint = await this.iotCoreClient.send(
@@ -133,7 +133,14 @@ class Simulator {
 
     try {
       console.info("Connecting to IoT Core");
-      await this.ioTConnection.connect();
+      await promiseRetry(async (retry: (err?: Error) => never, _: number) => {
+        try {
+          await this.ioTConnection?.connect();
+        } catch (err) {
+          console.error(err);
+          retry(new Error("Connection failed, retrying."));
+        }
+      }, retryOptions);
       console.info("Successfully connected to IoT Core");
       this.isConnected = true;
     } catch (err) {
