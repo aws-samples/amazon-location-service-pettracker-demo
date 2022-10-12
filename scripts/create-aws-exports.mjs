@@ -1,4 +1,7 @@
-import { writeFile, readFile } from "node:fs/promises";
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: MIT-0
+
+import { writeFile } from "node:fs/promises";
 import {
   CloudFormationClient,
   ListStacksCommand,

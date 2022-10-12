@@ -11,6 +11,7 @@ import { randomPosition } from "@turf/random";
 import bbox from "@turf/bbox";
 import buffer from "@turf/buffer";
 import { point, Position } from "@turf/helpers";
+import promiseRetry from "promise-retry";
 
 class Simulator {
   private ioTtopic: string;
@@ -43,17 +44,30 @@ class Simulator {
   }
 
   private async getEndpoint(): Promise<string> {
-    const endpoint = await this.iotCoreClient.send(
-      new DescribeEndpointCommand({
-        endpointType: "iot:Data-ATS",
-      })
-    );
+    const retryOptions = {
+      retries: 10,
+      minTimeout: 5_000,
+      maxTimeout: 10_000,
+      factor: 1.25,
+    };
 
-    if (!endpoint.endpointAddress)
-      throw new Error("Unable to get IoT Core Endpoint");
+    return promiseRetry(async (retry: (err?: Error) => never, _: number) => {
+      try {
+        const endpoint = await this.iotCoreClient.send(
+          new DescribeEndpointCommand({
+            endpointType: "iot:Data-ATS",
+          })
+        );
 
-    console.info(`Got IoT Core Endpoint: ${endpoint.endpointAddress}`);
-    return endpoint.endpointAddress;
+        if (!endpoint.endpointAddress)
+          throw new Error("Unable to get IoT Core Endpoint");
+
+        console.info(`Got IoT Core Endpoint: ${endpoint.endpointAddress}`);
+        return endpoint.endpointAddress;
+      } catch (err) {
+        retry(err as Error);
+      }
+    }, retryOptions);
   }
 
   private async getCertAndKey(): Promise<{
