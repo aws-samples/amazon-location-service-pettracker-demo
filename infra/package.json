@@ -13,6 +13,7 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
+    "cdk:synth": "cdk synth",
     "cdk:deploy": "cdk deploy",
     "cdk:destroy": "cdk destroy",
     "cdk:bootstrap": "cdk bootstrap"

@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "createConfig": "node create-aws-exports.mjs"
+    "createConfig": "node create-aws-exports.mjs",
+    "convertCDKtoCfn": "node convert-template.js"
   },
   "author": {
     "name": "Amazon Web Services",
@@ -12,6 +13,7 @@
   },
   "license": "MIT-0",
   "dependencies": {
-    "@aws-sdk/client-cloudformation": "^3.180.0"
+    "@aws-sdk/client-cloudformation": "^3.180.0",
+    "shelljs": "^0.8.5"
   }
 }
