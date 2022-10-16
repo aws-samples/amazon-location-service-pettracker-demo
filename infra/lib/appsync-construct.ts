@@ -5,14 +5,8 @@ import {
   Schema,
   AuthorizationType,
   MappingTemplate,
-  FieldLogLevel,
 } from "@aws-cdk/aws-appsync-alpha";
-import {
-  Role,
-  ServicePrincipal,
-  PolicyDocument,
-  PolicyStatement,
-} from "aws-cdk-lib/aws-iam";
+import { NagSuppressions } from "cdk-nag";
 
 interface AppSyncConstructProps extends StackProps {}
 
@@ -38,28 +32,15 @@ export class AppSyncConstruct extends Construct {
           },
         ],
       },
-      logConfig: {
-        excludeVerboseContent: false,
-        fieldLogLevel: FieldLogLevel.ALL,
-        role: new Role(this, "LogRole", {
-          assumedBy: new ServicePrincipal("appsync.amazonaws.com"),
-          inlinePolicies: {
-            stuff: new PolicyDocument({
-              statements: [
-                new PolicyStatement({
-                  actions: [
-                    "logs:CreateLogGroup",
-                    "logs:CreateLogStream",
-                    "logs:PutLogEvents",
-                  ],
-                  resources: ["*"],
-                }),
-              ],
-            }),
-          },
-        }),
-      },
     });
+
+    NagSuppressions.addResourceSuppressions(this.api, [
+      {
+        id: "AwsSolutions-ASC3",
+        reason:
+          "This API is deployed as part of an AWS workshop and as such it's short-lived. Analyzing the logs is not part of the workshop.",
+      },
+    ]);
 
     const noneSource = this.api.addNoneDataSource("NoneSource");
 

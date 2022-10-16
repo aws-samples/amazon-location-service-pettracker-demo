@@ -105,8 +105,8 @@ const getValueFromNamePart = (namePart, values) =>
           default: "PetTrackerMap",
         },
         geofenceCollections: {
-          items: ["PetTrackerCollection"],
-          default: "PetTrackerCollection",
+          items: ["PetTrackerGeofenceCollection"],
+          default: "PetTrackerGeofenceCollection",
         },
         routeCalculator: "PetTrackerRouteCalculator",
       },
@@ -120,9 +120,6 @@ const getValueFromNamePart = (namePart, values) =>
   template.aws_project_region = region;
   template.Auth.identityPoolId =
     vals[getValueFromNamePart(`IdentityPoolId`, keys)];
-  template.Auth.userPoolId = vals[getValueFromNamePart(`UserPoolId`, keys)];
-  template.Auth.userPoolWebClientId =
-    vals[getValueFromNamePart(`UserPoolClientId`, keys)];
   template.aws_appsync_graphqlEndpoint =
     vals[getValueFromNamePart(`ApiUrl`, keys)];
   template.aws_appsync_apiKey = vals[getValueFromNamePart(`ApiKey`, keys)];

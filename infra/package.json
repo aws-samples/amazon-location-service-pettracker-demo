@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.106",
-    "@types/jest": "^27.5.2",
+    "@types/jest": "^29.1.2",
     "@types/node": "^18.7.23",
     "@types/prettier": "^2.6.0",
     "aws-cdk": "^2.43.1",
@@ -40,6 +40,7 @@
     "@aws-sdk/credential-provider-node": "^3.180.0",
     "@aws-sdk/signature-v4": "^3.178.0",
     "aws-cdk-lib": "^2.43.1",
+    "cdk-nag": "^2.18.40",
     "constructs": "^10.1.114",
     "esbuild": "^0.15.9",
     "phin": "^3.6.1",
