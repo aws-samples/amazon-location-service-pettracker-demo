@@ -3,9 +3,6 @@
   "version": "2.0.0",
   "description": "The **PetTracker Demo** is a cloud native application built using an serverless architecture based on AWS services to show case [AWS IoT](https://aws.amazon.com/iot/) integrations for geospatial use cases in conjuction with the [Amazon Location Services](https://aws.amazon.com/location/) to help Solution Architects around the world to make use of it in their demos and workshops.",
   "main": "index.js",
-  "directories": {
-    "doc": "docs"
-  },
   "workspaces": [
     "infra",
     "frontend",
