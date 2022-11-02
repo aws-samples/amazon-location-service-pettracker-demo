@@ -183,9 +183,9 @@ class Simulator {
    */
   public makeStep = async () => {
     const currentPosition = point(this.currentPosition);
-    // Create a buffer around the current position (i.e. a polygon 10m around the point)
+    // Create a buffer around the current position (i.e. a polygon 10feet around the point)
     const bufferAroundPoint = buffer(currentPosition, this.stepDistance, {
-      units: "meters",
+      units: "feet",
     });
     // Create a bounding box around the buffer
     const bboxAroundPoint = bbox(bufferAroundPoint);
