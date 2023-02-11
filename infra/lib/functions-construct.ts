@@ -1,6 +1,3 @@
-// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-// SPDX-License-Identifier: MIT-0
-
 import { Stack, StackProps, Duration } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { Policy, PolicyStatement } from "aws-cdk-lib/aws-iam";
@@ -25,7 +22,7 @@ export class FunctionsConstruct extends Construct {
 
     const sharedConfig = {
       handler: "handler",
-      runtime: Runtime.NODEJS_16_X,
+      runtime: Runtime.NODEJS_18_X,
       bundling: {
         minify: true,
         target: "es2020",
@@ -48,8 +45,7 @@ export class FunctionsConstruct extends Construct {
               "secretsmanager:DeleteSecret",
             ],
             resources: [
-              `arn:aws:secretsmanager:${Stack.of(this).region}:${
-                Stack.of(this).account
+              `arn:aws:secretsmanager:${Stack.of(this).region}:${Stack.of(this).account
               }:secret:*`,
             ],
           }),
@@ -60,8 +56,7 @@ export class FunctionsConstruct extends Construct {
           new PolicyStatement({
             actions: ["iot:UpdateCertificate", "iot:DeleteCertificate"],
             resources: [
-              `arn:aws:iot:${Stack.of(this).region}:${
-                Stack.of(this).account
+              `arn:aws:iot:${Stack.of(this).region}:${Stack.of(this).account
               }:cert/*`,
             ],
           }),
@@ -84,8 +79,7 @@ export class FunctionsConstruct extends Construct {
           new PolicyStatement({
             actions: ["geo:BatchUpdateDevicePosition"],
             resources: [
-              `arn:aws:geo:${Stack.of(this).region}:${
-                Stack.of(this).account
+              `arn:aws:geo:${Stack.of(this).region}:${Stack.of(this).account
               }:tracker/PetTracker`,
             ],
           }),

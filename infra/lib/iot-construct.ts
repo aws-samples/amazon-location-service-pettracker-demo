@@ -43,16 +43,14 @@ export class IotCoreConstruct extends Construct {
           {
             Effect: "Allow",
             Action: "iot:Connect",
-            Resource: `arn:aws:iot:${Stack.of(this).region}:${
-              Stack.of(this).account
-            }:client/pettracker`,
+            Resource: `arn:aws:iot:${Stack.of(this).region}:${Stack.of(this).account
+              }:client/pettracker`,
           },
           {
             Effect: "Allow",
             Action: "iot:Publish",
-            Resource: `arn:aws:iot:${Stack.of(this).region}:${
-              Stack.of(this).account
-            }:topic/iot/pettracker`,
+            Resource: `arn:aws:iot:${Stack.of(this).region}:${Stack.of(this).account
+              }:topic/iot/pettracker`,
           },
         ],
       },
@@ -63,12 +61,11 @@ export class IotCoreConstruct extends Construct {
       "MyCfnPolicyPrincipalAttachment",
       {
         policyName: policy.policyName as string,
-        principal: `arn:aws:iot:${Stack.of(this).region}:${
-          Stack.of(this).account
-        }:cert/${certificate.getAttString("certificateId")}`,
+        principal: `arn:aws:iot:${Stack.of(this).region}:${Stack.of(this).account
+          }:cert/${certificate.getAttString("certificateId")}`,
       }
     );
-    policyPrincipalAttachment.addDependsOn(policy);
+    policyPrincipalAttachment.addDependency(policy);
 
     // Create an IoT Core Thing
     const thing = new CfnThing(this, "Thing", {
@@ -80,13 +77,12 @@ export class IotCoreConstruct extends Construct {
       this,
       "MyCfnThingPrincipalAttachment",
       {
-        principal: `arn:aws:iot:${Stack.of(this).region}:${
-          Stack.of(this).account
-        }:cert/${certificate.getAttString("certificateId")}`,
+        principal: `arn:aws:iot:${Stack.of(this).region}:${Stack.of(this).account
+          }:cert/${certificate.getAttString("certificateId")}`,
         thingName: thing.thingName as string,
       }
     );
-    thingPrincipalAttachment.addDependsOn(thing);
+    thingPrincipalAttachment.addDependency(thing);
 
     // Create an IoT Core Topic Rule that sends IoT Core updates to the SNS topic
     new TopicRule(this, "TopicRule", {

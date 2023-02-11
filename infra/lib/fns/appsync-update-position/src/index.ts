@@ -72,7 +72,12 @@ export const handler = async (event: Event) => {
   const { headers, body, method } = await signer.sign(request);
 
   try {
-    const result = await p({
+    const result = await p<{
+      errors?: { message: string, errorType: string }[];
+      data?: {
+        updatePosition: Omit<LocationEvent, "type">;
+      };
+    }>({
       url: APPSYNC_ENDPOINT,
       headers,
       data: body,
@@ -81,7 +86,12 @@ export const handler = async (event: Event) => {
       parse: "json",
     });
 
-    console.debug(result);
+    if (result.body.errors) {
+      console.error(result.body.errors);
+      throw new Error("Failed to execute GraphQL mutation");
+    }
+
+    console.debug(result.body.data?.updatePosition);
   } catch (err) {
     console.error(err);
     throw new Error("Failed to execute GraphQL mutation");

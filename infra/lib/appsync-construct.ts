@@ -2,13 +2,13 @@ import { StackProps, Expiration, CfnOutput, Duration } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import {
   GraphqlApi,
-  Schema,
+  SchemaFile,
   AuthorizationType,
   MappingTemplate,
-} from "@aws-cdk/aws-appsync-alpha";
+} from "aws-cdk-lib/aws-appsync";
 import { NagSuppressions } from "cdk-nag";
 
-interface AppSyncConstructProps extends StackProps {}
+interface AppSyncConstructProps extends StackProps { }
 
 export class AppSyncConstruct extends Construct {
   api: GraphqlApi;
@@ -18,7 +18,7 @@ export class AppSyncConstruct extends Construct {
 
     this.api = new GraphqlApi(this, "Api", {
       name: "PetTracker",
-      schema: Schema.fromAsset("./lib/schema.graphql"),
+      schema: SchemaFile.fromAsset("./lib/schema.graphql"),
       authorizationConfig: {
         defaultAuthorization: {
           authorizationType: AuthorizationType.API_KEY,
@@ -44,7 +44,7 @@ export class AppSyncConstruct extends Construct {
 
     const noneSource = this.api.addNoneDataSource("NoneSource");
 
-    noneSource.createResolver({
+    noneSource.createResolver('update-position-resolver', {
       typeName: "Mutation",
       fieldName: "updatePosition",
       requestMappingTemplate: MappingTemplate.fromString(`{
@@ -56,7 +56,7 @@ export class AppSyncConstruct extends Construct {
       ),
     });
 
-    noneSource.createResolver({
+    noneSource.createResolver('send-geofence-event-resolver', {
       typeName: "Mutation",
       fieldName: "sendGeofenceEvent",
       requestMappingTemplate: MappingTemplate.fromString(`{

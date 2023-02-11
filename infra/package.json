@@ -19,31 +19,30 @@
     "cdk:bootstrap": "cdk bootstrap"
   },
   "devDependencies": {
+    "@aws-cdk/aws-cognito-identitypool-alpha": "^2.64.0-alpha.0",
+    "@aws-cdk/aws-iot-actions-alpha": "^2.64.0-alpha.0",
+    "@aws-cdk/aws-iot-alpha": "^2.64.0-alpha.0",
     "@types/aws-lambda": "^8.10.106",
     "@types/jest": "^29.1.2",
     "@types/node": "^18.7.23",
     "@types/prettier": "^2.6.0",
-    "aws-cdk": "^2.43.1",
+    "aws-cdk": "^2.64.0",
     "jest": "^27.5.1",
     "ts-jest": "^27.1.5",
     "ts-node": "^10.9.1",
     "typescript": "~3.9.7"
   },
   "dependencies": {
-    "@aws-cdk/aws-appsync-alpha": "^2.43.1-alpha.0",
-    "@aws-cdk/aws-cognito-identitypool-alpha": "^2.43.1-alpha.0",
-    "@aws-cdk/aws-iot-actions-alpha": "^2.43.1-alpha.0",
-    "@aws-cdk/aws-iot-alpha": "^2.43.1-alpha.0",
     "@aws-sdk/client-iot": "^3.180.0",
     "@aws-sdk/client-location": "^3.180.0",
     "@aws-sdk/client-secrets-manager": "^3.180.0",
     "@aws-sdk/credential-provider-node": "^3.180.0",
     "@aws-sdk/signature-v4": "^3.178.0",
-    "aws-cdk-lib": "^2.43.1",
+    "aws-cdk-lib": "^2.64.0",
     "cdk-nag": "^2.18.40",
-    "constructs": "^10.1.114",
-    "esbuild": "^0.15.9",
-    "phin": "^3.6.1",
+    "constructs": "^10.1.247",
+    "esbuild": "^0.17.7",
+    "phin": "^3.7.0",
     "source-map-support": "^0.5.21"
   }
 }
