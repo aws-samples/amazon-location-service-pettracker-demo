@@ -14,7 +14,7 @@ const sim = new Simulator(
   `pettracker`,
   IOT_CORE_TOPIC,
   IOT_CERT_SECRET_ID,
-  [LAT, LNG],
+  [LNG, LAT],
   STEP_DISTANCE
 );
 
