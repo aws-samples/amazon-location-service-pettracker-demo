@@ -39,5 +39,18 @@
   "bugs": {
     "url": "https://github.com/aws-samples/amazon-location-service-pettracker-demo/issues"
   },
-  "homepage": "https://github.com/aws-samples/amazon-location-service-pettracker-demo#readme"
+  "homepage": "https://github.com/aws-samples/amazon-location-service-pettracker-demo#readme",
+  "overrides": {
+    "aws-amplify": {
+      "@aws-sdk/client-sts": "3.348.0",
+      "@aws-sdk/client-lex-runtime-service": "3.348.0",
+      "@aws-sdk/client-lex-runtime-v2": "3.348.0",
+      "@aws-sdk/client-location": "3.348.0",
+      "@aws-sdk/client-s3": "3.348.0"
+    },
+    "@aws-amplify/ui-react": {
+      "@aws-sdk/client-sts": "3.348.0",
+      "@aws-sdk/client-location": "3.348.0"
+    }
+  }
 }

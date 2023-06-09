@@ -33,11 +33,11 @@
     "typescript": "~3.9.7"
   },
   "dependencies": {
-    "@aws-sdk/client-iot": "^3.180.0",
-    "@aws-sdk/client-location": "^3.180.0",
-    "@aws-sdk/client-secrets-manager": "^3.180.0",
-    "@aws-sdk/credential-provider-node": "^3.180.0",
-    "@aws-sdk/signature-v4": "^3.178.0",
+    "@aws-sdk/client-iot": "^3.348.0",
+    "@aws-sdk/client-location": "^3.348.0",
+    "@aws-sdk/client-secrets-manager": "^3.348.0",
+    "@aws-sdk/credential-provider-node": "^3.348.0",
+    "@aws-sdk/signature-v4": "^3.347.0",
     "aws-cdk-lib": "^2.64.0",
     "cdk-nag": "^2.18.40",
     "constructs": "^10.1.247",
