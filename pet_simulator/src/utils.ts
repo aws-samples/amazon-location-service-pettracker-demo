@@ -2,10 +2,7 @@
 // SPDX-License-Identifier: MIT-0
 
 import { mqtt, iot } from "aws-iot-device-sdk-v2";
-import {
-  SecretsManagerClient,
-  GetSecretValueCommand,
-} from "@aws-sdk/client-secrets-manager";
+import { getSecret } from "@aws-lambda-powertools/parameters/secrets";
 import { IoTClient, DescribeEndpointCommand } from "@aws-sdk/client-iot";
 import { randomPosition } from "@turf/random";
 import bbox from "@turf/bbox";
@@ -24,7 +21,6 @@ class Simulator {
   private ioTtopic: string;
   private clientId: string;
   private isConnected: boolean = false;
-  private secretsManagerClient: SecretsManagerClient;
   private iotCoreClient: IoTClient;
   private secretId: string;
   private currentPosition: Position;
@@ -46,7 +42,6 @@ class Simulator {
     this.secretId = secretId;
     this.currentPosition = seed;
     this.stepDistance = stepDistance;
-    this.secretsManagerClient = new SecretsManagerClient({});
     this.iotCoreClient = new IoTClient({});
   }
 
@@ -75,16 +70,17 @@ class Simulator {
     key: string;
   }> {
     if (!this.cert || !this.key) {
-      const secret = await this.secretsManagerClient.send(
-        new GetSecretValueCommand({
-          SecretId: this.secretId,
-        })
+      const secret = await getSecret<{ cert: string; keyPair: string }>(
+        this.secretId,
+        {
+          transform: "json",
+          maxAge: 10000,
+        }
       );
-      const { SecretString } = secret;
-      if (!SecretString) {
+      if (!secret) {
         throw new Error("Could not find secret");
       }
-      const { cert, keyPair } = JSON.parse(SecretString);
+      const { cert, keyPair } = secret;
 
       this.cert = cert;
       this.key = keyPair;
@@ -155,10 +151,10 @@ class Simulator {
     }
 
     const payload = {
-      id: this.clientId,
-      timestamp: new Date().toISOString(),
-      lng: location[0],
-      lat: location[1],
+      deviceId: this.clientId,
+      timestamp: new Date().getTime(),
+      latitude: location[0],
+      longitude: location[1],
     };
 
     // Log update before publishing

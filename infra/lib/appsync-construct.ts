@@ -8,7 +8,7 @@ import {
 } from "aws-cdk-lib/aws-appsync";
 import { NagSuppressions } from "cdk-nag";
 
-interface AppSyncConstructProps extends StackProps { }
+interface AppSyncConstructProps extends StackProps {}
 
 export class AppSyncConstruct extends Construct {
   api: GraphqlApi;
@@ -44,7 +44,7 @@ export class AppSyncConstruct extends Construct {
 
     const noneSource = this.api.addNoneDataSource("NoneSource");
 
-    noneSource.createResolver('update-position-resolver', {
+    noneSource.createResolver("update-position-resolver", {
       typeName: "Mutation",
       fieldName: "updatePosition",
       requestMappingTemplate: MappingTemplate.fromString(`{
@@ -56,7 +56,7 @@ export class AppSyncConstruct extends Construct {
       ),
     });
 
-    noneSource.createResolver('send-geofence-event-resolver', {
+    noneSource.createResolver("send-geofence-event-resolver", {
       typeName: "Mutation",
       fieldName: "sendGeofenceEvent",
       requestMappingTemplate: MappingTemplate.fromString(`{

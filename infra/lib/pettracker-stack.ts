@@ -18,7 +18,6 @@ export class PetTracker extends Stack {
       certificateHandlerFn,
       appsyncUpdatePositionFn,
       appsyncSendGeofenceEventFn,
-      trackerUpdateFn,
     } = new FunctionsConstruct(this, "functionsConstruct", {
       graphqlUrl: api.graphqlUrl,
     });
@@ -28,7 +27,6 @@ export class PetTracker extends Stack {
     new IotCoreConstruct(this, "iotCoreConstruct", {
       certificateHandlerFn,
       appsyncUpdatePositionFn,
-      trackerUpdateFn,
     });
 
     new CfnOutput(this, "AWSRegion", {
@@ -38,7 +36,6 @@ export class PetTracker extends Stack {
     // Suppress selected CDK-Nag and provide reason
     [
       "/PetTracker/functionsConstruct/certificateHandler/ServiceRole/Resource",
-      "/PetTracker/functionsConstruct/trackerUpdateFn/ServiceRole/Resource",
       "/PetTracker/functionsConstruct/appsyncUpdatePositionFn/ServiceRole/Resource",
       "/PetTracker/functionsConstruct/appsyncSendGeofenceEventFn/ServiceRole/Resource",
     ].forEach((resourcePath: string) => {

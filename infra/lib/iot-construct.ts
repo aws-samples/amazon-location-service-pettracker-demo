@@ -5,25 +5,28 @@ import {
   CfnPolicyPrincipalAttachment,
   CfnThing,
   CfnThingPrincipalAttachment,
+  CfnTopicRule,
 } from "aws-cdk-lib/aws-iot";
-import { TopicRule, IotSql } from "@aws-cdk/aws-iot-alpha";
-import { LambdaFunctionAction } from "@aws-cdk/aws-iot-actions-alpha";
 import { Provider } from "aws-cdk-lib/custom-resources";
-import { RetentionDays } from "aws-cdk-lib/aws-logs";
+import { RetentionDays, LogGroup } from "aws-cdk-lib/aws-logs";
 import { Function } from "aws-cdk-lib/aws-lambda";
+import {
+  Role,
+  ServicePrincipal,
+  PolicyDocument,
+  PolicyStatement,
+} from "aws-cdk-lib/aws-iam";
 
 interface IotCoreConstructProps extends StackProps {
   certificateHandlerFn: Function;
   appsyncUpdatePositionFn: Function;
-  trackerUpdateFn: Function;
 }
 
 export class IotCoreConstruct extends Construct {
   constructor(scope: Construct, id: string, props: IotCoreConstructProps) {
     super(scope, id);
 
-    const { certificateHandlerFn, appsyncUpdatePositionFn, trackerUpdateFn } =
-      props;
+    const { certificateHandlerFn } = props;
 
     const provider = new Provider(this, "IoTCertProvider", {
       onEventHandler: certificateHandlerFn,
@@ -43,14 +46,16 @@ export class IotCoreConstruct extends Construct {
           {
             Effect: "Allow",
             Action: "iot:Connect",
-            Resource: `arn:aws:iot:${Stack.of(this).region}:${Stack.of(this).account
-              }:client/pettracker`,
+            Resource: `arn:aws:iot:${Stack.of(this).region}:${
+              Stack.of(this).account
+            }:client/pettracker`,
           },
           {
             Effect: "Allow",
             Action: "iot:Publish",
-            Resource: `arn:aws:iot:${Stack.of(this).region}:${Stack.of(this).account
-              }:topic/iot/pettracker`,
+            Resource: `arn:aws:iot:${Stack.of(this).region}:${
+              Stack.of(this).account
+            }:topic/iot/pettracker`,
           },
         ],
       },
@@ -61,8 +66,9 @@ export class IotCoreConstruct extends Construct {
       "MyCfnPolicyPrincipalAttachment",
       {
         policyName: policy.policyName as string,
-        principal: `arn:aws:iot:${Stack.of(this).region}:${Stack.of(this).account
-          }:cert/${certificate.getAttString("certificateId")}`,
+        principal: `arn:aws:iot:${Stack.of(this).region}:${
+          Stack.of(this).account
+        }:cert/${certificate.getAttString("certificateId")}`,
       }
     );
     policyPrincipalAttachment.addDependency(policy);
@@ -77,20 +83,64 @@ export class IotCoreConstruct extends Construct {
       this,
       "MyCfnThingPrincipalAttachment",
       {
-        principal: `arn:aws:iot:${Stack.of(this).region}:${Stack.of(this).account
-          }:cert/${certificate.getAttString("certificateId")}`,
+        principal: `arn:aws:iot:${Stack.of(this).region}:${
+          Stack.of(this).account
+        }:cert/${certificate.getAttString("certificateId")}`,
         thingName: thing.thingName as string,
       }
     );
     thingPrincipalAttachment.addDependency(thing);
 
-    // Create an IoT Core Topic Rule that sends IoT Core updates to the SNS topic
-    new TopicRule(this, "TopicRule", {
-      sql: IotSql.fromStringAsVer20160323("SELECT * FROM 'iot/pettracker'"),
-      actions: [
-        new LambdaFunctionAction(appsyncUpdatePositionFn),
-        new LambdaFunctionAction(trackerUpdateFn),
-      ],
+    // CloudWatch Role for IoT Core error logging
+    const logGroup = new LogGroup(this, "ErrorLogGroup", {
+      retention: RetentionDays.ONE_DAY,
+    });
+
+    // IAM Role for AWS IoT Core to publish to Location Service
+    const role = new Role(this, "IotTrackerRole", {
+      assumedBy: new ServicePrincipal("iot.amazonaws.com"),
+      description: "IAM Role that allows IoT Core to update a Tracker",
+      inlinePolicies: {
+        allowTracker: new PolicyDocument({
+          statements: [
+            new PolicyStatement({
+              resources: [
+                `arn:aws:geo:${Stack.of(this).region}:${
+                  Stack.of(this).account
+                }:tracker/PetTracker`,
+              ],
+              actions: ["geo:BatchUpdateDevicePosition"],
+            }),
+          ],
+        }),
+      },
+    });
+    logGroup.grantWrite(role);
+
+    // Create an IoT Core Topic Rule that sends IoT Core updates to Location Service
+    new CfnTopicRule(this, "TopicRule", {
+      ruleName: "petTrackerRule",
+      topicRulePayload: {
+        sql: `SELECT * FROM 'iot/pettracker'`,
+        awsIotSqlVersion: "2016-03-23",
+        actions: [
+          {
+            location: {
+              deviceId: "${deviceId}",
+              latitude: "${longitude}",
+              longitude: "${latitude}",
+              roleArn: role.roleArn,
+              trackerName: "PetTracker",
+            },
+          },
+        ],
+        errorAction: {
+          cloudwatchLogs: {
+            logGroupName: logGroup.logGroupName,
+            roleArn: role.roleArn,
+          },
+        },
+      },
     });
   }
 }

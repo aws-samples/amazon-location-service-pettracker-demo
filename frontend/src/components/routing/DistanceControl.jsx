@@ -45,6 +45,7 @@ const refreshOrInitLocationClient = async (client) => {
 
 export const DistanceControl = () => {
   const locationClientRef = useRef();
+  const hubRef = useRef();
   const [userLocation, setUserLocation] = useState();
   const [petLocation, setPetLocation] = useState();
 
@@ -79,9 +80,10 @@ export const DistanceControl = () => {
   );
 
   useEffect(() => {
-    Hub.listen("petUpdates", onPetUpdate);
+    hubRef.current = Hub.listen("petUpdates", onPetUpdate);
 
-    return () => Hub.remove("petUpdates", onPetUpdate);
+    // Clean up the hub listener when the component unmounts
+    return () => hubRef.current();
   }, [userLocation]);
 
   return (
