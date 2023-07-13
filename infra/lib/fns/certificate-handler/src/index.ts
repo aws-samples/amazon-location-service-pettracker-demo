@@ -17,6 +17,7 @@ import {
   CreateSecretCommand,
   DeleteSecretCommand,
 } from "@aws-sdk/client-secrets-manager";
+import { logger, tracer } from "../../commons/powertools";
 
 const SECRET_NAME = "pettracker/iot-cert";
 
@@ -63,14 +64,15 @@ const onDelete = async (event: CloudFormationCustomResourceDeleteEvent) => {
       newStatus: "INACTIVE",
     })
   );
+  await new Promise((resolve) => setTimeout(resolve, 2_000));
   await iot.send(new DeleteCertificateCommand({ certificateId }));
 };
 
-const iot = new IoTClient({});
-const secretsManager = new SecretsManagerClient({});
+const iot = tracer.captureAWSv3Client(new IoTClient({}));
+const secretsManager = tracer.captureAWSv3Client(new SecretsManagerClient({}));
 
 export const handler = async (event: CloudFormationCustomResourceEvent) => {
-  console.log(event);
+  logger.debug("Received event", { event });
   if (event.RequestType === "Create") {
     return await onCreate(event);
   } else if (event.RequestType === "Update") {

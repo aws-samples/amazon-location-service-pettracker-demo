@@ -2,59 +2,37 @@
 // SPDX-License-Identifier: MIT-0
 
 import React, { useState, useRef } from "react";
-import { Hub, API, graphqlOperation } from "aws-amplify";
-import { Marker } from "react-map-gl";
+import { Marker } from "./Marker";
 import { TrackerButton } from "./TrackerButton";
+import { Notifications } from "./Notifications";
+import { subscribe, unsubscribe } from "./TrackerControl.helpers";
 
 export const TrackerControl = () => {
-  const [marker, setMarker] = useState();
   const [isSubscribed, setIsSubscribed] = useState(false);
-  const subscriptionRef = useRef();
+  const subscriptionsRef = useRef({});
 
   const handleSubscriptionToggle = () => {
     if (isSubscribed) {
-      subscriptionRef.current.unsubscribe();
-      console.info("Unsubscribed from onUpdatePosition AppSync mutation");
+      // Unsubscribe from all subscriptions
+      unsubscribe(subscriptionsRef);
+      // Restore the subscriptionsRef to an empty object & set isSubscribed to false
+      subscriptionsRef.current = {};
       setIsSubscribed(false);
     } else {
-      subscriptionRef.current = API.graphql(
-        graphqlOperation(`
-        subscription OnUpdatePosition {
-          onUpdatePosition {
-            id
-            lng
-            lat
-            updatedAt
-          }
-        }
-        `)
-      ).subscribe({
-        next: ({ value: { data } }) => {
-          const { onUpdatePosition } = data;
-          console.debug("Position updated", onUpdatePosition);
-          const { lng, lat } = onUpdatePosition;
-          Hub.dispatch("petUpdates", { data: { lng, lat } });
-          setMarker({
-            lng,
-            lat,
-          });
-        },
-        error: (err) => console.error(err),
-      });
-      console.info("Subscribed to onUpdatePosition AppSync mutation");
+      subscribe(subscriptionsRef);
+      // Set the isSubscribed state to true
       setIsSubscribed(true);
     }
   };
 
   return (
     <>
+      <Notifications />
       <TrackerButton
         onClick={handleSubscriptionToggle}
-        isSubscribed={isSubscribed}
+        isSubscribed={subscriptionsRef.current.positionUpdates}
       />
-      {marker ? (
-        <Marker color="teal" latitude={marker.lat} longitude={marker.lng} />
-      ) : null}
+      <Marker />
     </>
   );
 };

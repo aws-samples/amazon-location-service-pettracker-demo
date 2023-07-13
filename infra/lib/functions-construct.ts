@@ -11,7 +11,6 @@ interface FunctionsConstructProps extends StackProps {
 
 export class FunctionsConstruct extends Construct {
   certificateHandlerFn: Function;
-  trackerUpdateFn: Function;
   appsyncUpdatePositionFn: Function;
   appsyncSendGeofenceEventFn: Function;
 
@@ -45,7 +44,8 @@ export class FunctionsConstruct extends Construct {
               "secretsmanager:DeleteSecret",
             ],
             resources: [
-              `arn:aws:secretsmanager:${Stack.of(this).region}:${Stack.of(this).account
+              `arn:aws:secretsmanager:${Stack.of(this).region}:${
+                Stack.of(this).account
               }:secret:*`,
             ],
           }),
@@ -56,31 +56,9 @@ export class FunctionsConstruct extends Construct {
           new PolicyStatement({
             actions: ["iot:UpdateCertificate", "iot:DeleteCertificate"],
             resources: [
-              `arn:aws:iot:${Stack.of(this).region}:${Stack.of(this).account
+              `arn:aws:iot:${Stack.of(this).region}:${
+                Stack.of(this).account
               }:cert/*`,
-            ],
-          }),
-        ],
-      })
-    );
-
-    this.trackerUpdateFn = new NodejsFunction(this, "trackerUpdateFn", {
-      entry: "lib/fns/tracker-update/src/index.ts",
-      environment: {
-        TRACKER_NAME: "PetTracker",
-        NODE_OPTIONS: "--enable-source-maps",
-      },
-      memorySize: 256,
-      ...sharedConfig,
-    });
-    this.trackerUpdateFn.role?.attachInlinePolicy(
-      new Policy(this, "trackerUpdatePolicy", {
-        statements: [
-          new PolicyStatement({
-            actions: ["geo:BatchUpdateDevicePosition"],
-            resources: [
-              `arn:aws:geo:${Stack.of(this).region}:${Stack.of(this).account
-              }:tracker/PetTracker`,
             ],
           }),
         ],

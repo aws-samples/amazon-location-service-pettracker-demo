@@ -1,40 +1,81 @@
-type Position @aws_iam {
-  id: ID
-  updatedAt: AWSDateTime!
+enum GeofenceEventEnum {
+  ENTER
+  EXIT
+}
+
+enum PositionEventEnum {
+  UPDATE
+}
+
+type Accuracy {
+  horizontal: Float!
+}
+
+interface LocationEventBase {
+  deviceId: ID
+  sampleTime: AWSDateTime!
+  accuracy: Accuracy
   lng: Float!
   lat: Float!
 }
 
-type GeofenceEvent @aws_iam {
-  id: ID
-  date: AWSDateTime!
-  type: String!
+type GeofenceEvent implements LocationEventBase @aws_iam {
+  deviceId: ID
+  sampleTime: AWSDateTime!
+  accuracy: Accuracy
+  lng: Float!
+  lat: Float!
+  type: GeofenceEventEnum!
   geofenceId: String!
 }
 
-input PositionInput {
-  id: ID
-  updatedAt: AWSDateTime!
+type PositionEvent implements LocationEventBase @aws_iam {
+  deviceId: ID
+  sampleTime: AWSDateTime!
+  accuracy: Accuracy
   lng: Float!
   lat: Float!
+  type: PositionEventEnum!
+  trackerName: String!
+  receivedTime: AWSDateTime!
+}
+
+input AccuracyInput {
+  horizontal: Float!
 }
 
 input GeofenceEventInput {
-  id: ID
-  date: AWSDateTime!
-  type: String!
+  deviceId: ID
+  sampleTime: AWSDateTime!
+  lng: Float!
+  lat: Float!
+  type: GeofenceEventEnum!
   geofenceId: String!
 }
 
-type Query {}
+input PositionEventInput {
+  deviceId: ID
+  sampleTime: AWSDateTime!
+  lng: Float!
+  lat: Float!
+  type: PositionEventEnum!
+  trackerName: String!
+  receivedTime: AWSDateTime!
+}
+
+type Query {
+  placeholder: String
+}
 
 type Mutation {
-  updatePosition(input: PositionInput): Position @aws_api_key @aws_iam
-  sendGeofenceEvent(input: GeofenceEventInput): GeofenceEvent @aws_api_key @aws_iam
+  updatePosition(input: PositionEventInput): PositionEvent @aws_api_key @aws_iam
+  sendGeofenceEvent(input: GeofenceEventInput): GeofenceEvent
+    @aws_api_key
+    @aws_iam
 }
 
 type Subscription {
-  onUpdatePosition: Position
+  onUpdatePosition: PositionEvent
     @aws_subscribe(mutations: ["updatePosition"])
     @aws_api_key
   onGeofenceEvent: GeofenceEvent

@@ -1,99 +1,58 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 
-import { IoTEvent } from "aws-lambda";
-import { Sha256 } from "@aws-crypto/sha256-js";
-import { defaultProvider } from "@aws-sdk/credential-provider-node";
-import { HttpRequest } from "@aws-sdk/protocol-http";
-import { SignatureV4 } from "@aws-sdk/signature-v4";
-import p from "phin";
-import { URL } from "url";
+import type { EventBridgeEvent } from "aws-lambda";
+import { executeMutation } from "../../commons/utils";
+import { logger } from "../../commons/powertools";
 
-const APPSYNC_ENDPOINT = process.env.GRAPHQL_URL;
-if (!APPSYNC_ENDPOINT) {
-  throw new Error("GRAPHQL_URL env var is not set");
-}
-
+/**
+ * Details of the event forwarded by EventBridge from the Tracker device
+ */
 type LocationEvent = {
-  type: "locationPayload";
-  id: string;
-  timestamp: string;
-  lat: number;
-  lng: number;
+  EventType: "UPDATE";
+  TrackerName: string;
+  DeviceId: string;
+  SampleTime: string;
+  ReceivedTime: string;
+  Position: [number, number];
+  Accuracy?: {
+    Horizontal: number;
+  };
+  PositionProperties?: {
+    [key: string]: string;
+  };
 };
 
-type Event = Extract<IoTEvent<LocationEvent>, { type: "locationPayload" }>;
+type Event = EventBridgeEvent<"Location Device Position Event", LocationEvent>;
 
 export const handler = async (event: Event) => {
-  const { id, lng, lat, timestamp: updatedAt } = event;
+  logger.debug("Received event", { event });
 
   const updatePosition = {
-    query: `
-      mutation UpdatePosition($input: PositionInput!) {
-        updatePosition(input: $input) {
-          id
-          lng
-          lat
-          updatedAt
-        }
+    query: `mutation UpdatePosition($input: PositionEventInput) {
+      updatePosition(input: $input) {
+        deviceId
+        lng
+        lat
+        sampleTime
+        receivedTime
+        trackerName
+        type
       }
-    `,
+    }`,
     operationName: "UpdatePosition",
     variables: {
       input: {
-        id,
-        lng,
-        lat,
-        updatedAt,
+        deviceId: event.detail.DeviceId,
+        lng: event.detail.Position[0],
+        lat: event.detail.Position[1],
+        sampleTime: new Date(event.detail.SampleTime).toISOString(),
+        receivedTime: new Date(event.detail.ReceivedTime).toISOString(),
+        trackerName: event.detail.TrackerName,
+        type: event.detail.EventType,
       },
     },
   };
 
-  const url = new URL(APPSYNC_ENDPOINT);
-
-  const request = new HttpRequest({
-    hostname: url.hostname,
-    path: url.pathname,
-    body: JSON.stringify(updatePosition),
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      host: url.hostname,
-    },
-  });
-
-  const signer = new SignatureV4({
-    credentials: defaultProvider(),
-    service: "appsync",
-    region: process.env.AWS_REGION as string,
-    sha256: Sha256,
-  });
-
-  const { headers, body, method } = await signer.sign(request);
-
-  try {
-    const result = await p<{
-      errors?: { message: string, errorType: string }[];
-      data?: {
-        updatePosition: Omit<LocationEvent, "type">;
-      };
-    }>({
-      url: APPSYNC_ENDPOINT,
-      headers,
-      data: body,
-      method,
-      timeout: 5000,
-      parse: "json",
-    });
-
-    if (result.body.errors) {
-      console.error(result.body.errors);
-      throw new Error("Failed to execute GraphQL mutation");
-    }
-
-    console.debug(result.body.data?.updatePosition);
-  } catch (err) {
-    console.error(err);
-    throw new Error("Failed to execute GraphQL mutation");
-  }
+  await executeMutation(updatePosition);
 };
