@@ -7,8 +7,12 @@ enum PositionEventEnum {
   UPDATE
 }
 
-type Accuracy {
-  horizontal: Float!
+type Accuracy @aws_iam @aws_api_key {
+  horizontal: Float
+}
+
+type Metadata @aws_iam @aws_api_key {
+  batteryLevel: Float
 }
 
 interface LocationEventBase {
@@ -38,10 +42,26 @@ type PositionEvent implements LocationEventBase @aws_iam {
   type: PositionEventEnum!
   trackerName: String!
   receivedTime: AWSDateTime!
+  metadata: Metadata
+}
+
+type PositionHistoryEntry implements LocationEventBase @aws_api_key {
+  deviceId: ID
+  sampleTime: AWSDateTime!
+  accuracy: Accuracy
+  lng: Float!
+  lat: Float!
+  trackerName: String!
+  receivedTime: AWSDateTime!
+  metadata: Metadata
 }
 
 input AccuracyInput {
-  horizontal: Float!
+  horizontal: Float
+}
+
+input MetadataInput {
+  batteryLevel: Float
 }
 
 input GeofenceEventInput {
@@ -61,10 +81,12 @@ input PositionEventInput {
   type: PositionEventEnum!
   trackerName: String!
   receivedTime: AWSDateTime!
+  accuracy: AccuracyInput
+  metadata: MetadataInput
 }
 
 type Query {
-  placeholder: String
+  getDeviceHistory(deviceId: ID!): [PositionHistoryEntry] @aws_api_key @aws_iam
 }
 
 type Mutation {

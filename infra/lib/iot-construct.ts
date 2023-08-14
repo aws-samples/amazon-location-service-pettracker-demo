@@ -7,6 +7,8 @@ import {
   CfnThingPrincipalAttachment,
   CfnTopicRule,
 } from "aws-cdk-lib/aws-iot";
+import { IotSql, TopicRule } from "@aws-cdk/aws-iot-alpha";
+import { LambdaFunctionAction } from "@aws-cdk/aws-iot-actions-alpha";
 import { Provider } from "aws-cdk-lib/custom-resources";
 import { RetentionDays, LogGroup } from "aws-cdk-lib/aws-logs";
 import { Function } from "aws-cdk-lib/aws-lambda";
@@ -19,14 +21,14 @@ import {
 
 interface IotCoreConstructProps extends StackProps {
   certificateHandlerFn: Function;
-  appsyncUpdatePositionFn: Function;
+  decoderFn: Function;
 }
 
 export class IotCoreConstruct extends Construct {
   constructor(scope: Construct, id: string, props: IotCoreConstructProps) {
     super(scope, id);
 
-    const { certificateHandlerFn } = props;
+    const { certificateHandlerFn, decoderFn } = props;
 
     const provider = new Provider(this, "IoTCertProvider", {
       onEventHandler: certificateHandlerFn,
@@ -96,51 +98,10 @@ export class IotCoreConstruct extends Construct {
       retention: RetentionDays.ONE_DAY,
     });
 
-    // IAM Role for AWS IoT Core to publish to Location Service
-    const role = new Role(this, "IotTrackerRole", {
-      assumedBy: new ServicePrincipal("iot.amazonaws.com"),
-      description: "IAM Role that allows IoT Core to update a Tracker",
-      inlinePolicies: {
-        allowTracker: new PolicyDocument({
-          statements: [
-            new PolicyStatement({
-              resources: [
-                `arn:aws:geo:${Stack.of(this).region}:${
-                  Stack.of(this).account
-                }:tracker/PetTracker`,
-              ],
-              actions: ["geo:BatchUpdateDevicePosition"],
-            }),
-          ],
-        }),
-      },
-    });
-    logGroup.grantWrite(role);
-
-    // Create an IoT Core Topic Rule that sends IoT Core updates to Location Service
-    new CfnTopicRule(this, "TopicRule", {
-      ruleName: "petTrackerRule",
-      topicRulePayload: {
-        sql: `SELECT * FROM 'iot/pettracker'`,
-        awsIotSqlVersion: "2016-03-23",
-        actions: [
-          {
-            location: {
-              deviceId: "${deviceId}",
-              latitude: "${longitude}",
-              longitude: "${latitude}",
-              roleArn: role.roleArn,
-              trackerName: "PetTracker",
-            },
-          },
-        ],
-        errorAction: {
-          cloudwatchLogs: {
-            logGroupName: logGroup.logGroupName,
-            roleArn: role.roleArn,
-          },
-        },
-      },
+    new TopicRule(this, "TopicRule", {
+      topicRuleName: "petTrackerRule",
+      sql: IotSql.fromStringAsVer20160323(`SELECT * FROM 'iot/pettracker'`),
+      actions: [new LambdaFunctionAction(decoderFn)],
     });
   }
 }

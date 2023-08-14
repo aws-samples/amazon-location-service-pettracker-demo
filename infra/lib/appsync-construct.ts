@@ -7,14 +7,19 @@ import {
   MappingTemplate,
 } from "aws-cdk-lib/aws-appsync";
 import { NagSuppressions } from "cdk-nag";
+import { Function } from "aws-cdk-lib/aws-lambda";
 
-interface AppSyncConstructProps extends StackProps {}
+interface AppSyncConstructProps extends StackProps {
+  lambdaFnResolver: Function;
+}
 
 export class AppSyncConstruct extends Construct {
   api: GraphqlApi;
 
   constructor(scope: Construct, id: string, props: AppSyncConstructProps) {
     super(scope, id);
+
+    const { lambdaFnResolver } = props;
 
     this.api = new GraphqlApi(this, "Api", {
       name: "PetTracker",
@@ -65,6 +70,27 @@ export class AppSyncConstruct extends Construct {
     }`),
       responseMappingTemplate: MappingTemplate.fromString(
         `$util.toJson($context.result.input)`
+      ),
+    });
+
+    const lambdaSource = this.api.addLambdaDataSource(
+      "LambdaSource",
+      lambdaFnResolver
+    );
+
+    lambdaSource.createResolver("get-device-history-resolver", {
+      typeName: "Query",
+      fieldName: "getDeviceHistory",
+      requestMappingTemplate: MappingTemplate.fromString(`{
+        "version": "2018-05-29",
+        "operation": "Invoke",
+        "payload": $util.toJson($context)
+    }`),
+      responseMappingTemplate: MappingTemplate.fromString(
+        `#if($ctx.error)
+        $util.error($ctx.error.message, $ctx.error.type)
+      #end
+      $util.toJson($ctx.result)`
       ),
     });
 

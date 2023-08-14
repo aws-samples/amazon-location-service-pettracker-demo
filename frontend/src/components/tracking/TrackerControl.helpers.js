@@ -9,9 +9,12 @@ import { onGeofenceEvent, onUpdatePosition } from "../common/subscriptions";
  */
 const handlePositionUpdate = ({ value: { data } }) => {
   const { onUpdatePosition } = data;
-  console.debug("Position updated", onUpdatePosition);
-  const { lng, lat } = onUpdatePosition;
-  Hub.dispatch("petUpdates", { event: "positionUpdate", data: { lng, lat } });
+  console.debug("Position update received", onUpdatePosition);
+  const { lng, lat, accuracy, metadata } = onUpdatePosition;
+  Hub.dispatch("petUpdates", {
+    event: "positionUpdate",
+    data: { lng, lat, accuracy, metadata },
+  });
 };
 
 /**

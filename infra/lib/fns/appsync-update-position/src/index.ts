@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT-0
 
 import type { EventBridgeEvent } from "aws-lambda";
-import { executeMutation } from "../../commons/utils";
+import { executeGraphQlOperation } from "../../commons/utils";
 import { logger } from "../../commons/powertools";
 
 /**
@@ -38,6 +38,12 @@ export const handler = async (event: Event) => {
         receivedTime
         trackerName
         type
+        accuracy {
+          horizontal
+        }
+        metadata {
+          batteryLevel
+        }
       }
     }`,
     operationName: "UpdatePosition",
@@ -50,9 +56,19 @@ export const handler = async (event: Event) => {
         receivedTime: new Date(event.detail.ReceivedTime).toISOString(),
         trackerName: event.detail.TrackerName,
         type: event.detail.EventType,
+        ...(event.detail.Accuracy && {
+          accuracy: {
+            horizontal: event.detail.Accuracy.Horizontal,
+          },
+        }),
+        ...(event.detail.PositionProperties && {
+          metadata: {
+            batteryLevel: event.detail.PositionProperties.batteryLevel,
+          },
+        }),
       },
     },
   };
 
-  await executeMutation(updatePosition);
+  await executeGraphQlOperation(updatePosition);
 };

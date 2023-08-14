@@ -27,7 +27,6 @@ const App = () => {
     >
       <NavigationControl position={"top-left"} />
       <TrackerControl />
-      <GeofencesControl />
     </MapView>
   );
 };
