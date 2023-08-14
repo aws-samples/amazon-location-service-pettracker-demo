@@ -5,6 +5,12 @@ const onUpdatePosition = `subscription OnUpdatePosition {
     lng
     sampleTime
     trackerName
+    accuracy {
+      horizontal
+    }
+    metadata {
+      batteryLevel
+    }
   }
 }`;
 

@@ -36,30 +36,30 @@ type Inputs = {
 /**
  * Body of a GraphQL mutation.
  */
-export type MutationOperation = {
+export type Operation = {
   query: string;
   operationName: string;
   variables: { input: Inputs };
 };
 
 /**
- * Executes a GraphQL mutation.
+ * Executes a GraphQL operation.
  *
- * @param mutation GraphQL mutation to execute
+ * @param operation GraphQL operation to execute
  */
-const executeMutation = async <T>(mutation: MutationOperation): Promise<T> => {
+const executeGraphQlOperation = async <T>(operation: Operation): Promise<T> => {
   const APPSYNC_ENDPOINT = process.env.GRAPHQL_URL;
   if (!APPSYNC_ENDPOINT) {
     throw new Error("GRAPHQL_URL env var is not set");
   }
   const url = new URL(APPSYNC_ENDPOINT);
 
-  logger.debug("Executing GraphQL mutation", { details: mutation });
+  logger.debug("Executing GraphQL operation", { details: operation });
 
   const request = new HttpRequest({
     hostname: url.hostname,
     path: url.pathname,
-    body: JSON.stringify(mutation),
+    body: JSON.stringify(operation),
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -95,14 +95,14 @@ const executeMutation = async <T>(mutation: MutationOperation): Promise<T> => {
       throw new Error("AppSync returned an empty response");
     }
 
-    logger.debug("Mutation executed", { details: result.body.data });
+    logger.debug("Operation executed", { details: result.body.data });
 
     return result.body.data;
   } catch (err) {
-    logger.error("Failed to execute GraphQL mutation", err as Error);
+    logger.error("Failed to execute GraphQL operation", err as Error);
 
     throw err;
   }
 };
 
-export { executeMutation };
+export { executeGraphQlOperation };

@@ -12,21 +12,27 @@ export class PetTracker extends Stack {
 
     new AuthConstruct(this, "authConstruct", {});
 
-    const { api } = new AppSyncConstruct(this, "apiConstruct", {});
-
     const {
       certificateHandlerFn,
       appsyncUpdatePositionFn,
       appsyncSendGeofenceEventFn,
-    } = new FunctionsConstruct(this, "functionsConstruct", {
-      graphqlUrl: api.graphqlUrl,
+      appsyncTrackerHistoryFn,
+      decoderFn,
+    } = new FunctionsConstruct(this, "functionsConstruct", {});
+
+    const { api } = new AppSyncConstruct(this, "apiConstruct", {
+      lambdaFnResolver: appsyncTrackerHistoryFn,
     });
+
     api.grantMutation(appsyncUpdatePositionFn, "updatePosition");
+    appsyncUpdatePositionFn.addEnvironment("GRAPHQL_URL", api.graphqlUrl);
+
     api.grantMutation(appsyncSendGeofenceEventFn, "sendGeofenceEvent");
+    appsyncSendGeofenceEventFn.addEnvironment("GRAPHQL_URL", api.graphqlUrl);
 
     new IotCoreConstruct(this, "iotCoreConstruct", {
       certificateHandlerFn,
-      appsyncUpdatePositionFn,
+      decoderFn,
     });
 
     new CfnOutput(this, "AWSRegion", {
@@ -38,6 +44,8 @@ export class PetTracker extends Stack {
       "/PetTracker/functionsConstruct/certificateHandler/ServiceRole/Resource",
       "/PetTracker/functionsConstruct/appsyncUpdatePositionFn/ServiceRole/Resource",
       "/PetTracker/functionsConstruct/appsyncSendGeofenceEventFn/ServiceRole/Resource",
+      "/PetTracker/functionsConstruct/decoderFn/ServiceRole/Resource",
+      "/PetTracker/functionsConstruct/appsyncTrackerHistoryFn/ServiceRole/Resource",
     ].forEach((resourcePath: string) => {
       NagSuppressions.addResourceSuppressionsByPath(this, resourcePath, [
         {
@@ -48,6 +56,33 @@ export class PetTracker extends Stack {
       ]);
     });
 
+    NagSuppressions.addResourceSuppressionsByPath(
+      this,
+      "/PetTracker/functionsConstruct/certificateHandlerPolicy/Resource",
+      [
+        {
+          id: "AwsSolutions-IAM5",
+          reason:
+            "This CDK Custom resource uses an AWS Lambda function to create an AWS IoT Core certificate & store it in AWS Secrets Manager. The id of the certificate is not known before creation so the policy must have a wildcard. The name of the secret contains a `/` symbol so we are using a wildcard. In any case this function is executed only during deployment.",
+        },
+        {
+          id: "AwsSolutions-IAM5",
+          reason:
+            "IAM Action iot:CreateKeysAndCertificate does not support resource-level permission. Additionally, even if it did, the id of the certificate is not known before creation time.",
+        },
+      ]
+    );
+
+    NagSuppressions.addResourceSuppressionsByPath(
+      this,
+      "/PetTracker/apiConstruct/Api/LambdaSource/ServiceRole/DefaultPolicy/Resource",
+      [
+        {
+          id: "AwsSolutions-IAM5",
+          reason: "The API needs to access the Lambda function.",
+        },
+      ]
+    );
     NagSuppressions.addResourceSuppressionsByPath(
       this,
       "/PetTracker/functionsConstruct/certificateHandlerPolicy/Resource",

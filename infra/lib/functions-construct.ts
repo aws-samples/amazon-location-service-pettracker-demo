@@ -5,19 +5,17 @@ import { Function, Runtime } from "aws-cdk-lib/aws-lambda";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import { RetentionDays } from "aws-cdk-lib/aws-logs";
 
-interface FunctionsConstructProps extends StackProps {
-  graphqlUrl: string;
-}
+interface FunctionsConstructProps extends StackProps {}
 
 export class FunctionsConstruct extends Construct {
   certificateHandlerFn: Function;
+  decoderFn: Function;
   appsyncUpdatePositionFn: Function;
   appsyncSendGeofenceEventFn: Function;
+  appsyncTrackerHistoryFn: Function;
 
-  constructor(scope: Construct, id: string, props: FunctionsConstructProps) {
+  constructor(scope: Construct, id: string, _props: FunctionsConstructProps) {
     super(scope, id);
-
-    const { graphqlUrl } = props;
 
     const sharedConfig = {
       handler: "handler",
@@ -65,13 +63,36 @@ export class FunctionsConstruct extends Construct {
       })
     );
 
+    this.decoderFn = new NodejsFunction(this, "decoderFn", {
+      entry: "lib/fns/decoder-function/index.ts",
+      environment: {
+        TRACKER_NAME: "PetTracker",
+        NODE_OPTIONS: "--enable-source-maps",
+      },
+      memorySize: 256,
+      ...sharedConfig,
+    });
+    this.decoderFn.role?.attachInlinePolicy(
+      new Policy(this, "trackerUpdatePolicy", {
+        statements: [
+          new PolicyStatement({
+            actions: ["geo:BatchUpdateDevicePosition"],
+            resources: [
+              `arn:aws:geo:${Stack.of(this).region}:${
+                Stack.of(this).account
+              }:tracker/PetTracker`,
+            ],
+          }),
+        ],
+      })
+    );
+
     this.appsyncUpdatePositionFn = new NodejsFunction(
       this,
       "appsyncUpdatePositionFn",
       {
         entry: "lib/fns/appsync-update-position/src/index.ts",
         environment: {
-          GRAPHQL_URL: graphqlUrl,
           NODE_OPTIONS: "--enable-source-maps",
         },
         memorySize: 256,
@@ -85,12 +106,39 @@ export class FunctionsConstruct extends Construct {
       {
         entry: "lib/fns/appsync-send-geofence-event/src/index.ts",
         environment: {
-          GRAPHQL_URL: graphqlUrl,
           NODE_OPTIONS: "--enable-source-maps",
         },
         memorySize: 256,
         ...sharedConfig,
       }
+    );
+
+    this.appsyncTrackerHistoryFn = new NodejsFunction(
+      this,
+      "appsyncTrackerHistoryFn",
+      {
+        entry: "lib/fns/appsync-tracker-history/index.ts",
+        environment: {
+          TRACKER_NAME: "PetTracker",
+          NODE_OPTIONS: "--enable-source-maps",
+        },
+        memorySize: 256,
+        ...sharedConfig,
+      }
+    );
+    this.appsyncTrackerHistoryFn.role?.attachInlinePolicy(
+      new Policy(this, "trackerGetPositionPolicy", {
+        statements: [
+          new PolicyStatement({
+            actions: ["geo:GetDevicePositionHistory"],
+            resources: [
+              `arn:aws:geo:${Stack.of(this).region}:${
+                Stack.of(this).account
+              }:tracker/PetTracker`,
+            ],
+          }),
+        ],
+      })
     );
   }
 }

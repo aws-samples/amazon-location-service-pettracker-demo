@@ -25,6 +25,7 @@ class Simulator {
   private secretId: string;
   private currentPosition: Position;
   private stepDistance: number;
+  private stepAccuracy: number;
   private cert?: string;
   private key?: string;
   private endpoint?: string;
@@ -35,13 +36,15 @@ class Simulator {
     topic: string,
     secretId: string,
     seed: Position,
-    stepDistance: number
+    stepDistance: number,
+    stepAccuracy: number
   ) {
     this.ioTtopic = topic;
     this.clientId = clientId;
     this.secretId = secretId;
     this.currentPosition = seed;
     this.stepDistance = stepDistance;
+    this.stepAccuracy = stepAccuracy;
     this.iotCoreClient = new IoTClient({});
   }
 
@@ -153,8 +156,14 @@ class Simulator {
     const payload = {
       deviceId: this.clientId,
       timestamp: new Date().getTime(),
-      latitude: location[0],
-      longitude: location[1],
+      longitude: location[0],
+      latitude: location[1],
+      positionProperties: {
+        batteryLevel: 100,
+      },
+      accuracy: {
+        horizontal: this.stepAccuracy,
+      },
     };
 
     // Log update before publishing

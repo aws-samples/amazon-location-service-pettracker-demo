@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT-0
 
 import type { EventBridgeEvent } from "aws-lambda";
-import { executeMutation } from "../../commons/utils";
+import { executeGraphQlOperation } from "../../commons/utils";
 import { logger } from "../../commons/powertools";
 
 /**
@@ -45,5 +45,5 @@ export const handler = async (event: Event) => {
     },
   };
 
-  await executeMutation(sendGeofenceEvent);
+  await executeGraphQlOperation(sendGeofenceEvent);
 };
