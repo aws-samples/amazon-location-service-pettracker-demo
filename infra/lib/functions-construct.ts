@@ -44,7 +44,7 @@ export class FunctionsConstruct extends Construct {
             resources: [
               `arn:aws:secretsmanager:${Stack.of(this).region}:${
                 Stack.of(this).account
-              }:secret:*`,
+              }:secret:pettracker/iot-cert-??????`,
             ],
           }),
           new PolicyStatement({

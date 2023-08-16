@@ -44,13 +44,16 @@ const unsubscribe = (subscriptionsRef) => {
 /**
  * Helper function to susbscribe from the AppSync subscriptions
  */
-const subscribe = (subscriptionsRef) => {
+const subscribe = (subscriptionsRef, setError) => {
   // Subscribe to the onUpdatePosition mutation
   subscriptionsRef.current.positionUpdates = API.graphql(
     graphqlOperation(onUpdatePosition)
   ).subscribe({
     next: handlePositionUpdate,
-    error: (err) => console.error(err),
+    error: (err) => {
+      console.error(err);
+      setError(err);
+    },
   });
   console.info("Subscribed to onUpdatePosition AppSync mutation");
 

@@ -48,7 +48,7 @@ export const GeofencesControl = ({}) => {
   };
 
   useEffect(() => {
-    if (geofences.length === 0) {
+    if (geofences.length === 0 && isOpenedPanel) {
       fetchGeofences();
     }
   }, []);
