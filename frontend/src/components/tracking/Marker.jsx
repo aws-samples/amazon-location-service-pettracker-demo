@@ -6,7 +6,7 @@ import { Marker as MapMarker, Source, Layer } from "react-map-gl";
 import { createGeoJSONCircle } from "./Marker.helpers";
 import { Hub } from "@aws-amplify/core";
 
-export const Marker = () => {
+export const Marker = ({ isShowingHistory }) => {
   const [marker, setMarker] = useState();
   const hubRef = useRef();
 
@@ -26,6 +26,8 @@ export const Marker = () => {
     return () => hubRef.current();
   }, []);
 
+  if (isShowingHistory) return null;
+
   return (
     <>
       {marker ? (
@@ -43,7 +45,6 @@ export const Marker = () => {
           <Layer
             type="fill"
             paint={{
-              // "circle-color": "hsla(0,0%,0%,0.75)",
               "fill-color": "blue",
               "fill-opacity": 0.3,
             }}

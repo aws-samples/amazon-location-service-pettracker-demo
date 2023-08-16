@@ -86,7 +86,9 @@ input PositionEventInput {
 }
 
 type Query {
-  getDeviceHistory(deviceId: ID!): [PositionHistoryEntry] @aws_api_key @aws_iam
+  getDeviceHistory(deviceId: ID!, span: String): [PositionHistoryEntry]
+    @aws_api_key
+    @aws_iam
 }
 
 type Mutation {

@@ -8,7 +8,10 @@ import {
   CfnTopicRule,
 } from "aws-cdk-lib/aws-iot";
 import { IotSql, TopicRule } from "@aws-cdk/aws-iot-alpha";
-import { LambdaFunctionAction } from "@aws-cdk/aws-iot-actions-alpha";
+import {
+  CloudWatchLogsAction,
+  LambdaFunctionAction,
+} from "@aws-cdk/aws-iot-actions-alpha";
 import { Provider } from "aws-cdk-lib/custom-resources";
 import { RetentionDays, LogGroup } from "aws-cdk-lib/aws-logs";
 import { Function } from "aws-cdk-lib/aws-lambda";
@@ -102,6 +105,7 @@ export class IotCoreConstruct extends Construct {
       topicRuleName: "petTrackerRule",
       sql: IotSql.fromStringAsVer20160323(`SELECT * FROM 'iot/pettracker'`),
       actions: [new LambdaFunctionAction(decoderFn)],
+      errorAction: new CloudWatchLogsAction(logGroup),
     });
   }
 }
