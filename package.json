@@ -15,6 +15,8 @@
     "utils:convertCDKtoCfn": "npm run convertCDKtoCfn -w scripts",
     "frontend:start": "npm start -w frontend",
     "frontend:build": "npm run build -w frontend",
+    "frontend:deploy": "npm run deploy -w frontend",
+    "frontend:publish": "npm run publish -w frontend",
     "infra:synth": "npm run cdk:synth -w infra",
     "infra:bootstrap": "npm run cdk:bootstrap -w infra",
     "infra:deploy": "npm run cdk:deploy -w infra",

@@ -5,7 +5,6 @@ import {
   CfnPolicyPrincipalAttachment,
   CfnThing,
   CfnThingPrincipalAttachment,
-  CfnTopicRule,
 } from "aws-cdk-lib/aws-iot";
 import { IotSql, TopicRule } from "@aws-cdk/aws-iot-alpha";
 import {
@@ -15,12 +14,6 @@ import {
 import { Provider } from "aws-cdk-lib/custom-resources";
 import { RetentionDays, LogGroup } from "aws-cdk-lib/aws-logs";
 import { Function } from "aws-cdk-lib/aws-lambda";
-import {
-  Role,
-  ServicePrincipal,
-  PolicyDocument,
-  PolicyStatement,
-} from "aws-cdk-lib/aws-iam";
 
 interface IotCoreConstructProps extends StackProps {
   certificateHandlerFn: Function;
