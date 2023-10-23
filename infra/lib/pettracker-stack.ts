@@ -4,6 +4,7 @@ import { AuthConstruct } from "./auth-construct";
 import { AppSyncConstruct } from "./appsync-construct";
 import { FunctionsConstruct } from "./functions-construct";
 import { IotCoreConstruct } from "./iot-construct";
+import { WebConstruct } from "./web-construct";
 import { NagSuppressions } from "cdk-nag";
 
 export class PetTracker extends Stack {
@@ -34,6 +35,8 @@ export class PetTracker extends Stack {
       certificateHandlerFn,
       decoderFn,
     });
+
+    new WebConstruct(this, "webConstruct", {});
 
     new CfnOutput(this, "AWSRegion", {
       value: Stack.of(this).region,

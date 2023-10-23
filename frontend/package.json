@@ -6,7 +6,12 @@
   "scripts": {
     "start": "vite --force",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "npm run sync && npm run invalidate-cache && npm run print-website-url",
+    "publish": "npm run build && npm run deploy",
+    "sync": "aws s3 sync dist/ s3://$(aws cloudformation describe-stacks --output text --query 'Stacks[?contains(StackName, `PetTracker`)][].Outputs[?contains(OutputKey, `StaticAssetsBucketName`)].OutputValue')/ --delete",
+    "print-website-url": "echo \"Website published at $(aws cloudformation describe-stacks --output text --query 'Stacks[?contains(StackName, `PetTracker`)][].Outputs[?contains(OutputKey, `cloudfrontDomainName`)].OutputValue')\n\"",
+    "invalidate-cache": "aws cloudfront create-invalidation --output yaml --distribution-id $(aws cloudformation describe-stacks --output text --query 'Stacks[?contains(StackName, `PetTracker`)][].Outputs[?contains(OutputKey, `cloudfrontDistributionId`)].OutputValue') --paths '/index.html' --no-cli-pager"
   },
   "dependencies": {
     "@aws-amplify/ui-react": "^5.0.4",
