@@ -17,6 +17,6 @@ import {
   const stack = await getStackName();
   const { keys, vals } = await getStackOutputs(stack.StackName);
 
-  const region = vals[getValueFromNamePart(paramName, keys)];
-  console.log(region);
+  const value = vals[getValueFromNamePart(paramName, keys)];
+  console.log(value);
 })();
