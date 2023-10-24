@@ -48,6 +48,14 @@ export class FunctionsConstruct extends Construct {
             ],
           }),
           new PolicyStatement({
+            actions: ["secretsmanager:ListSecrets"],
+            resources: [
+              `arn:aws:secretsmanager:${Stack.of(this).region}:${
+                Stack.of(this).account
+              }:secret:*`,
+            ],
+          }),
+          new PolicyStatement({
             actions: ["iot:CreateKeysAndCertificate"],
             resources: [`*`],
           }),
