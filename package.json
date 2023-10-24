@@ -13,6 +13,7 @@
     "utils:createConfig": "npm run createConfig -w scripts",
     "utils:resizeC9EBS": "sh scripts/resize.sh",
     "utils:convertCDKtoCfn": "npm run convertCDKtoCfn -w scripts",
+    "utils:getCfnOutput": "npm run getCfnOutput -s -w scripts",
     "frontend:start": "npm start -w frontend",
     "frontend:build": "npm run build -w frontend",
     "frontend:deploy": "npm run deploy -w frontend",
