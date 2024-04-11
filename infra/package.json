@@ -45,7 +45,7 @@
     "cdk-nag": "^2.27.67",
     "constructs": "^10.2.69",
     "esbuild": "^0.18.11",
-    "phin": "^3.7.0",
+    "phin": "^3.7.1",
     "source-map-support": "^0.5.21"
   }
 }
