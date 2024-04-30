@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT-0
 
 import React, { useEffect, useState, useCallback } from "react";
-import { Geo } from "aws-amplify";
+import { Geo } from "@aws-amplify/geo";
 import { Button } from "@aws-amplify/ui-react";
 import GeofencesPanel from "./GeofencesPanel";
 import DrawControl from "./DrawControl";

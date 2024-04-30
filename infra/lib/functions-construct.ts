@@ -1,7 +1,7 @@
-import { Stack, StackProps, Duration } from "aws-cdk-lib";
+import { Stack, type StackProps, Duration } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { Policy, PolicyStatement } from "aws-cdk-lib/aws-iam";
-import { Function, Runtime } from "aws-cdk-lib/aws-lambda";
+import { type Function, Runtime } from "aws-cdk-lib/aws-lambda";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import { RetentionDays } from "aws-cdk-lib/aws-logs";
 
@@ -21,10 +21,10 @@ export class FunctionsConstruct extends Construct {
 
     const sharedConfig = {
       handler: "handler",
-      runtime: Runtime.NODEJS_18_X,
+      runtime: Runtime.NODEJS_20_X,
       bundling: {
         minify: true,
-        target: "es2020",
+        target: "es2022",
         sourceMap: true,
       },
       logRetention: RetentionDays.ONE_DAY,

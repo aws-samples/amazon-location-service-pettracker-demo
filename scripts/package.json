@@ -2,10 +2,10 @@
   "name": "scripts",
   "version": "2.0.0",
   "description": "",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
     "createConfig": "node create-aws-exports.mjs",
-    "convertCDKtoCfn": "node convert-template.js"
+    "convertCDKtoCfn": "node convert-template.mjs"
   },
   "author": {
     "name": "Amazon Web Services",
@@ -13,7 +13,7 @@
   },
   "license": "MIT-0",
   "dependencies": {
-    "@aws-sdk/client-cloudformation": "^3.180.0",
-    "shelljs": "^0.8.5"
+    "@aws-sdk/client-cloudformation": "^3.565.0",
+    "execa": "^8.0.1"
   }
 }

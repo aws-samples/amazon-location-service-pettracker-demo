@@ -1,9 +1,9 @@
-import { Stack, StackProps, CfnOutput } from "aws-cdk-lib";
+import { Stack, type StackProps, CfnOutput } from "aws-cdk-lib";
 import { Construct } from "constructs";
-import { AuthConstruct } from "./auth-construct";
-import { AppSyncConstruct } from "./appsync-construct";
-import { FunctionsConstruct } from "./functions-construct";
-import { IotCoreConstruct } from "./iot-construct";
+import { AuthConstruct } from "./auth-construct.js";
+import { AppSyncConstruct } from "./appsync-construct.js";
+import { FunctionsConstruct } from "./functions-construct.js";
+import { IotCoreConstruct } from "./iot-construct.js";
 import { NagSuppressions } from "cdk-nag";
 
 export class PetTracker extends Stack {

@@ -4,7 +4,7 @@ import { IRole, Policy, PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { IdentityPool } from "@aws-cdk/aws-cognito-identitypool-alpha";
 import { NagSuppressions } from "cdk-nag";
 
-interface AuthConstructProps extends StackProps { }
+interface AuthConstructProps extends StackProps {}
 
 export class AuthConstruct extends Construct {
   unauthRole: IRole;
@@ -37,7 +37,8 @@ export class AuthConstruct extends Construct {
               "geo:GetMapTile",
             ],
             resources: [
-              `arn:aws:geo:${Stack.of(this).region}:${Stack.of(this).account
+              `arn:aws:geo:${Stack.of(this).region}:${
+                Stack.of(this).account
               }:map/PetTrackerMap`,
             ],
           }),
@@ -48,14 +49,16 @@ export class AuthConstruct extends Construct {
               "geo:BatchDeleteGeofence",
             ],
             resources: [
-              `arn:aws:geo:${Stack.of(this).region}:${Stack.of(this).account
+              `arn:aws:geo:${Stack.of(this).region}:${
+                Stack.of(this).account
               }:geofence-collection/PetTrackerGeofenceCollection`,
             ],
           }),
           new PolicyStatement({
             actions: ["geo:CalculateRoute"],
             resources: [
-              `arn:aws:geo:${Stack.of(this).region}:${Stack.of(this).account
+              `arn:aws:geo:${Stack.of(this).region}:${
+                Stack.of(this).account
               }:route-calculator/PetTrackerRouteCalculator`,
             ],
           }),

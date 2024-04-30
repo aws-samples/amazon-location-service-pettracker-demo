@@ -1,7 +1,7 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 
-import {
+import type {
   CloudFormationCustomResourceEvent,
   CloudFormationCustomResourceCreateEvent,
   CloudFormationCustomResourceDeleteEvent,
@@ -17,7 +17,7 @@ import {
   CreateSecretCommand,
   DeleteSecretCommand,
 } from "@aws-sdk/client-secrets-manager";
-import { logger, tracer } from "../../commons/powertools";
+import { logger } from "#powertools";
 
 const SECRET_NAME = "pettracker/iot-cert";
 
@@ -68,8 +68,8 @@ const onDelete = async (event: CloudFormationCustomResourceDeleteEvent) => {
   await iot.send(new DeleteCertificateCommand({ certificateId }));
 };
 
-const iot = tracer.captureAWSv3Client(new IoTClient({}));
-const secretsManager = tracer.captureAWSv3Client(new SecretsManagerClient({}));
+const iot = new IoTClient({});
+const secretsManager = new SecretsManagerClient({});
 
 export const handler = async (event: CloudFormationCustomResourceEvent) => {
   logger.debug("Received event", { event });

@@ -9,22 +9,23 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@aws-amplify/ui-react": "^5.0.4",
-    "@aws-amplify/ui-react-geo": "^1.0.1",
-    "aws-amplify": "^5.3.3",
-    "maplibre-gl-draw": "^1.5.7",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "@aws-amplify/geo": "^3.0.29",
+    "@aws-amplify/ui-react": "^6.1.8",
+    "@aws-amplify/ui-react-geo": "^2.0.13",
+    "aws-amplify": "^6.2.0",
+    "maplibre-gl-draw": "^1.6.9",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-hot-toast": "^2.4.1"
   },
   "devDependencies": {
-    "@types/react": "^18.2.14",
-    "@types/react-dom": "^18.2.6",
-    "@vitejs/plugin-react": "^4.0.1",
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.2.1",
     "eslint": "^8.44.0",
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.1",
-    "vite": "^4.5.3"
+    "vite": "^5.2.10"
   }
 }

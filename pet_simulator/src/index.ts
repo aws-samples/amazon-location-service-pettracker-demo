@@ -1,7 +1,7 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 
-import Simulator from "./utils";
+import Simulator from "./utils.js";
 
 const LNG = 36.12309017212961;
 const LAT = -115.17077150978058;

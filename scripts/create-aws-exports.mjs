@@ -91,11 +91,14 @@ const getValueFromNamePart = (namePart, values) =>
 (async () => {
   const stack = await getStackName();
   const { keys, vals } = await getStackOutputs(stack.StackName);
+  const region = vals[getValueFromNamePart(`AWSRegion`, keys)];
   const template = {
-    Auth: {},
-    aws_appsync_authenticationType: "API_KEY",
+    aws_project_region: region,
+    aws_cognito_identity_pool_id:
+      vals[getValueFromNamePart(`IdentityPoolId`, keys)],
     geo: {
-      AmazonLocationService: {
+      amazon_location_service: {
+        region,
         maps: {
           items: {
             PetTrackerMap: {
@@ -111,18 +114,11 @@ const getValueFromNamePart = (namePart, values) =>
         routeCalculator: "PetTrackerRouteCalculator",
       },
     },
+    aws_appsync_graphqlEndpoint: vals[getValueFromNamePart(`ApiUrl`, keys)],
+    aws_appsync_region: region,
+    aws_appsync_authenticationType: "API_KEY",
+    aws_appsync_apiKey: vals[getValueFromNamePart(`ApiKey`, keys)],
   };
-
-  const region = vals[getValueFromNamePart(`AWSRegion`, keys)];
-  template.Auth.region = region;
-  template.aws_appsync_region = region;
-  template.geo.AmazonLocationService.region = region;
-  template.aws_project_region = region;
-  template.Auth.identityPoolId =
-    vals[getValueFromNamePart(`IdentityPoolId`, keys)];
-  template.aws_appsync_graphqlEndpoint =
-    vals[getValueFromNamePart(`ApiUrl`, keys)];
-  template.aws_appsync_apiKey = vals[getValueFromNamePart(`ApiKey`, keys)];
 
   saveTemplate(template, "../frontend/src/aws-exports.js");
 })();

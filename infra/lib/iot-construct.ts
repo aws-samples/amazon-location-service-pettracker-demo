@@ -1,4 +1,4 @@
-import { CustomResource, Stack, StackProps } from "aws-cdk-lib";
+import { CustomResource, Stack, type StackProps } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import {
   CfnPolicy,
@@ -9,7 +9,7 @@ import {
 } from "aws-cdk-lib/aws-iot";
 import { Provider } from "aws-cdk-lib/custom-resources";
 import { RetentionDays, LogGroup } from "aws-cdk-lib/aws-logs";
-import { Function } from "aws-cdk-lib/aws-lambda";
+import { type Function } from "aws-cdk-lib/aws-lambda";
 import {
   Role,
   ServicePrincipal,

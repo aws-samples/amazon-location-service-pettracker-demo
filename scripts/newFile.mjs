@@ -1,40 +1,16 @@
-// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-// SPDX-License-Identifier: MIT-0
+import { mkdirSync, existsSync } from "node:fs";
+import { join } from "node:path";
+import { execa } from "execa";
+import { getJSONFile, writeJSONFile } from "./convert-template.mjs";
 
-const { writeFile, readFile, mkdir } = require("node:fs/promises");
-const { existsSync } = require("node:fs");
-const { join } = require("path");
-const shell = require("shelljs");
-
-const getJSONFile = async (path) => {
-  try {
-    const templateContent = await readFile(path, {
-      encoding: "utf-8",
-    });
-    return JSON.parse(templateContent);
-  } catch (err) {
-    console.error(err);
-    console.error(`Unable to read JSON file ${path}`);
-  }
-};
-
-const writeJSONFile = async (content, path) => {
-  try {
-    await writeFile(path, JSON.stringify(content, null, 2));
-  } catch (err) {
-    console.error(err);
-    console.error(`Unable to write JSON file ${path}`);
-  }
-};
-
-const main = async () => {
+(async () => {
   const currentDir = process.cwd();
   const basePath = "../infra/cdk.out";
   const stackName = "PetTracker";
   const cfnTemplateFileName = `${stackName}.template.json`;
   const assetsFileName = `${stackName}.assets.json`;
   // Get original Cfn template
-  const template = await getJSONFile(join(basePath, cfnTemplateFileName));
+  const template = getJSONFile(join(basePath, cfnTemplateFileName));
   // Remove Rules section
   delete template.Rules;
   // Empty Parameters section
@@ -88,32 +64,26 @@ const main = async () => {
   });
 
   // Empty or create the custom out directory
-  const outDir = join(basePath, "deploy");
+  const outDir = resolve(join(basePath, "deploy"));
+  console.log(outDir);
+  return false;
   if (existsSync(outDir)) {
-    shell.cd(outDir);
-    shell.rm("-rf", "*");
-    shell.cd(currentDir);
+    execa`rm -rf ${outDir}/*`;
   } else {
-    await mkdir(outDir);
+    mkdirSync(outDir);
   }
 
   // Get assets list
-  const assets = await getJSONFile(join(basePath, assetsFileName));
+  const assets = getJSONFile(join(basePath, assetsFileName));
   // Create a zip archive for each asset and place it in the out dir
   Object.values(assets.files).forEach((file) => {
     if (file.source.packaging !== "zip") return;
-    shell.cd(join(basePath, file.source.path));
-    shell.exec(
-      `zip -rj ${file.destinations["current_account-current_region"].objectKey} ./`
-    );
-    shell.exec(
-      `mv ${file.destinations["current_account-current_region"].objectKey} ../deploy`
-    );
-    shell.cd(currentDir);
+    execa`cd ${join(basePath, file.source.path)}`;
+    execa`zip -rj ${file.destinations["current_account-current_region"].objectKey} ./`;
+    execa`mv ${file.destinations["current_account-current_region"].objectKey} ${outDir}`;
+    execa`cd ${currentDir}`;
   });
 
   // Save modified Cfn template in the out dir
-  await writeJSONFile(template, join(outDir, `${cfnTemplateFileName}`));
-};
-
-main();
+  writeJSONFile(template, join(outDir, `${cfnTemplateFileName}`));
+})();

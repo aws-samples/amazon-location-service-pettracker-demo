@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT-0
 
 import type { EventBridgeEvent } from "aws-lambda";
-import { executeMutation } from "../../commons/utils";
-import { logger } from "../../commons/powertools";
+import { executeMutation } from "#utils";
+import { logger } from "#powertools";
 
 /**
  * Details of the event forwarded by EventBridge from the Geofence

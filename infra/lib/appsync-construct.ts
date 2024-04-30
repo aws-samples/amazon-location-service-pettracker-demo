@@ -1,10 +1,10 @@
-import { StackProps, Expiration, CfnOutput, Duration } from "aws-cdk-lib";
+import { type StackProps, Expiration, CfnOutput, Duration } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import {
   GraphqlApi,
-  SchemaFile,
   AuthorizationType,
   MappingTemplate,
+  Definition,
 } from "aws-cdk-lib/aws-appsync";
 import { NagSuppressions } from "cdk-nag";
 
@@ -18,7 +18,7 @@ export class AppSyncConstruct extends Construct {
 
     this.api = new GraphqlApi(this, "Api", {
       name: "PetTracker",
-      schema: SchemaFile.fromAsset("./lib/schema.graphql"),
+      definition: Definition.fromFile("./lib/schema.graphql"),
       authorizationConfig: {
         defaultAuthorization: {
           authorizationType: AuthorizationType.API_KEY,
