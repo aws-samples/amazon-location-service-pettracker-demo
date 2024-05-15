@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { Geo, Hub, Auth, Cache } from "aws-amplify";
+import { Geo } from "@aws-amplify/geo";
+import { fetchAuthSession } from "@aws-amplify/auth";
+import { Hub, Cache } from "aws-amplify/utils";
 import {
   CalculateRouteCommand,
   LocationClient,
@@ -11,16 +13,16 @@ import { UserPositionLabel } from "./UserPositionLabel";
 
 const checkCredentials = async (cachedCredentials) => {
   if (!cachedCredentials || cachedCredentials.expiration === undefined) {
-    const credentials = await Auth.currentCredentials();
-    Cache.setItem("temporary_credentials", credentials);
-    return credentials;
+    const credentials = await fetchAuthSession();
+    Cache.setItem("temporary_credentials", credentials.credentials);
+    return credentials.credentials;
   }
   // If credentials are expired or about to expire, refresh them
   if (
     (new Date(cachedCredentials.expiration).getTime() - Date.now()) / 1000 <
     60
   ) {
-    const credentials = await Auth.currentCredentials();
+    const credentials = await fetchAuthSession();
     Cache.setItem("temporary_credentials", credentials);
     return credentials;
   }
@@ -61,7 +63,8 @@ export const DistanceControl = () => {
       try {
         const res = await locationClientRef.current.send(
           new CalculateRouteCommand({
-            CalculatorName: awsmobile.geo.AmazonLocationService.routeCalculator,
+            CalculatorName:
+              awsmobile.geo.amazon_location_service.routeCalculator,
             TravelMode: "Walking",
             DeparturePosition: [userLocation.lng, userLocation.lat],
             DestinationPosition: [data.lng, data.lat],
