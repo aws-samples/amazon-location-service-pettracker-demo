@@ -29,7 +29,7 @@
     "typescript": "~5.4.5"
   },
   "dependencies": {
-    "@aws-lambda-powertools/logger": "^2.1.0",
+    "@aws-lambda-powertools/logger": "^2.6.0",
     "@aws-sdk/client-iot": "^3.621.0",
     "@aws-sdk/client-location": "^3.621.0",
     "@aws-sdk/client-secrets-manager": "^3.621.0",
