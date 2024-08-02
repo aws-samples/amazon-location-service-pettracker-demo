@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@aws-amplify/geo": "^3.0.29",
-    "@aws-amplify/ui-react": "^6.1.8",
+    "@aws-amplify/ui-react": "^6.1.14",
     "@aws-amplify/ui-react-geo": "^2.0.17",
     "aws-amplify": "^6.2.0",
     "maplibre-gl-draw": "^1.6.9",
