@@ -24,7 +24,7 @@
     "@aws-cdk/aws-iot-actions-alpha": "^2.139.1-alpha.0",
     "@aws-cdk/aws-iot-alpha": "^2.139.1-alpha.0",
     "@types/aws-lambda": "^8.10.142",
-    "@types/node": "^22.0.2",
+    "@types/node": "^22.0.3",
     "aws-cdk": "^2.150.0",
     "typescript": "~5.5.4"
   },
