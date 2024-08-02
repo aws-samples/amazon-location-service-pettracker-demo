@@ -26,7 +26,7 @@
     "@types/aws-lambda": "^8.10.142",
     "@types/node": "^22.0.0",
     "aws-cdk": "^2.150.0",
-    "typescript": "~5.4.5"
+    "typescript": "~5.5.4"
   },
   "dependencies": {
     "@aws-lambda-powertools/logger": "^2.6.0",

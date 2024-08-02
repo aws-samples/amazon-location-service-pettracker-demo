@@ -15,7 +15,7 @@
     "@types/node": "^22.0.0",
     "@types/promise-retry": "^1.1.6",
     "tsx": "^4.7.3",
-    "typescript": "~5.4.5"
+    "typescript": "~5.5.4"
   },
   "dependencies": {
     "@aws-sdk/client-iot": "^3.621.0",
