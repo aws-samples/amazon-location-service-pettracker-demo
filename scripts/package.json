@@ -13,7 +13,7 @@
   },
   "license": "MIT-0",
   "dependencies": {
-    "@aws-sdk/client-cloudformation": "^3.621.0",
+    "@aws-sdk/client-cloudformation": "^3.637.0",
     "execa": "^8.0.1"
   }
 }
