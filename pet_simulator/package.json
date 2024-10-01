@@ -20,7 +20,7 @@
   "dependencies": {
     "@aws-sdk/client-iot": "^3.637.0",
     "@aws-sdk/client-secrets-manager": "^3.637.0",
-    "@aws-lambda-powertools/parameters": "^2.1.0",
+    "@aws-lambda-powertools/parameters": "^2.8.0",
     "@turf/bbox": "^6.5.0",
     "@turf/bbox-polygon": "^7.0.0",
     "@turf/buffer": "^6.5.0",
