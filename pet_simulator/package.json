@@ -23,7 +23,7 @@
     "@aws-lambda-powertools/parameters": "^2.8.0",
     "@turf/bbox": "^6.5.0",
     "@turf/bbox-polygon": "^7.0.0",
-    "@turf/buffer": "^6.5.0",
+    "@turf/buffer": "^7.1.0",
     "@turf/helpers": "^6.5.0",
     "@turf/random": "^6.5.0",
     "aws-iot-device-sdk-v2": "^1.19.5",
