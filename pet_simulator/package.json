@@ -21,7 +21,7 @@
     "@aws-sdk/client-iot": "^3.682.0",
     "@aws-sdk/client-secrets-manager": "^3.682.0",
     "@aws-lambda-powertools/parameters": "^2.8.0",
-    "@turf/bbox": "^6.5.0",
+    "@turf/bbox": "^7.1.0",
     "@turf/bbox-polygon": "^7.1.0",
     "@turf/buffer": "^7.1.0",
     "@turf/helpers": "^6.5.0",
