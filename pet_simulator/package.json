@@ -18,8 +18,8 @@
     "typescript": "~5.5.4"
   },
   "dependencies": {
-    "@aws-sdk/client-iot": "^3.682.0",
-    "@aws-sdk/client-secrets-manager": "^3.682.0",
+    "@aws-sdk/client-iot": "^3.716.0",
+    "@aws-sdk/client-secrets-manager": "^3.716.0",
     "@aws-lambda-powertools/parameters": "^2.8.0",
     "@turf/bbox": "^6.5.0",
     "@turf/bbox-polygon": "^7.1.0",
