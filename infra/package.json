@@ -30,9 +30,9 @@
   },
   "dependencies": {
     "@aws-lambda-powertools/logger": "^2.6.0",
-    "@aws-sdk/client-iot": "^3.723.0",
-    "@aws-sdk/client-location": "^3.723.0",
-    "@aws-sdk/client-secrets-manager": "^3.723.0",
+    "@aws-sdk/client-iot": "^3.738.0",
+    "@aws-sdk/client-location": "^3.738.0",
+    "@aws-sdk/client-secrets-manager": "^3.738.0",
     "@aws-sdk/signature-v4": "^3.370.0",
     "aws-cdk-lib": "^2.177.0",
     "cdk-nag": "^2.31.0",
