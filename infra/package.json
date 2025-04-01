@@ -34,7 +34,7 @@
     "@aws-sdk/client-location": "^3.758.0",
     "@aws-sdk/client-secrets-manager": "^3.758.0",
     "@aws-sdk/signature-v4": "^3.370.0",
-    "aws-cdk-lib": "^2.184.0",
+    "aws-cdk-lib": "^2.187.0",
     "cdk-nag": "^2.31.0",
     "constructs": "^10.4.2",
     "esbuild": "^0.25.0",
