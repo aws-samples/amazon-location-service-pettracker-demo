@@ -25,7 +25,7 @@
     "@aws-cdk/aws-iot-alpha": "^2.139.1-alpha.0",
     "@types/aws-lambda": "^8.10.148",
     "@types/node": "^22.13.0",
-    "aws-cdk": "^2.1006.0",
+    "aws-cdk": "^2.1013.0",
     "typescript": "~5.5.4"
   },
   "dependencies": {
@@ -34,7 +34,7 @@
     "@aws-sdk/client-location": "^3.777.0",
     "@aws-sdk/client-secrets-manager": "^3.777.0",
     "@aws-sdk/signature-v4": "^3.370.0",
-    "aws-cdk-lib": "^2.189.1",
+    "aws-cdk-lib": "^2.193.0",
     "cdk-nag": "^2.31.0",
     "constructs": "^10.4.2",
     "esbuild": "^0.25.0",
